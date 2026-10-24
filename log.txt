@@ -328,3 +328,264 @@ branch=main
 repo_root=C:\Users\SUCHIT CHOPADE\OneDrive\Desktop\Hackerank\hackerrank-orchestrate-october26
 worktree=main
 parent_agent=none
+
+## [2026-10-24T14:04:14Z] Step 2 commit + EXP-001 deterministic baseline on dev split
+
+User Prompt (verbatim, secrets redacted):
+I approve committing the completed Step 2 infrastructure and running EXP-001 under the following conditions.
+Step 2 commit:
+
+1. Rerun the evaluator self-tests and official-sample validation.
+2. Inspect `git status`, staged changes, and `.gitignore`.
+3. Commit only the reviewed Step 2 infrastructure and documentation. Preserve the authentic `log.txt`, and exclude all secrets, caches and temporary artifacts.
+4. Do not push to any remote.
+
+Contract clarification:
+For A4, official samples demonstrate that INCOMPLETE cases may include verification for already-compliant accounts and retained security records. Keep the broader question of verifying every already-compliant resource unresolved.
+Maintain the exact official operation order. Keep numeric case ordering as a validated interpretation rather than an invented universal rule.
+Model decision D7:
+Provisionally approve `claude-haiku-5-5` for later bounded AI experiments, subject to checking API availability and measuring actual quality and token costs. Do not make paid API calls yet. No API key is necessary for EXP-001.
+EXP-001 APPROVED:
+Build the throwaway deterministic-only baseline inside `spike/`.
+Run it against the 22 development cases only.
+Requirements:
+
+* No hardcoded case IDs or sample answers.
+* No reading the golden sample outputs during prediction.
+* No AI model calls.
+* Use the actual identity, activity, policy and evidence data.
+* Reconstruct evidence state as of `audit_at`.
+* Evaluate with the existing evaluator.
+* Record runtime and validation results.
+
+Report:
+
+1. Actual deletion-status accuracy
+2. Step precision, recall and F1
+3. Exact sequence accuracy
+4. Evidence citation correctness
+5. Breakdown of failures by root cause
+6. Which case families work and which fail
+7. Comparison against the EXP-001 thresholds
+8. The two highest-impact improvements
+
+Do not optimize against reserved cases or implement the full production agent.
+After the experiment, stop and present the results. I will decide which improvement to approve next.
+Follow the STARKS experiment and decision-recording workflow. Do not commit the experimental implementation unless I approve it.
+
+Agent Response Summary:
+Applied the lead's contract clarifications (R33 validated, R34 unresolved, R04 numeric order as a validated reading; validator now only warns on plain-text order) and recorded D7 as provisionally approved; reran 31 self-tests (pass) and official-sample validation (0/0), reviewed staging and committed Step 2 locally as 1bcc5e7 (not pushed; one-off author identity because git user was unset). Built the throwaway deterministic spike in spike/ (git-ignored) and ran it on the 22 dev cases only: run 2 status accuracy 0.909, step P/R/F1 0.933/0.836/0.882, sequence accuracy 0.364, 43/43 gold-cited steps reproduced with the same evidence, 0 validator errors, 0.24 s, 0 model calls; run 1 differed only by a system-id priority bug that contradicted the design. Remaining misses were grouped into six root causes and recorded in docs/EXPERIMENTS.md, plus a parser-coverage gap (82.9%, four log formats unparsed) and a dataset finding (retained audit records in gold that are not observable at audit_at). Spike and EXPERIMENTS.md results are uncommitted pending approval.
+
+Actions:
+* Edited docs/contract.md (R04, R33, R34), docs/DECISIONS.md (clarifications, D7), code/evaluation/validate_output.py (R04 warning), code/evaluation/test_evaluator.py (+1 test)
+* Ran unittest (31 OK), validate_output.py on sample_output.csv (valid 0/0)
+* git add (10 named files), secret scan of staged diff (none), git commit 1bcc5e7 (no push)
+* Created spike/exp001.py; ran it on dev ids; ran eval.py --split dev (runs 1 and 2)
+* Ran parser-coverage and citation-correctness checks; contamination greps on spike code
+* Viewed 2 screenshots (security_audit_explorer, account_admin_console)
+* Edited docs/EXPERIMENTS.md (EXP-001 results)
+
+Context:
+tool=Claude Code (Claude desktop app)
+model=claude-opus-5-5
+branch=main
+repo_root=C:\Users\SUCHIT CHOPADE\OneDrive\Desktop\Hackerank\hackerrank-orchestrate-october26
+worktree=main
+parent_agent=none
+
+## [2026-10-24T14:30:04Z] EXP-002 resource identity linking (rejected) + TRAP_FINDINGS.md
+
+User Prompt (verbatim, secrets redacted):
+I approve EXP-002 with the following scope.
+Primary objective: Improve resource identity linking through deletion-worker activity logs and grounded identity relationships.
+EXP-001 achieved:
+
+* Status accuracy: 0.909
+* Step F1: 0.882
+* Exact sequence accuracy: 0.364
+* Missing steps: 22
+* Extra steps: 8
+
+Focus on M1 and M2.
+EXP-002 — Resource Identity Linking
+Implement a generalizable identity/resource-linking improvement that:
+
+1. Connects deletion-worker activity to relevant user identities and resource IDs.
+2. Resolves already-anonymized resources through grounded historical links and workflow evidence.
+3. Avoids assigning a neighboring request's account when activity time windows overlap.
+4. Uses `requested_at`, `reported_at`, and event timestamps as supporting context, not sufficient proof of identity by themselves.
+5. Preserves the `audit_at` cutoff.
+6. Does not treat a deletion-worker's SUCCESS result as proof that data is absent.
+7. Tracks the source and confidence of every identity-resource link.
+8. Explicitly identifies ambiguous matches rather than silently guessing.
+
+Do not hardcode case IDs, resource IDs, expected labels, or sample-specific answers.
+Trap Findings Documentation
+Create `docs/TRAP_FINDINGS.md`.
+Document the following categories:
+T01 — Historical identity mismatches
+T02 — Evidence after audit_at
+T03 — Neighboring workflow/account collisions
+T04 — Already-anonymized resources without direct identifiers
+T05 — Unparsed log formats
+T06 — Non-deletion and negated deletion requests
+T07 — PDF/image-only evidence
+T08 — Retained security records with insufficient evidence
+T09 — Database replica drift
+T10 — Simultaneous cross-system policy violations
+T11 — Similar-looking identifiers belonging to different users
+T12 — Incorrect system/category attribution
+For every trap, record:
+
+* Trap ID and description
+* Actual evidence or observation
+* Confirmed occurrence count, if known
+* Detection method
+* Possible impact on deletion_status and steps_json
+* Existing coverage
+* Proposed mitigation
+* Test cases
+* Status: FIXED, OPEN, PARTIAL, or UNVERIFIED
+
+Do not invent trap occurrence counts or label inferred behavior as verified.
+Experiment Rules
+Follow STARKS's one-improvement-at-a-time process.
+
+1. Preserve EXP-001 as the baseline.
+2. Make only the resource-linking improvement in EXP-002.
+3. Do not simultaneously expand all four missing log parsers or add AI calls.
+4. Run the same 22 development cases.
+5. Keep the 10 reserved cases untouched.
+6. Add targeted independent tests for colliding workflow timestamps, indirect resource links, and false identity matches.
+7. Compare EXP-002 against EXP-001 using the same evaluator.
+
+Required Comparison
+Report:
+
+* Status accuracy before and after
+* Step precision, recall and F1 before and after
+* Exact sequence accuracy before and after
+* Missing and extra steps before and after
+* Cases/steps that improved
+* Cases/steps that regressed
+* Evidence citation correctness
+* Any remaining identity ambiguity
+* Runtime and token usage
+
+Record actual results in `docs/EXPERIMENTS.md` and update `docs/TRAP_FINDINGS.md`.
+Acceptance Conditions
+Accept the experiment only if it improves measured performance without creating unjustified identity links, violating the official contract, or introducing unexplained regressions.
+Do not optimize against reserved cases.
+Keep EXP-002 uncommitted until I review its results.
+Do not start EXP-003 or implement the full production agent automatically.
+Stop after EXP-002 and present the comparison, trap coverage, and your next recommended improvement.
+
+Agent Response Summary:
+Froze EXP-001 as the baseline (spike/baseline_exp001, exp001.py hash unchanged) and built spike/exp002.py as a subclass that changes only linking: every identity-resource link carries source and confidence, accounts and worker actions are assigned by elimination only, failed lookups count only as weak hints needing workflow corroboration, ambiguity is recorded with all candidates, and the audit_at cutoff applies to evidence, events and competing requests. On the same 22 dev cases with the same evaluator, the primary 'omit' policy scored status 0.909 (unchanged), step P/R/F1 0.964/0.791/0.869 (baseline 0.933/0.836/0.882), exact sequence 0.409 (baseline 0.364), missing/extra 28/4 (baseline 22/8); it removed all 4 wrong account links but left 9 of 21 accounts ambiguous and linked 0 anonymized resources (32 attributions ambiguous), so EXP-002 is rejected under the acceptance condition. Wrote docs/TRAP_FINDINGS.md (T01-T12 with measured counts only) and recorded results in docs/EXPERIMENTS.md; added 16 synthetic linking tests (all pass). Nothing committed; no AI calls; reserved cases untouched.
+
+Actions:
+* Copied EXP-001 code and outputs to spike/baseline_exp001/ (sha256 check)
+* Created spike/exp002.py and spike/test_exp002.py; ran unittest (16 OK)
+* Ran exp002.py on dev ids with --account-policy omit and flag; ran eval.py --split dev for each
+* Ran per-case diff vs baseline, citation check, link/ambiguity stats, cardinality measurement, case_05 drift probe (intent bypassed, probe only)
+* Created docs/TRAP_FINDINGS.md; edited docs/EXPERIMENTS.md (EXP-002 section)
+
+Context:
+tool=Claude Code (Claude desktop app)
+model=claude-opus-5-5
+branch=main
+repo_root=C:\Users\SUCHIT CHOPADE\OneDrive\Desktop\Hackerank\hackerrank-orchestrate-october26
+worktree=main
+parent_agent=none
+
+## [2026-10-24T14:44:38Z] EXP-003 evidence parsing completeness (T05) vs EXP-001
+
+User Prompt (verbatim, secrets redacted):
+I have reviewed EXP-002.
+Decision: EXP-002 REJECTED as a replacement for EXP-001.
+Keep EXP-001 frozen as our performance baseline.
+The stricter identity-linking research and synthetic tests may remain documented, but do not merge the regressing implementation.
+EXP-003 — APPROVED
+Objective: Improve evidence parsing completeness, focusing on T05.
+The current parser extracts approximately 82.9% of resource IDs from the text evidence, leaving 426 reported resource-ID occurrences unextracted across unsupported log formats.
+Scope
+
+1. Identify and inspect the four unsupported log formats.
+2. Determine their actual record structures and parsing requirements.
+3. Implement generalized parsers for those formats.
+4. Support resource IDs, system identifiers, state observations, timestamps, and provenance wherever present.
+5. Preserve original evidence IDs and timestamps.
+6. Support multiline records and trace-ID joins where the format requires them.
+7. Avoid false resource-user associations.
+8. Do not change identity-linking or policy decisions as part of this experiment.
+
+Constraints
+
+* Reuse the EXP-001 baseline.
+* Do not use case-specific rules.
+* Do not read golden answers during prediction.
+* Do not add model API calls.
+* Do not touch the 10 reserved evaluation cases.
+* Do not modify the existing EXP-001 implementation.
+* Build the experimental version separately.
+* Keep all changes uncommitted until approval.
+
+Required tests
+Create synthetic or independently derived tests for:
+
+* Previously unsupported log formats
+* Multiline records
+* Trace-ID joins
+* Missing resource IDs
+* Duplicate records
+* Conflicting observations
+* Timestamp cutoffs
+* Unrelated-user records
+* Malformed logs
+* False-positive resource extraction
+
+Evaluation
+Compare EXP-003 against EXP-001 using the same 22 development cases.
+Report:
+
+1. Parser coverage before and after, including the denominator and per-file counts.
+2. Resource-ID extraction precision and false positives.
+3. Status accuracy.
+4. Step precision, recall and F1.
+5. Exact sequence accuracy.
+6. Missing and extra steps.
+7. Citation correctness.
+8. Runtime and memory impact.
+9. Improvements and regressions.
+10. New traps discovered.
+
+Target at least 98% extraction coverage on the supported text-evidence inventory without reducing correctness.
+Do not claim an accuracy improvement solely because more IDs are extracted.
+Trap findings
+Update docs/TRAP_FINDINGS.md with EXP-003 results.
+Retain the existing T03 and T04 findings from EXP-002 as unresolved identity-linking problems.
+Keep T08 marked unresolved until suitable evidence is found or the contract interpretation is clarified.
+Keep T12 separate unless its export attribution error is proven to be caused by the same parsing defect.
+Acceptance
+Use STARKS's evidence-based improvement process.
+Preserve EXP-001 as the baseline.
+Do not accept the experiment merely because the parser coverage improves. Report all accuracy regressions and determine whether they result from false matches or newly discovered evidence.
+Do not commit EXP-003 automatically.
+After completing the experiment, update docs/EXPERIMENTS.md, present the measured comparison, identify the most important remaining traps, and stop for my review before proceeding.
+
+Agent Response Summary:
+Recorded the lead's EXP-002 rejection (D8) and built spike/exp003.py separately on the frozen EXP-001 (hash unchanged), changing only log parsing: per-line detection of four formats (plain kv, bracket, escaped message, JSON lines), multiline continuation, malformed/duplicate handling, line-level provenance, and system names from logs only when structured evidence also uses them. Measured coverage of resource-id positions rose from 2080/2503 (83.1%) to 2503/2503 (100%) with extraction precision 2503/2503 (0 false positives; EXP-001 had 343 malformed ids), adding 463 exact-key resource-user links and losing none. On the same 22 dev cases the output is byte-identical to EXP-001 (status 0.909, F1 0.882, sequence 0.364, missing/extra 22/8, citations 43/43), so no accuracy gain is claimed; runtime 0.24 s to 1.0 s, index peak memory 7.5 MB to 10.6 MB. New traps T13 (14 within-file state sequences) and T14 (300 bulk unrelated-user lookups, 0 requesters affected) recorded; T12 partly explained by the bracket-format defect, case_08 remains a separate cause. Nothing committed.
+
+Actions:
+* Created spike/exp003.py and spike/test_exp003.py (17 tests OK; 33 spike tests total OK)
+* Ran coverage/precision measurement (scratchpad coverage2.py -> spike/exp003_coverage.json), link and blast-radius counts
+* Ran exp003.py on dev ids; eval.py --split dev; compared with spike/baseline_exp001
+* Edited docs/TRAP_FINDINGS.md (T05, T12, new T13, T14), docs/EXPERIMENTS.md (EXP-003), docs/DECISIONS.md (D8)
+
+Context:
+tool=Claude Code (Claude desktop app)
+model=claude-opus-5-5
+branch=main
+repo_root=C:\Users\SUCHIT CHOPADE\OneDrive\Desktop\Hackerank\hackerrank-orchestrate-october26
+worktree=main
+parent_agent=none

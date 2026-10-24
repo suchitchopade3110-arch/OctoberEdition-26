@@ -10,6 +10,17 @@ Rule IDs refer to `docs/contract.md`.
 - **A4:** samples show INCOMPLETE cases verify already-compliant accounts and retained security records → contract R33 (V). Verifying *every* other already-compliant resource stays unresolved → R34 (U).
 - **Ordering:** keep the exact official operation order (R16). Numeric case ordering is a validated interpretation, not a universal rule → R04 (V); validator only errors when rows follow neither numeric nor plain-text order.
 
+## D9: EXP-003 parser accepted as the new baseline (2026-10-24)
+- **Lead's decision:** "EXP-003 — ACCEPTED. Integrate the generalized parser improvements into the accepted deterministic baseline."
+- **Evidence:** resource-id coverage 2080/2503 → 2503/2503; extraction precision 2503/2503; 17 synthetic tests pass; dev output byte-identical to EXP-001 (no measured accuracy change, none claimed).
+- **Integrity checks before commit:** EXP-002 code excluded; `experiments/exp001.py` byte-identical to the frozen baseline; all 463 new links match on an identifier value (410 email, 53 user_id; 339 from the same record, 124 from a same-trace join); 0 identity keys shaped like resource ids.
+- **Lives in:** `experiments/exp003.py` (parser) on `experiments/exp001.py` (reference).
+
+## D8: EXP-002 rejected; EXP-001 stays the baseline (2026-10-24)
+- **Lead's decision:** "EXP-002 REJECTED as a replacement for EXP-001. Keep EXP-001 frozen as our performance baseline." The stricter linking research and its synthetic tests stay documented (`docs/EXPERIMENTS.md`, `spike/test_exp002.py`); the regressing implementation is not merged.
+- **Evidence:** step F1 0.882 → 0.869; correct steps 112 → 106; wrong account links 4 → 0; 9 of 21 accounts ambiguous.
+- **Open:** T03 and T04 remain unresolved identity-linking problems.
+
 ## D1: Deterministic core, bounded AI at the edges
 - **Chose:** Architecture A. Parsing, identity linking, time filtering, policy and step planning are plain Python. AI is used only "when deterministic extraction cannot reliably resolve request intent, ambiguous data categories, or multimodal evidence", and every AI result is cached.
 - **Rejected:** Architecture B (an AI investigator loop per case). Estimated 4–8M tokens per full run against well under 0.2M for A; results would vary between runs; and the model would be deciding things the spec defines exactly (ordering, status rules).

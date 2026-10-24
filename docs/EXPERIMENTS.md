@@ -6,7 +6,121 @@ Development experiments use the **dev split only** (22 cases). The reserved set 
 
 ---
 
-## EXP-001: How far does a no-AI pipeline get? (designed, not run, awaiting approval)
+## EXP-003: evidence parsing completeness (T05) (run 2026-10-24, dev split only) — ACCEPTED (D9)
+
+Integrated as `experiments/exp003.py` on the reference `experiments/exp001.py`. Re-run from the tracked location before commit: 17 parser tests pass, 31 evaluator tests pass, official answers validate 0/0, dev predictions byte-identical to the spike run and to EXP-001.
+
+**Hypothesis.** Parsing the unsupported log formats raises extraction coverage to ≥ 98% of resource ids in text evidence with no false positives and no loss of dev correctness.
+
+**What changed (only log parsing).** `spike/exp003.py` builds the EXP-001 index with a new log parser; every other evidence type, linking, state, policy, ordering and citation come unchanged from the frozen `spike/exp001.py` (sha256 prefix `20ac6058552b615e`). Formats are detected per line (KV, BRACKET, ESCAPED, JSON); continuation lines join the previous record; malformed lines are counted and skipped; exact duplicates are dropped; each observation keeps file id, capture time, line time and line number. For the new formats only, a log `service`/`function` value is used as `system_id` only if structured evidence also names it as a system (otherwise the baseline fallback applies).
+
+**Parser measurement (all 94 manifest files; 78 text files contain resource ids).** Denominator = distinct ids per file that sit in a resource position (after a `resource_id` key, SQL row key, or pipe-table column): 2503. Ids found only in reference fields (`source_resource_id`): 3, excluded by design.
+
+| | EXP-001 | EXP-003 |
+|---|---|---|
+| Coverage (resource positions) | 2080 / 2503 = 83.1% | **2503 / 2503 = 100%** (target ≥ 98% ✓) |
+| Extraction precision | 2080 / 2423 (343 malformed ids with stray backslashes) | **2503 / 2503**, 0 false positives |
+| Files changed | — | evidence_53 (0→300), evidence_34 (0→44), evidence_25 (0→43), evidence_06 (0→36) |
+| Resource→user links (exact key) | — | +463 new, 0 lost (incl. +46 from bracket trace joins in evidence_16/44) |
+| New links reaching requesting users with evidence ≤ their `audit_at` | — | dev 0 · test 83 (unscored) · reserved 0 (3 exist only after cutoff; not scored) |
+| Within-file state conflicts found | not detected | 14 (new trap T13) |
+
+**Scored comparison (same 22 dev cases, same evaluator).**
+
+| Metric | EXP-001 | EXP-003 |
+|---|---|---|
+| Status accuracy | 0.909 | 0.909 |
+| Step P / R / F1 | 0.933 / 0.836 / 0.882 | 0.933 / 0.836 / 0.882 |
+| Exact sequence accuracy | 0.364 | 0.364 |
+| Missing / extra steps | 22 / 8 | 22 / 8 |
+| Citation (gold-cited steps, same evidence id) | 43/43 | 43/43 |
+| Validator errors / warnings | 0 / 0 | 0 / 0 |
+| Runtime (index + 22 cases) / index peak memory | 0.24 s / 7.5 MB | 1.0 s / 10.6 MB |
+| Model calls / tokens / cost | 0 | 0 |
+
+**Improvements / regressions on dev:** none — all 22 outputs are byte-identical to EXP-001, because no dev case depends on the newly parsed files. No accuracy improvement is claimed.
+**Tests:** `spike/test_exp003.py`, 17 synthetic tests, all pass.
+**New traps:** T13 (state sequences inside one file), T14 (bulk unrelated-user records; 0 false associations measured). T12 partly explained (bracket-log system errors were this parsing defect; case_08 is a different cause).
+
+**Assessment.** Meets the coverage target with 100% precision and no dev regression; the accuracy benefit is unverified (it can only show on cases that use these files, none of which are labelled). Accepted by the team lead on that basis.
+
+---
+
+## EXP-002: resource identity linking (run 2026-10-24, dev split only) — REJECTED
+
+**Hypothesis.** Linking resources through deletion-worker activity, with grounded elimination instead of timing tie-breaks, fixes M1 (anonymized records) and M2 (neighbouring accounts) and raises step F1 above EXP-001's 0.882.
+
+**What changed (only linking).** `spike/exp002.py` subclasses the frozen EXP-001 auditor (`spike/exp001.py`, sha256 prefix `20ac6058552b615e`, unchanged). Every link carries source + confidence (identifier/catalog = high; workflow elimination = medium; failed lookup = weak hint, accepted only with workflow corroboration). Accounts and worker actions are assigned by elimination only; ambiguity is recorded with all candidates. Only requests submitted ≤ `audit_at` and events ≤ `audit_at` compete. Workflow events never set state (SUCCESS ≠ absent). Two output policies when an account stays ambiguous: `omit` (primary) and `flag` (ranked choice, confidence low).
+
+**Disclosure.** The account window (−3 h / +1 h around `reported_at`) was chosen after the EXP-001 analysis had looked at timing on all 32 samples, reserved included. Windows only generate candidates; they never create a link alone.
+
+| Metric (local, dev, 22 cases) | EXP-001 (baseline) | EXP-002 omit | EXP-002 flag |
+|---|---|---|---|
+| Status accuracy | 0.909 | 0.909 | 0.909 |
+| Step precision / recall / F1 | 0.933 / 0.836 / **0.882** | **0.964** / 0.791 / 0.869 | 0.908 / 0.806 / 0.854 |
+| Exact sequence accuracy | 0.364 (8) | **0.409 (9)** | 0.409 (9) |
+| Missing / extra steps | 22 / 8 | 28 / **4** | 26 / 11 |
+| Citation: gold-cited steps reproduced with same evidence | 43/43 | 40/40 | 42/42 |
+| Validator errors / warnings | 0 / 0 | 0 / 9 (R31: account step omitted) | 0 / 0 |
+| Runtime | 0.24 s | 38 s | 34 s |
+| Model calls / tokens / cost | 0 | 0 | 0 |
+
+**Step changes, omit vs EXP-001:** 1 fixed (case_06 account), 4 wrong account steps removed (06, 17, 25, 29), 7 previously-correct account steps now omitted as ambiguous (18, 20, 21, 22, 23, 27, 28). No new wrong steps. No status change.
+**M1 (anonymized records):** 0 linked; 32 ungrounded worker actions across 8 dev cases all ambiguous.
+**M2 (accounts):** wrong links 4 → 0; 9 of 21 deletion cases ambiguous (3–6 candidates each). Sources for the rest: 6 failed-lookup + workflow window, 5 workflow elimination, 1 identifier.
+**Targeted tests:** `spike/test_exp002.py`, 16 synthetic tests (collisions, indirect links, false matches, cutoff) — all pass.
+
+**Decision: REJECT** under the acceptance condition (measured F1 and correct-step count went down: 112 → 106 correct steps). Kept as findings, not code:
+1. EXP-001's 0.882 rests partly on unflagged tie-break guesses (right in 7 of the 9 ambiguous cases).
+2. A failed lookup is not ownership evidence on its own (T11; removed the case_17 wrong step).
+3. Anonymized-record ownership is not recoverable by elimination from participant data in dev (T04).
+4. Runtime grows to ~35 s for 22 cases (per-cutoff recomputation); needs caching before any 518-case run.
+
+---
+
+## EXP-001 results (run 2026-10-24, dev split only, 22 cases)
+
+Code: `spike/exp001.py` (git-ignored, throwaway). Command:
+`python spike/exp001.py --cases <DEV ids from splits.py> --out spike/dev_predictions.csv --notes spike/exp001_run.json`
+then `python code/evaluation/eval.py --pred spike/dev_predictions.csv --split dev`.
+
+| Metric (local, dev only) | Run 1 (as first written) | Run 2 (system-id bug fixed) | Threshold |
+|---|---|---|---|
+| Status accuracy | 0.909 (20/22) | **0.909 (20/22)** | ≥ 0.90 ✓ |
+| Step precision / recall / F1 | 0.692 / 0.619 / 0.654 | **0.933 / 0.836 / 0.882** | F1 ≥ 0.80 ✓ |
+| Step F1 ignoring evidence | 0.661 | 0.890 | — |
+| Field accuracy (strict) | 0.610 | 0.821 | — |
+| Sequence accuracy (exact case) | 0.091 (2/22) | 0.364 (8/22) | — |
+| Citation: gold-cited steps reproduced with the same evidence id | not measured | **43/43** | — |
+| Validator errors / warnings | 0 / 0 | 0 / 0 | 0 errors ✓ |
+| Runtime (index + 22 cases) | 0.26 s | 0.24 s | — |
+| Model calls / tokens / cost | 0 / 0 / $0 | 0 / 0 / $0 | — |
+
+**Run 1 → run 2 change.** One bug that contradicted the EXP-001 design ("system from evidence context"): the code let an activity-derived prefix guess override the system named by the evidence, so `audit_record_*` became `archive_service`, `support_*` became `search_service`. Fixed by giving evidence context priority. No other change between runs.
+
+**Contamination checks (all passed):** no case/resource/file ids in spike code; `sample_output.csv` never opened by the spike; no network/model imports; 0 reserved cases predicted.
+
+**Remaining misses in run 2 (22 missing + 8 extra steps), by root cause:**
+
+| # | Root cause | Cases | Missing / extra steps | Status errors |
+|---|---|---|---|---|
+| M1 | Records tied to the subject only by the deletion worker's own actions (anonymized analytics in COMPLETE cases carry no identifier) | 03, 21, 25, 27, 28 | 5 / 0 | 0 |
+| M2 | Account resolution picks a neighbouring request's account (time-window matching ambiguous) | 06, 17, 25, 29 | 3 / 4 | 0 |
+| M3 | Retained security audit record not observable at `audit_at`: absent from all participant text (18, 20) or only in a later file (23, 29) | 18, 20, 23, 29 | 4 / 0 | 0 |
+| M4 | Multimodal evidence skipped (PDF attachment) | 07 | 4 / 1 | 1 |
+| M5 | Intent false negative: "remove any remaining **copy of** my…" hit the non-deletion pattern "copy of" | 05 | 3 / 0 | 1 |
+| M6 | System fallback: collection-style JSON names no system; prefix map says `object_store` instead of `export_service` | 08 | 3 / 3 | 0 |
+
+**Parser coverage (all 94 files, not only dev):** 82.9% of resource ids present in text evidence were extracted. Four log files in other formats (`[LEVEL] [service] [trace] event: k="v"` and escaped `message="k=\"v\""`) are missed entirely (423 ids). Dev cases don't depend on them; the 518-case set very likely does.
+
+**Families that work:** active data flows, backup restore risk, search-index leftovers, tombstones, support-message redaction, replica-snapshot absence, explicit 404 absence, historical email/hash linking (case_12).
+**Families that fail:** COMPLETE cases with already-anonymized records (M1), shared-window accounts (M2), PDF/image-only resources (M4), negation-sensitive intent (M5).
+
+**Decision:** hypothesis ACCEPTED (both thresholds met; status only narrowly, 20/22). Deterministic core is viable (D1). Next improvement awaits the team lead.
+
+---
+
+## EXP-001: How far does a no-AI pipeline get? (design)
 
 **Question.** How much of the dev split can deterministic parsing + policy rules reproduce, and where is AI actually needed?
 
