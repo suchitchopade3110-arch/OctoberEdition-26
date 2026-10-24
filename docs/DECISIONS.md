@@ -33,6 +33,73 @@ Rule IDs refer to `docs/contract.md`.
 - Validator: authorised rows with `[]` become errors (R12/R13); internal UNKNOWN / UNPROVEN notes; audit repro fixture and clean-entry-point tests. Output unchanged.
 - **Status:** awaiting team lead.
 
+## D27: D26 accepted; D25/D26 documentation committed locally (team lead, 2026-10-25)
+
+KEEP the D25/D26 documentation as one local commit (no push): docs/DECISIONS.md, docs/ORGANIZER_QUESTIONS.md,
+docs/SUBMISSION_BLOCKERS.md and log.txt. Excluded: runs/ (including the zip candidates), spike/, .env, agent-trace exports
+and the four unreviewed docs. No production, validator or evidence-cache change; output.csv not published. The three R12
+errors and D18-A stay open pending the organizer questions or an explicit fallback decision.
+
+## D26: organizer clarification and submission contingency — APPROVED (team lead, 2026-10-25); ACCEPTED in D27
+
+D25 accepted. The three R12 errors (case_55 account_2595 and backup_9287; case_63 marketing_001) stay UNRESOLVED and will
+not be forced to pass. case_46/tombstone_17 and case_53/support_1034 stay recorded as silent-omission risks. D18 and the
+D25 dossier are frozen.
+
+Prepared, with no prediction, validator or cache change:
+- docs/ORGANIZER_QUESTIONS.md: shareable questions Q1–Q3 (unestablished state, unblocked retained backup, catalog versus
+  printed identity) and Q4 (derived extraction files in code.zip). No personal data. No answer has been received.
+- docs/SUBMISSION_BLOCKERS.md: the exact validator output, the open decisions, the smallest compliant change and
+  regression test for each possible answer, packaging results and transcript status.
+- Candidate packages in runs/package/ (not submitted), built to mirror the official zip command:
+  - code_with_cache.zip: 41 files. Its clean copy reproduces D18 byte for byte; 101 tests pass.
+  - code_without_cache.zip: 34 files. It falls back to the PDF-only output (7 R12 errors); 4 shipped tests fail.
+  Neither contains dataset files, .env, binaries, nested archives, build caches or keys.
+- log.txt: 49 well-formed entries, no exposed keys. The separate agent-trace export still holds the pasted keys and must
+  be redacted.
+
+Without an organizer answer, there is no fully evidence-grounded, validator-passing 518-row output under the current
+interpretation. Any fallback must be an explicit, recorded decision.
+
+## D25: final R12 adjudication — investigation only (team lead, 2026-10-25); result: UNRESOLVED, organizer guidance needed
+
+No code, validator or output change. Candidate rows were checked by substituting them into a scratch copy of the D18
+output and running the strict validator. Both requests clearly authorise deletion, so NOT_APPLICABLE is excluded. No public
+sample has COMPLETE with [].
+
+case_55 (areed1433@gmail.com, audit_at 2026-04-30T11:00Z)
+- account_2595: the only record is activity_1640, a DELETE_RECORD SUCCESS claim (C04). The account was assigned by workflow
+  time window among 3 candidates (the D19 risk). Ownership and state are both unproven. No COMPLETE citation exists (C06),
+  and there is no presence evidence for a finding (C05/C07).
+- backup_9287: evidence_32 (captured 04-29T09:00Z) shows the archive with "Account: areed1433@gmail.com", so ownership is
+  established by the evidence content. It also shows checksum verified, last restore drill 29 Mar and retention end 26 Jul,
+  but no restore permission or block. There is no BLOCK_RESTORE or CHECK_RESTORE_ACCESS event at any time. Policy: rule_14
+  RETAIN + block restore; P14 allows a finding only "if restore allowed".
+- Candidates:
+  - A: current COMPLETE, uncited (R12 x2).
+  - B: INCOMPLETE, REPORT_RESTORE_RISK backup_9287 [evidence_32] -> BLOCK_RESTORE -> VERIFY_RECORD_ABSENT account_2595 ->
+    VERIFY_RESTORE_BLOCKED. Validator OK, but it reads "no block shown" as "restorable"; rejected in D18-B.
+  - C: COMPLETE citing activity_1640 and evidence_32. Validator OK but FALSE: a claim, and a screenshot that shows no block.
+  - D, E: COMPLETE with fewer or no steps (R12).
+
+case_63 (kwame-mensah@proton.me, audit_at 2026-09-17T09:20Z)
+- marketing_001: evidence_60 (captured 09-16T07:20Z) shows a live profile for a person who matches no known identity. Only
+  the catalog claim activity_4008 links it to user_09, and there is no other evidence for user_09. Policy: rule_10 DELETE.
+- Candidates:
+  - A: current COMPLETE, uncited (R12).
+  - B: INCOMPLETE, REPORT_REMAINING_RECORD [evidence_60]. Validator OK, but ownership is contradicted; rejected in D18-D.
+  - C: COMPLETE citing evidence_60 as absence. Validator OK but FALSE: it shows the record present.
+  - D: COMPLETE [] (R12).
+
+Related hidden risk, not flagged by the validator: case_46 (tombstone_17) and case_53 (support_1034) are COMPLETE while a
+catalog-linked resource has no usable observation and is left out of the steps (F02-style). These are the EXP-009 screenshots.
+
+Organizer questions:
+1. How should a resource be reported when the evidence cannot establish its state at audit_at? COMPLETE needs proof, and
+   INCOMPLETE needs a cited finding.
+2. Does a retained backup with no evidence that restore is blocked count as a restore risk?
+3. When catalog identity rows and the identifiers printed in the evidence conflict, which decides ownership?
+
 ## D24: D23 documentation accepted; local commit authorised (team lead, 2026-10-25)
 
 KEEP the D23 submission documentation as one local commit (no push). Pre-commit reconciliation found that the D23 draft
