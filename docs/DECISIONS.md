@@ -10,6 +10,13 @@ Rule IDs refer to `docs/contract.md`.
 - **A4:** samples show INCOMPLETE cases verify already-compliant accounts and retained security records → contract R33 (V). Verifying *every* other already-compliant resource stays unresolved → R34 (U).
 - **Ordering:** keep the exact official operation order (R16). Numeric case ordering is a validated interpretation, not a universal rule → R04 (V); validator only errors when rows follow neither numeric nor plain-text order.
 
+## D10: EXP-004 temporal reconstruction — ACCEPTED with safeguards (2026-10-24)
+- **Rule:** state at `audit_at` = latest *observation* time among evidence available at `audit_at`; line order is never chronology; reappearance is flagged, cause not assumed.
+- **D10-A, equal-timestamp conflicts (lead's conditions):** keep every tied observation with provenance (file, line, scope, system, state); mark the result ambiguous; apply the least-compliant preference only when scope and authority are comparable (same copy/system), and never as proof of a violation; no fabricated findings, citations or associations; never merge replica copies — SQL observations carry their table as scope, per-copy states are kept, and C08 (a remaining copy means the record exists) still applies.
+- **D10-B, post-dated observations (lead's conditions):** quarantined from state selection; kept and flagged; cannot override a valid earlier observation; reconsidered only if independent evidence shows the time is valid and usable under the cutoff (an independent later file showing that state is simply used on its own merit).
+- **Evidence:** 14/14 within-file sequences (baseline 2/14); 12 state changes across 81 cutoffs, all backed by a later reliable observation; 0 cutoff violations; 17 temporal tests; dev predictions byte-identical. No equal-time tie occurs in the current data (safeguards exercised by synthetic tests only).
+- **Lives in:** `experiments/exp004.py` (`choose`, `scope_of`, `Auditor4.attach_manifest_times`, `Auditor4.attach_sql_scopes`).
+
 ## D9: EXP-003 parser accepted as the new baseline (2026-10-24)
 - **Lead's decision:** "EXP-003 — ACCEPTED. Integrate the generalized parser improvements into the accepted deterministic baseline."
 - **Evidence:** resource-id coverage 2080/2503 → 2503/2503; extraction precision 2503/2503; 17 synthetic tests pass; dev output byte-identical to EXP-001 (no measured accuracy change, none claimed).

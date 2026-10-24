@@ -5,7 +5,7 @@ Counts are only given where they were **measured** with a script during this ses
 "Dev" = the 22 development samples (`code/evaluation/splits.py`). Reserved cases are not used here.
 Status: **FIXED** (handled and verified on at least one real instance) · **PARTIAL** (handled for some forms) · **OPEN** (not handled) · **UNVERIFIED** (handled in code, never exercised).
 
-Last updated: 2026-10-24, after EXP-003. T03 and T04 remain unresolved identity-linking problems (EXP-002 rejected). T08 stays unresolved until evidence is found or the contract reading is clarified.
+Last updated: 2026-10-24, after EXP-004 was accepted (D10). T03 and T04 remain unresolved identity-linking problems (EXP-002 rejected). T08 stays unresolved until evidence is found or the contract reading is clarified.
 
 ---
 
@@ -127,15 +127,24 @@ Last updated: 2026-10-24, after EXP-003. T03 and T04 remain unresolved identity-
 - **EXP-003 note:** in the two bracket-format logs, wrong systems (`archive_service` for 10 audit records, `search_service` for 3 support records, `object_store` for 1 export, per file) were caused by the lost `[service]` field — a parsing defect, now fixed. Case_08's `object_store` error comes from a collection-style JSON file with no system field — a **different** cause, still open. New sub-form: the escaped format's `function=profile_service` is an emitting component, not a system (300 lines); EXP-003 only uses log service names that structured evidence also uses as systems.
 - **Status:** PARTIAL.
 
-### T13 — State sequences inside one file (new, EXP-003)
-- **Description:** one log file observes the same resource more than once with different states over time (e.g. absent, then present again two days later — possible recreation).
-- **Observation:** 14 (file, resource) pairs with conflicting states, e.g. `account_5284` in evidence_16: ABSENT 07-28, PRESENT 07-30; `account_6633` in evidence_06: present 09-10, ABSENT 09-16.
-- **Confirmed count:** 14 pairs (all text evidence).
-- **Detection:** `exp003.conflicts()`; every observation now keeps its line timestamp.
-- **Impact:** EXP-001's "latest observation" sorts by file capture time only, so inside one file it keeps the first line — it can report a stale state (missed recreation or false remaining record).
-- **Coverage:** detected and reported; not resolved (state reconstruction was out of EXP-003 scope).
-- **Mitigation:** order observations within a file by line time (≤ `audit_at`), keep the last; test with the existing conflict test.
-- **Status:** OPEN.
+### T13 — State sequences inside one file (new, EXP-003; addressed by EXP-004)
+- **Description:** one evidence file observes the same resource more than once with different states over time (e.g. absent, then present again two days later — possible recreation).
+- **Observation:** 14 (file, resource) pairs, all accounts. 7 are timed by log-line timestamps (logs); 7 by the row's own `recorded_at` in manifest-style records — which the baseline parser drops, making them look like ties. E.g. `account_5284` (evidence_16) ABSENT 07-28 → PRESENT 07-30; `account_945` (evidence_22) FOUND 06-17 → NOT_FOUND 06-23.
+- **Confirmed count:** 14 pairs; 12 produce a different state once ordered by observation time (the other 2 contain a post-dated row, T15). 11 of the 12 accounts belong to requesting users — all in the unlabelled test set; 0 dev, 0 reserved.
+- **Detection:** `exp003.conflicts()`; EXP-004 attaches line time or record time to every observation (229 manifest rows re-timed).
+- **Impact:** baseline keeps the earliest row inside a file → stale state: a recreated account reported absent (false COMPLETE) or a deleted one reported present (false finding).
+- **Coverage (EXP-004, not yet accepted):** state = latest reliable observation time ≤ `audit_at`; line order never used. Reconstructs **14/14** (baseline 2/14). Across all 81 case cutoffs: 12 distinct state changes vs baseline, all backed by a strictly later reliable observation (0 false-positive changes); 16 reappearance flags; 0 temporal-consistency violations.
+- **Tests:** `experiments/test_exp004.py` (17): each required transition, cutoff, out-of-order lines, equal-time ties (comparable, incomparable, provenance kept), primary-vs-replica copies not merged, missing timestamps, record time, post-dated rows, repeated observations.
+- **Status:** FIXED (EXP-004 accepted, D10; commit recorded in `docs/DECISIONS.md`). Dev unaffected; test-set impact unscored.
+
+### T15 — Post-dated rows (new, EXP-004)
+- **Description:** a row's own timestamp is later than the moment its file was exported/captured.
+- **Observation:** `connector_configurations_20260812.json` (exported 08-12 09:00) holds an `account_1417` FOUND row recorded 08-14; `customer_export_manifest_20260409.json` (exported 04-09 12:00) holds an `account_5043` FOUND row recorded 04-11. In both, the earlier row says NOT_FOUND.
+- **Confirmed count:** 2 rows (1 of 39 and 1 of 46 in those files; 0 in `security_audit_ledger_20261001.json`).
+- **Detection:** observation time > file `captured_at`.
+- **Impact:** trusting the row creates a "still present" state from evidence that could not have existed at capture time.
+- **Coverage:** EXP-004 (D10-B) quarantines post-dated rows from state selection, keeps and flags them; they cannot override a valid earlier observation.
+- **Status:** FIXED for selection (D10-B). Whether the dataset intends these as decoys is unverified.
 
 ### T14 — Bulk records for unrelated users (new, EXP-003)
 - **Description:** high-volume background records about real users who never requested deletion.

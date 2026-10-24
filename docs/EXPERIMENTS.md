@@ -6,6 +6,33 @@ Development experiments use the **dev split only** (22 cases). The reserved set 
 
 ---
 
+## EXP-004: temporal state reconstruction (T13) (run 2026-10-24, dev split only) — ACCEPTED (D10)
+
+Integrated as `experiments/exp004.py` with the D10-A safeguards (ties marked ambiguous with full provenance; preference only for comparable scope/authority; SQL table kept as copy scope — 24/24 SQL files matched row-for-row, 891 observations scoped) and D10-B (post-dated rows quarantined). Re-checked after the safeguards: 14/14 sequences, 12 changes / 0 unbacked, 0 cutoff violations, 0 equal-time ties in real data; 34 experiment tests + 31 evaluator tests pass; dev predictions byte-identical to EXP-003 and EXP-001.
+
+**Hypothesis.** Choosing each resource's state by observation time (not file capture time or line order) reconstructs within-file state sequences correctly without creating unjustified state changes or dev regressions.
+
+**What changed (only state selection).** `spike/exp004.py` (isolated, uncommitted) on the accepted baseline `experiments/exp003.py`. Overrides `latest()` and `absence_evidence()` only; identity, intent, parsing and policy unchanged. Each observation now has three separate times: observation time (log line time, or the row's own `observed_at`/`recorded_at` — 229 manifest rows re-timed because the baseline parser drops `recorded_at`), availability (file `captured_at`), and the case cutoff. Rules: usable = captured ≤ `audit_at` and observed ≤ `audit_at`; latest observation time wins; line order never used; same-snapshot tie → a present copy wins (replica scope); cross-source tie → least-compliant state kept and flagged; rows dated after their own file's capture are flagged and ignored (T15); ABSENT → present is flagged as reappearance without assuming a cause.
+
+| Measure | EXP-003 (accepted) | EXP-004 |
+|---|---|---|
+| Status accuracy (dev) | 0.909 | 0.909 |
+| Step P / R / F1 (dev) | 0.933 / 0.836 / 0.882 | 0.933 / 0.836 / 0.882 |
+| Exact sequence accuracy (dev) | 0.364 | 0.364 |
+| Missing / extra steps (dev) | 22 / 8 | 22 / 8 |
+| Citation (gold-cited steps, same evidence) / evidence validity | 43/43 / 1.0 | 43/43 / 1.0 |
+| Temporal consistency violations (all resources × 81 case cutoffs) | 0 | 0 |
+| The 14 state-sequence pairs reconstructed correctly | 2 / 14 | **14 / 14** |
+| Distinct state changes vs baseline (all resources × 81 cutoffs) | — | 12, all backed by a strictly later reliable observation |
+| False-positive state changes | — | **0** |
+| Reappearance flags / post-dated rows ignored | — | 16 / 2 |
+| Runtime (index + 22 cases) / index peak memory | 1.00 s / 10.6 MB | 1.07 s / 11.1 MB |
+| Model calls / tokens | 0 | 0 |
+
+"Correct" for the 14 pairs = the state of the last reliable (not post-dated) observation inside that file, checked against the raw rows. **Dev:** outputs byte-identical to EXP-003 — no dev case touches these resources; no accuracy gain claimed. **Reach:** 11 of the 12 changed accounts belong to requesting users in the unlabelled test set (0 dev, 0 reserved). **Tests:** 15 synthetic tests at first run; 17 after the D10-A safeguards (`experiments/test_exp004.py`), all pass. **Limitation:** a later primary-only readback cannot speak for a replica copy; without per-copy provenance in the baseline index, the latest observation still wins across files.
+
+---
+
 ## EXP-003: evidence parsing completeness (T05) (run 2026-10-24, dev split only) — ACCEPTED (D9)
 
 Integrated as `experiments/exp003.py` on the reference `experiments/exp001.py`. Re-run from the tracked location before commit: 17 parser tests pass, 31 evaluator tests pass, official answers validate 0/0, dev predictions byte-identical to the spike run and to EXP-001.

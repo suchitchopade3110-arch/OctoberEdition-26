@@ -589,3 +589,90 @@ branch=main
 repo_root=C:\Users\SUCHIT CHOPADE\OneDrive\Desktop\Hackerank\hackerrank-orchestrate-october26
 worktree=main
 parent_agent=none
+
+## [2026-10-24T14:55:36Z] EXP-003 committed as baseline; EXP-004 temporal state reconstruction
+
+User Prompt (verbatim, secrets redacted):
+I approve EXP-003 as a successful evidence-parser improvement.
+The parser reached 2503/2503 resource-ID extraction coverage, passed 17 synthetic tests, and introduced no measured accuracy regression on the 22 development cases.
+EXP-003 — ACCEPTED
+Integrate the generalized parser improvements into the accepted deterministic baseline.
+Before committing:
+
+1. Review the final code diff and ensure EXP-002's rejected linking changes are excluded.
+2. Preserve EXP-001 as a reproducible reference baseline.
+3. Keep the parser reusable and independent of case IDs and golden labels.
+4. Run the existing evaluator, parser tests and strict validator again.
+5. Confirm no new identity associations are being inferred merely from resource-ID extraction.
+6. Commit the accepted parser, relevant tests, and documentation locally after all checks pass.
+7. Do not push the commit.
+
+Record EXP-003 as ACCEPTED in DECISIONS.md and EXPERIMENTS.md.
+EXP-004 — APPROVED
+Objective: Fix T13 — Temporal State Sequences.
+Some resources have multiple state observations within a single evidence file. The current baseline can use an earlier observation instead of the state applicable at audit_at.
+Develop a generalizable temporal reconstruction improvement.
+Requirements:
+
+1. Preserve all observations for each resource, including their actual event timestamps and provenance.
+2. Distinguish observation time, evidence capture time, and case audit cutoff.
+3. Exclude evidence unavailable after audit_at.
+4. Select the most recent reliable, applicable resource state at or before audit_at.
+5. Do not treat text-file line order as chronological order.
+6. Handle repeated observations, conflicting states, and equal timestamps.
+7. Consider replica scope and evidence authority instead of blindly trusting the latest claim.
+8. Detect data reappearing after deletion without automatically assuming the cause.
+9. Preserve all valid evidence references.
+10. Do not change identity resolution, intent classification or policy rules in this experiment.
+
+Testing
+Use EXP-003 as the new accepted baseline.
+Create synthetic tests for:
+
+* PRESENT → ABSENT
+* ABSENT → PRESENT
+* PRESENT → REDACTED
+* ACTIVE → DISABLED
+* DISABLED → ACTIVE
+* Evidence after audit_at
+* Out-of-order log lines
+* Equal-timestamp conflicting observations
+* Primary-versus-replica differences
+* Missing timestamps
+
+Run the same 22 development cases. Keep the 10 reserved cases untouched.
+Evaluation
+Report before-versus-after:
+
+* Status accuracy
+* Step precision, recall and F1
+* Exact sequence accuracy
+* Missing and extra steps
+* Citation validity
+* Temporal consistency
+* Number of the 14 state-sequence cases correctly reconstructed
+* False-positive state changes
+* Runtime and memory overhead
+
+Keep EXP-004 isolated and uncommitted until approval.
+Update TRAP_FINDINGS.md, EXPERIMENTS.md and the decision log.
+Do not proceed to EXP-005 or the full production agent automatically.
+Stop and present the results for review.
+
+Agent Response Summary:
+Integrated the accepted EXP-003 parser into a tracked experiments/ folder with the byte-identical EXP-001 reference (EXP-002 excluded), re-ran 17 parser tests, 31 evaluator tests, official-answer validation (0/0) and the dev evaluation (identical outputs), confirmed all 463 new identity links match on email or user_id values (339 same record, 124 same-trace joins), recorded D9, and committed locally as 76b898a without pushing. Built isolated EXP-004 (spike/exp004.py) changing only state selection: observation, availability and cutoff times are kept separate, manifest rows re-timed from recorded_at, latest reliable observation wins, line order ignored, explicit tie rules, post-dated rows flagged and ignored, reappearance flagged. EXP-004 reconstructs all 14 within-file sequences (baseline 2/14), makes 12 state changes across 81 case cutoffs all backed by later reliable observations (0 false positives), 0 temporal-consistency violations, and leaves the 22 dev outputs byte-identical (status 0.909, F1 0.882); 11 changed accounts belong to unlabelled test requests. Recorded T13 update, new T15 (post-dated rows), EXP-004 results and proposed D10; EXP-004 is uncommitted.
+
+Actions:
+* Created experiments/README.md; copied exp001.py, exp003.py, test_exp003.py into experiments/
+* Ran unittest (experiments 17 OK, code/evaluation 31 OK), validate_output.py (0/0), experiments/exp003.py + eval.py on dev
+* Link-origin check; staged named files; scans (case ids, gold reads, network imports, secrets, EXP-002): none; git commit 76b898a (no push)
+* Created spike/exp004.py, spike/test_exp004.py (15 OK); ran on dev; 14-sequence, all-cutoff state-change, consistency and blast-radius measurements
+* Edited docs/DECISIONS.md (D9, D10), docs/EXPERIMENTS.md (EXP-003 accepted, EXP-004), docs/TRAP_FINDINGS.md (T13, T15)
+
+Context:
+tool=Claude Code (Claude desktop app)
+model=claude-opus-5-5
+branch=main
+repo_root=C:\Users\SUCHIT CHOPADE\OneDrive\Desktop\Hackerank\hackerrank-orchestrate-october26
+worktree=main
+parent_agent=none
