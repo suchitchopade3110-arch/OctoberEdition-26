@@ -1,0 +1,3 @@
+# Content-addressed evidence cache: index.json records SHA-256 of the exact entry bytes, so git must not
+# rewrite line endings in these files on any platform.
+code/evidence_cache/** -text

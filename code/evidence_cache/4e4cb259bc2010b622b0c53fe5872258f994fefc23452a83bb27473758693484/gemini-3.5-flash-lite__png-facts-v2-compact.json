@@ -1,0 +1,73 @@
+{
+  "captured_at": "2026-07-13T10:00:00Z",
+  "facts": {
+    "ambiguities": [],
+    "compact": {
+      "embedded_instructions_seen": false,
+      "records": [
+        {
+          "identity": [
+            "user_20",
+            "analytics_7438",
+            "darwish.omar@icloud.com",
+            "Omar Darwish"
+          ],
+          "resource_id": "user_20",
+          "state": "PRESENT_WITH_IDENTIFIERS",
+          "state_basis": "VISIBLE_TEXT",
+          "timestamp": "",
+          "uncertainty": "",
+          "visible_text": [
+            "ID: user_20",
+            "Analytics ID: analytics_7438",
+            "Email: darwish.omar@icloud.com",
+            "Name: Omar Darwish"
+          ]
+        }
+      ]
+    },
+    "displayed_timestamps": [],
+    "embedded_instructions_seen": false,
+    "records": [
+      {
+        "resource_id": "user_20",
+        "restore_or_flow_detail": "",
+        "state": "PRESENT_WITH_IDENTIFIERS",
+        "state_basis": "VISIBLE_TEXT",
+        "subject_identifiers": [
+          "user_20",
+          "analytics_7438",
+          "darwish.omar@icloud.com",
+          "Omar Darwish"
+        ],
+        "supporting_text": [
+          "ID: user_20",
+          "Analytics ID: analytics_7438",
+          "Email: darwish.omar@icloud.com",
+          "Name: Omar Darwish"
+        ],
+        "system_id": "",
+        "timestamp": "",
+        "uncertainty": "",
+        "visible_status_text": ""
+      }
+    ],
+    "screen_title": ""
+  },
+  "file_id": "evidence_19",
+  "file_path": "evidence/images/analytics_profile_view_20260713.png",
+  "latency_s": 18.592,
+  "model": "gemini-3.5-flash-lite",
+  "model_version": "gemini-3.5-flash-lite",
+  "origin": "analytics_platform",
+  "prompt_version": "png-facts-v2-compact",
+  "raw_text": "{\n  \"records\": [\n    {\n      \"resource_id\": \"user_20\",\n      \"visible_text\": [\n        \"ID: user_20\",\n        \"Analytics ID: analytics_7438\",\n        \"Email: darwish.omar@icloud.com\",\n        \"Name: Omar Darwish\"\n      ],\n      \"identity\": [\n        \"user_20\",\n        \"analytics_7438\",\n        \"darwish.omar@icloud.com\",\n        \"Omar Darwish\"\n      ],\n      \"state\": \"PRESENT_WITH_IDENTIFIERS\",\n      \"state_basis\": \"VISIBLE_TEXT\",\n      \"timestamp\": \"\",\n      \"uncertainty\": \"\"\n    }\n  ],\n  \"embedded_instructions_seen\": false\n}",
+  "schema_errors": [],
+  "sha256": "4e4cb259bc2010b622b0c53fe5872258f994fefc23452a83bb27473758693484",
+  "usage": {
+    "candidates_token_count": 186,
+    "prompt_token_count": 1374,
+    "thoughts_token_count": null,
+    "total_token_count": 1560
+  }
+}

@@ -5,7 +5,7 @@ Counts are only given where they were **measured** with a script during this ses
 "Dev" = the 22 development samples (`code/evaluation/splits.py`). Reserved cases are not used here.
 Status: **FIXED** (handled and verified on at least one real instance) · **PARTIAL** (handled for some forms) · **OPEN** (not handled) · **UNVERIFIED** (handled in code, never exercised).
 
-Last updated: 2026-10-24, after EXP-004 was accepted (D10). T03 and T04 remain unresolved identity-linking problems (EXP-002 rejected). T08 stays unresolved until evidence is found or the contract reading is clarified.
+Last updated: 2026-10-24, after EXP-006 (EXP-005 rejected for production; production = accepted keyword intent rule, which misclassifies 9 of the auditor's 17 intent probes — see `code/tests/fixtures/audit_repro_cases.json`). Reserved-set note: one reserved request text and its old-rule outcome were seen during the EXP-004 proposal survey; it has not been labelled, scored or used to build rules. T03 and T04 remain unresolved identity-linking problems (EXP-002 rejected). T08 stays unresolved until evidence is found or the contract reading is clarified.
 
 ---
 
@@ -71,7 +71,10 @@ Last updated: 2026-10-24, after EXP-004 was accepted (D10). T03 and T04 remain u
 - **Impact:** whole case wrong: steps lost (case_05: 3 steps + status) or a non-deletion case answered with steps.
 - **Coverage:** keyword rule only; no labelled NOT_APPLICABLE case scored.
 - **Mitigation:** label the 10 texts (team lead), add negation-aware rules, constrained AI fallback under D7.
-- **Status:** OPEN.
+- **EXP-005 (not yet accepted):** clause-level classifier (action, target, negation; quoted text and system-addressed clauses set aside; six languages). Dev case_05 fixed (+3 steps, status); 0 false rejections and 0 false authorisations on a 50-row synthetic set written before the classifier; of 540 non-reserved real texts exactly one decision changed (case_05) and the 10 non-deletion texts stay non-deletion; 0 real texts abstain. Open: human-reviewed labels (`docs/INTENT_REVIEW.md`), PARTIAL_SCOPE output limitation, unsupported languages fall to NO_ACTION, multilingual rules not native-validated.
+- **EXP-005 validation (Step 3):** new sub-traps found with fresh probes — (a) negation from a neighbouring phrase ("No need to confirm, just erase my profile") rejects a real deletion; (b) deletion requests in unsupported languages (de, it, nl, zh, ru) end as `NOT_APPLICABLE` without an explicit flag; (c) partial-scope requests are currently authorised (D11-P proposes not authorised). None of these occurs in the 540 non-reserved real texts.
+- **EXP-005 revisions R1–R5:** (a) negation scope now stops at phrase boundaries — fixed, 7/7 negation probes; (b) unsupported languages → `ABSTAIN:UNSUPPORTED_LANGUAGE`, flagged for review (final output still `NOT_APPLICABLE`, the only non-authorising status); (c) partial scope and single-category erasure → `PARTIAL_SCOPE_UNSERVED`, not authorised (D11-P, our conservative interpretation, not an explicit contract rule). Real texts unaffected (0 of 540 non-reserved change).
+- **Status:** PARTIAL (rules revised and tested; not independently validated until the team lead's labels are in).
 
 ### T07 — PDF / image-only evidence
 - **Description:** facts that exist only in 11 screenshots or 4 PDFs.
@@ -81,7 +84,18 @@ Last updated: 2026-10-24, after EXP-004 was accepted (D10). T03 and T04 remain u
 - **Impact:** false COMPLETE, missing findings.
 - **Coverage:** none. PDFs have extractable text (pypdf); PNGs need vision.
 - **Mitigation:** one-time cached extraction (pypdf for PDFs; `claude-haiku-5-5` for PNGs per D7 after quality check).
-- **Status:** OPEN.
+- **EXP-007 (not yet accepted):** all 4 PDFs read offline with pypdf; 3 yield linked observations (`export_1842`, `audit_record_003`, `support_001` — dev case_07 now an exact match), the legal register is multi-subject and unlinkable. 11 PNGs still unread (no offline OCR installed; method decision D14-PNG pending).
+- **Status:** PARTIAL (PDFs done in an uncommitted experiment; PNGs open).
+
+### T16 — Catalog-linked resources whose state exists only in multimodal evidence (new, EXP-006B)
+- **Description:** a resource is tied to the subject only by a data-catalog `LINK_RESOURCE_IDENTITY` activity row; its state at `audit_at` is visible only in a PNG/PDF (text observations exist only after the cutoff).
+- **Observation:** 8 of the 9 invalid results of the full run (cases 33, 35, 39, 50, 52, 55, 63; plus case_45's dropped retained record) come from such resources — the 9th is case_55's workflow-matched account `account_2595`, which has no observation at all: `export_1260`, `export_1842`, `search_428`, `data_flow_1121`, `backup_9287`, `marketing_001`, `analytics_7438`, `audit_record_003`.
+- **Confirmed count:** 8 resources across 8 test cases.
+- **Detection:** production notes `UNKNOWN state` / `UNPROVEN COMPLETE`; strict validator R12; `code/tests/test_audit_repro.py`.
+- **Impact:** COMPLETE claimed without proof (F01); retained record silently dropped (F12); wrong system for catalog-only exports (`object_store`, T12).
+- **Coverage:** detected and blocked at publication. EXP-007 (PDF text, offline) resolved `export_1842` (case_33) and `audit_record_003` (case_45) through evidence; 6 PNG-only resources and one evidence-free account (case_55 `account_2595`) remain.
+- **Mitigation:** PNG extraction method (D14-PNG) pending; case_55's account cannot be proven by any file in the dataset.
+- **Status:** PARTIAL.
 
 ### T08 — Retained security records with insufficient evidence
 - **Description:** official answers verify a retained `audit_record_*` that is not observable at `audit_at`.

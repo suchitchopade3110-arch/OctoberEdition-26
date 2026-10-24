@@ -1,0 +1,231 @@
+{
+  "captured_at": "2026-06-18T12:00:00Z",
+  "facts": {
+    "ambiguities": [],
+    "compact": {
+      "embedded_instructions_seen": false,
+      "records": [
+        {
+          "identity": [
+            "marcus.lee@northstar.shop"
+          ],
+          "resource_id": "export_1261",
+          "state": "PRESENT_WITH_IDENTIFIERS",
+          "state_basis": "VISIBLE_TEXT",
+          "timestamp": "20 Jun 14:18 UTC",
+          "uncertainty": "",
+          "visible_text": [
+            "Export ID: export_1261",
+            "Filename: customer_export_1261.zip",
+            "Owner: marcus.lee@northstar.shop",
+            "Status: Collecting",
+            "Created: 20 Jun 14:18 UTC"
+          ]
+        },
+        {
+          "identity": [
+            "ingrid.dahl@outlook.com"
+          ],
+          "resource_id": "export_1260",
+          "state": "PRESENT_WITH_IDENTIFIERS",
+          "state_basis": "VISIBLE_TEXT",
+          "timestamp": "18 Jun 06:42 UTC",
+          "uncertainty": "",
+          "visible_text": [
+            "Export ID: export_1260",
+            "Filename: customer_export_1260.zip",
+            "Owner: ingrid.dahl@outlook.com",
+            "Status: Ready",
+            "Created: 18 Jun 06:42 UTC"
+          ]
+        },
+        {
+          "identity": [
+            "sara.kim@northstar.shop"
+          ],
+          "resource_id": "export_1259",
+          "state": "PRESENT_WITH_IDENTIFIERS",
+          "state_basis": "VISIBLE_TEXT",
+          "timestamp": "17 Jun 11:03 UTC",
+          "uncertainty": "",
+          "visible_text": [
+            "Export ID: export_1259",
+            "Filename: customer_export_1259.zip",
+            "Owner: sara.kim@northstar.shop",
+            "Status: Packaging",
+            "Created: 17 Jun 11:03 UTC"
+          ]
+        },
+        {
+          "identity": [
+            "daniel.park@northstar.shop"
+          ],
+          "resource_id": "export_1258",
+          "state": "PRESENT_WITH_IDENTIFIERS",
+          "state_basis": "VISIBLE_TEXT",
+          "timestamp": "16 Jun 09:27 UTC",
+          "uncertainty": "",
+          "visible_text": [
+            "Export ID: export_1258",
+            "Filename: customer_export_1258.zip",
+            "Owner: daniel.park@northstar.shop",
+            "Status: Ready",
+            "Created: 16 Jun 09:27 UTC"
+          ]
+        },
+        {
+          "identity": [
+            "ingrid.dahl@outlook.com"
+          ],
+          "resource_id": "export_1260",
+          "state": "PRESENT_WITH_IDENTIFIERS",
+          "state_basis": "VISIBLE_TEXT",
+          "timestamp": "18 Jun 2026 06:42 UTC",
+          "uncertainty": "",
+          "visible_text": [
+            "export_1260",
+            "Owner: ingrid.dahl@outlook.com",
+            "Created: 18 Jun 2026 06:42 UTC",
+            "Expires: 25 Jun 2026 06:42 UTC",
+            "Size: 18.4 MB",
+            "Checksum: SHA-256 · 41ca09...",
+            "Download count: 0",
+            "Included: Profile · Orders · Saved addresses",
+            "06:46 Ready for download",
+            "06:45 Package created",
+            "06:43 Collecting customer records",
+            "06:42 Export requested"
+          ]
+        }
+      ]
+    },
+    "displayed_timestamps": [],
+    "embedded_instructions_seen": false,
+    "records": [
+      {
+        "resource_id": "export_1261",
+        "restore_or_flow_detail": "",
+        "state": "PRESENT_WITH_IDENTIFIERS",
+        "state_basis": "VISIBLE_TEXT",
+        "subject_identifiers": [
+          "marcus.lee@northstar.shop"
+        ],
+        "supporting_text": [
+          "Export ID: export_1261",
+          "Filename: customer_export_1261.zip",
+          "Owner: marcus.lee@northstar.shop",
+          "Status: Collecting",
+          "Created: 20 Jun 14:18 UTC"
+        ],
+        "system_id": "",
+        "timestamp": "20 Jun 14:18 UTC",
+        "uncertainty": "",
+        "visible_status_text": "Collecting"
+      },
+      {
+        "resource_id": "export_1260",
+        "restore_or_flow_detail": "",
+        "state": "PRESENT_WITH_IDENTIFIERS",
+        "state_basis": "VISIBLE_TEXT",
+        "subject_identifiers": [
+          "ingrid.dahl@outlook.com"
+        ],
+        "supporting_text": [
+          "Export ID: export_1260",
+          "Filename: customer_export_1260.zip",
+          "Owner: ingrid.dahl@outlook.com",
+          "Status: Ready",
+          "Created: 18 Jun 06:42 UTC"
+        ],
+        "system_id": "",
+        "timestamp": "18 Jun 06:42 UTC",
+        "uncertainty": "",
+        "visible_status_text": "Ready"
+      },
+      {
+        "resource_id": "export_1259",
+        "restore_or_flow_detail": "",
+        "state": "PRESENT_WITH_IDENTIFIERS",
+        "state_basis": "VISIBLE_TEXT",
+        "subject_identifiers": [
+          "sara.kim@northstar.shop"
+        ],
+        "supporting_text": [
+          "Export ID: export_1259",
+          "Filename: customer_export_1259.zip",
+          "Owner: sara.kim@northstar.shop",
+          "Status: Packaging",
+          "Created: 17 Jun 11:03 UTC"
+        ],
+        "system_id": "",
+        "timestamp": "17 Jun 11:03 UTC",
+        "uncertainty": "",
+        "visible_status_text": "Packaging"
+      },
+      {
+        "resource_id": "export_1258",
+        "restore_or_flow_detail": "",
+        "state": "PRESENT_WITH_IDENTIFIERS",
+        "state_basis": "VISIBLE_TEXT",
+        "subject_identifiers": [
+          "daniel.park@northstar.shop"
+        ],
+        "supporting_text": [
+          "Export ID: export_1258",
+          "Filename: customer_export_1258.zip",
+          "Owner: daniel.park@northstar.shop",
+          "Status: Ready",
+          "Created: 16 Jun 09:27 UTC"
+        ],
+        "system_id": "",
+        "timestamp": "16 Jun 09:27 UTC",
+        "uncertainty": "",
+        "visible_status_text": "Ready"
+      },
+      {
+        "resource_id": "export_1260",
+        "restore_or_flow_detail": "",
+        "state": "PRESENT_WITH_IDENTIFIERS",
+        "state_basis": "VISIBLE_TEXT",
+        "subject_identifiers": [
+          "ingrid.dahl@outlook.com"
+        ],
+        "supporting_text": [
+          "export_1260",
+          "Owner: ingrid.dahl@outlook.com",
+          "Created: 18 Jun 2026 06:42 UTC",
+          "Expires: 25 Jun 2026 06:42 UTC",
+          "Size: 18.4 MB",
+          "Checksum: SHA-256 · 41ca09...",
+          "Download count: 0",
+          "Included: Profile · Orders · Saved addresses",
+          "06:46 Ready for download",
+          "06:45 Package created",
+          "06:43 Collecting customer records",
+          "06:42 Export requested"
+        ],
+        "system_id": "",
+        "timestamp": "18 Jun 2026 06:42 UTC",
+        "uncertainty": "",
+        "visible_status_text": ""
+      }
+    ],
+    "screen_title": ""
+  },
+  "file_id": "evidence_23",
+  "file_path": "evidence/images/customer_export_console_20260618.png",
+  "latency_s": 138.72,
+  "model": "gemini-3.8-flash",
+  "model_version": "gemini-3.8-flash",
+  "origin": "export_service",
+  "prompt_version": "png-facts-v2-compact",
+  "raw_text": "{\"records\":[{\"resource_id\":\"export_1261\",\"visible_text\":[\"Export ID: export_1261\",\"Filename: customer_export_1261.zip\",\"Owner: marcus.lee@northstar.shop\",\"Status: Collecting\",\"Created: 20 Jun 14:18 UTC\"],\"identity\":[\"marcus.lee@northstar.shop\"],\"state\":\"PRESENT_WITH_IDENTIFIERS\",\"state_basis\":\"VISIBLE_TEXT\",\"timestamp\":\"20 Jun 14:18 UTC\",\"uncertainty\":\"\"},{\"resource_id\":\"export_1260\",\"visible_text\":[\"Export ID: export_1260\",\"Filename: customer_export_1260.zip\",\"Owner: ingrid.dahl@outlook.com\",\"Status: Ready\",\"Created: 18 Jun 06:42 UTC\"],\"identity\":[\"ingrid.dahl@outlook.com\"],\"state\":\"PRESENT_WITH_IDENTIFIERS\",\"state_basis\":\"VISIBLE_TEXT\",\"timestamp\":\"18 Jun 06:42 UTC\",\"uncertainty\":\"\"},{\"resource_id\":\"export_1259\",\"visible_text\":[\"Export ID: export_1259\",\"Filename: customer_export_1259.zip\",\"Owner: sara.kim@northstar.shop\",\"Status: Packaging\",\"Created: 17 Jun 11:03 UTC\"],\"identity\":[\"sara.kim@northstar.shop\"],\"state\":\"PRESENT_WITH_IDENTIFIERS\",\"state_basis\":\"VISIBLE_TEXT\",\"timestamp\":\"17 Jun 11:03 UTC\",\"uncertainty\":\"\"},{\"resource_id\":\"export_1258\",\"visible_text\":[\"Export ID: export_1258\",\"Filename: customer_export_1258.zip\",\"Owner: daniel.park@northstar.shop\",\"Status: Ready\",\"Created: 16 Jun 09:27 UTC\"],\"identity\":[\"daniel.park@northstar.shop\"],\"state\":\"PRESENT_WITH_IDENTIFIERS\",\"state_basis\":\"VISIBLE_TEXT\",\"timestamp\":\"16 Jun 09:27 UTC\",\"uncertainty\":\"\"},{\"resource_id\":\"export_1260\",\"visible_text\":[\"export_1260\",\"Owner: ingrid.dahl@outlook.com\",\"Created: 18 Jun 2026 06:42 UTC\",\"Expires: 25 Jun 2026 06:42 UTC\",\"Size: 18.4 MB\",\"Checksum: SHA-256 · 41ca09...\",\"Download count: 0\",\"Included: Profile · Orders · Saved addresses\",\"06:46 Ready for download\",\"06:45 Package created\",\"06:43 Collecting customer records\",\"06:42 Export requested\"],\"identity\":[\"ingrid.dahl@outlook.com\"],\"state\":\"PRESENT_WITH_IDENTIFIERS\",\"state_basis\":\"VISIBLE_TEXT\",\"timestamp\":\"18 Jun 2026 06:42 UTC\",\"uncertainty\":\"\"}],\"embedded_instructions_seen\":false}",
+  "schema_errors": [],
+  "sha256": "18b95c1bd8b8956e40216df935498a9f3c181ea2a69b5cd6d3c0841a816d5557",
+  "usage": {
+    "candidates_token_count": 672,
+    "prompt_token_count": 1400,
+    "thoughts_token_count": null,
+    "total_token_count": 2072
+  }
+}

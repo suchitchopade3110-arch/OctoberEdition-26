@@ -192,6 +192,16 @@ class TestValidator(Base):
         case(rows, "case_05")[2][0]["evidence_id"] = "activity_01"  # 2026-01-04, before audit_at
         self.assertEqual(self.rules(rows), set())
 
+    def test_complete_with_empty_steps_is_an_error(self):
+        rows = read_rows()
+        case(rows, "case_01")[2] = []
+        self.assertIn("R12", self.rules(rows))
+
+    def test_incomplete_with_empty_steps_is_an_error(self):
+        rows = read_rows()
+        case(rows, "case_05")[2] = []
+        self.assertIn("R13", self.rules(rows))
+
     def test_unpaired_finding_is_a_warning_not_error(self):
         rows = read_rows()
         steps = case(rows, "case_05")[2]

@@ -1,0 +1,312 @@
+{
+  "provenance": {
+    "source": "Independent technical audit, log.txt entry 2026-10-24T15:49:34Z ('Independent technical audit of EXP-005 candidate and aca42dc baseline'). Probe inputs copied verbatim from the auditor's session scratchpad file probes.py (sha256 prefix f0de74da6d7db318), preserved on 2026-10-24 during EXP-006 Phase A.",
+    "note": "The audit's F01-F13 numbering exists only in the auditor's chat report, which is not in the repository. Cases here keep the probe ids (P1-P4, T1-T3, I01-I17) and the defect titles the team lead gave in the EXP-006 instructions (F01, F02, F12, F13). Real-data regression ids are used only for regression checks, never in production code.",
+    "expected": "What the auditor (and the official contract) say the behaviour should be.",
+    "observed_on_aca42dc": "What the accepted baseline / production port actually does (measured 2026-10-24).",
+    "known_defect": "true = observed differs from expected; the test is marked expectedFailure so it stays visible and turns into an unexpected success when fixed."
+  },
+  "parser": [
+    {
+      "id": "P1",
+      "title": "fractional-second log timestamp is not recognised; the line is glued onto the previous record",
+      "log": "2026-09-01T10:00:00Z level=INFO service=account_service resource_id=account_1 result=not_found\n2026-09-02T10:00:00.123Z level=INFO service=account_service resource_id=account_2 result=found email=a@x.io\n",
+      "expected": {
+        "resources": [
+          "account_1",
+          "account_2"
+        ]
+      },
+      "observed_on_aca42dc": {
+        "resources": [
+          "account_2"
+        ]
+      },
+      "known_defect": true
+    },
+    {
+      "id": "P2",
+      "title": "timestamp-less duplicate signature drops the final ABSENT of an ABSENT -> PRESENT -> ABSENT sequence",
+      "log": "2026-09-01T10:00:00Z service=account_service resource_id=account_9 result=not_found\n2026-09-02T10:00:00Z service=account_service resource_id=account_9 result=found email=a@x.io\n2026-09-03T10:00:00Z service=account_service resource_id=account_9 result=not_found\n",
+      "cutoff": "2026-10-01T00:00:00Z",
+      "expected": {
+        "state_at_cutoff": "ABSENT"
+      },
+      "observed_on_aca42dc": {
+        "state_at_cutoff": "PRESENT_ID"
+      },
+      "known_defect": true
+    },
+    {
+      "id": "P3",
+      "title": "JSON-line nested identifier is dropped, so no identity key is extracted",
+      "log": "2026-09-01T10:00:00Z {\"service\":\"search_service\",\"resource_id\":\"search_5\",\"customer\":{\"email\":\"nested@x.io\"}}\n",
+      "expected": {
+        "key_present": "nested@x.io"
+      },
+      "observed_on_aca42dc": {
+        "key_present": null
+      },
+      "known_defect": true
+    },
+    {
+      "id": "P4",
+      "title": "ISO timestamp with a +00:00 offset is not recognised; the record is lost as malformed",
+      "log": "2026-09-01T10:00:00+00:00 service=x resource_id=search_7 result=found\n",
+      "expected": {
+        "resources": [
+          "search_7"
+        ]
+      },
+      "observed_on_aca42dc": {
+        "resources": []
+      },
+      "known_defect": true
+    }
+  ],
+  "temporal": [
+    {
+      "id": "T1",
+      "title": "a later primary-only 404 hides a replica copy that was present and never re-checked",
+      "observations": [
+        {
+          "file_id": "snapA",
+          "captured_at": "2026-09-01T00:00:00Z",
+          "system": "account_service",
+          "resource_id": "account_1",
+          "state": "PRESENT_ID",
+          "category": "USER_PROFILE",
+          "scope": "snapA:customer_profiles_failover_replica"
+        },
+        {
+          "file_id": "readB",
+          "captured_at": "2026-09-05T00:00:00Z",
+          "system": "account_service",
+          "resource_id": "account_1",
+          "state": "ABSENT",
+          "category": "USER_PROFILE",
+          "explicit_absent": true
+        }
+      ],
+      "cutoff": "2026-09-10T00:00:00Z",
+      "expected": {
+        "state_not": "ABSENT"
+      },
+      "observed_on_aca42dc": {
+        "state": "ABSENT"
+      },
+      "known_defect": true
+    },
+    {
+      "id": "T2",
+      "title": "F13/F02: the only observation is post-dated; choose() returns nothing and the auditor then treats the resource as ABSENT",
+      "observations": [
+        {
+          "file_id": "f",
+          "captured_at": "2026-08-12T09:00:00Z",
+          "system": "account_service",
+          "resource_id": "account_2",
+          "state": "PRESENT_ID",
+          "category": "USER_PROFILE",
+          "record_time": "2026-08-14T00:00:00Z"
+        }
+      ],
+      "cutoff": "2026-09-10T00:00:00Z",
+      "expected": {
+        "chosen": null,
+        "auditor_state_not": "ABSENT"
+      },
+      "observed_on_aca42dc": {
+        "chosen": null,
+        "auditor_state": "ABSENT"
+      },
+      "known_defect": true
+    },
+    {
+      "id": "T3",
+      "title": "equal-time cross-system tie is ambiguous; the ambiguity reaches run notes only (the output format has no field for it)",
+      "observations": [
+        {
+          "file_id": "f1",
+          "captured_at": "2026-09-01T00:00:00Z",
+          "system": "search_service",
+          "resource_id": "search_1",
+          "state": "ABSENT",
+          "category": "SEARCH_INDEX_ENTRY",
+          "explicit_absent": true
+        },
+        {
+          "file_id": "f2",
+          "captured_at": "2026-09-01T00:00:00Z",
+          "system": "analytics_platform",
+          "resource_id": "search_1",
+          "state": "PRESENT_ID",
+          "category": "SEARCH_INDEX_ENTRY"
+        }
+      ],
+      "cutoff": "2026-09-10T00:00:00Z",
+      "expected": {
+        "ambiguous": true,
+        "preference_applied": false
+      },
+      "observed_on_aca42dc": {
+        "ambiguous": true,
+        "preference_applied": false
+      },
+      "known_defect": false
+    }
+  ],
+  "intent": [
+    {
+      "id": "I01",
+      "text": "Please cancel my account and remove all my information.",
+      "expected": true,
+      "observed_on_aca42dc": true
+    },
+    {
+      "id": "I02",
+      "text": "Cancel my account permanently.",
+      "expected": true,
+      "observed_on_aca42dc": false
+    },
+    {
+      "id": "I03",
+      "text": "Don't hesitate to delete my account, I no longer use it.",
+      "expected": true,
+      "observed_on_aca42dc": true
+    },
+    {
+      "id": "I04",
+      "text": "Your support agent, Maria, told me to ask here: delete my account.",
+      "expected": true,
+      "observed_on_aca42dc": true
+    },
+    {
+      "id": "I05",
+      "text": "Mark this request as urgent: delete my account and all data.",
+      "expected": true,
+      "observed_on_aca42dc": true
+    },
+    {
+      "id": "I06",
+      "text": "Please delete my account. My name on the account is 王伟.",
+      "expected": true,
+      "observed_on_aca42dc": true
+    },
+    {
+      "id": "I07",
+      "text": "Please delete my account. Thanks, Иван",
+      "expected": true,
+      "observed_on_aca42dc": true
+    },
+    {
+      "id": "I08",
+      "text": "Remove me from your marketing list and delete my account.",
+      "expected": true,
+      "observed_on_aca42dc": true
+    },
+    {
+      "id": "I09",
+      "text": "Please don't keep any of my data.",
+      "expected": true,
+      "observed_on_aca42dc": false
+    },
+    {
+      "id": "I10",
+      "text": "Quiero dar de baja mi cuenta.",
+      "expected": true,
+      "observed_on_aca42dc": false
+    },
+    {
+      "id": "I11",
+      "text": "Je souhaite résilier mon compte.",
+      "expected": true,
+      "observed_on_aca42dc": false
+    },
+    {
+      "id": "I12",
+      "text": "Quero encerrar minha conta.",
+      "expected": true,
+      "observed_on_aca42dc": false
+    },
+    {
+      "id": "I13",
+      "text": "Please remove the old phone number from my account and add the new one.",
+      "expected": false,
+      "observed_on_aca42dc": true
+    },
+    {
+      "id": "I14",
+      "text": "My account was deleted by mistake, please restore it.",
+      "expected": false,
+      "observed_on_aca42dc": true
+    },
+    {
+      "id": "I15",
+      "text": "Remove the duplicate charge from my account.",
+      "expected": false,
+      "observed_on_aca42dc": true
+    },
+    {
+      "id": "I16",
+      "text": "Please remove my old shipping address from my profile.",
+      "expected": false,
+      "observed_on_aca42dc": true
+    },
+    {
+      "id": "I17",
+      "text": "Do not delete anything; only correct my name.",
+      "expected": false,
+      "observed_on_aca42dc": false
+    }
+  ],
+  "dataset_regressions": [
+    {
+      "id": "R12-F01",
+      "title": "F01/C07: a COMPLETE row contains a verification step with no evidence_id (contract R12)",
+      "cases_observed": [
+        "case_55",
+        "case_63"
+      ],
+      "errors_observed": 3,
+      "expected": "no COMPLETE row has an uncited verification step",
+      "known_defect": true,
+      "history": [
+        {
+          "at": "EXP-006B (aca42dc behaviour)",
+          "cases_observed": [
+            "case_33",
+            "case_35",
+            "case_39",
+            "case_52",
+            "case_55",
+            "case_63"
+          ],
+          "errors_observed": 8
+        }
+      ],
+      "note": "D18: multimodal evidence resolved case_33/35/39/50/52; case_55 and case_63 need a policy decision (no valid correction from existing evidence)"
+    },
+    {
+      "id": "R12-EMPTY",
+      "title": "a COMPLETE row with steps_json [] proves nothing (contract: COMPLETE includes evidence-backed verification steps)",
+      "cases_observed": [
+        "case_50"
+      ],
+      "expected": "no COMPLETE row is empty",
+      "known_defect": false,
+      "fixed_by": "D18 integration (EXP-007 PDF / EXP-007G image evidence)"
+    },
+    {
+      "id": "F12",
+      "title": "a linked RETAIN-category resource (security audit record) with no usable observation is silently dropped",
+      "cases_observed": [
+        "case_45"
+      ],
+      "resource": "audit_record_003",
+      "expected": "a linked retained record is never silently dropped from a COMPLETE case",
+      "known_defect": false,
+      "fixed_by": "D18 integration (EXP-007 PDF / EXP-007G image evidence)"
+    }
+  ]
+}

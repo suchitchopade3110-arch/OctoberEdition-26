@@ -1,0 +1,50 @@
+[
+  {
+    "entry": "18b95c1bd8b8956e40216df935498a9f3c181ea2a69b5cd6d3c0841a816d5557/gemini-3.8-flash__png-facts-v2-compact.json",
+    "entry_sha256": "a47c5b775294f8e574ef6cbbc07b788e4f7e6004ae310bc08bb313b32da06bf7",
+    "source_sha256": "18b95c1bd8b8956e40216df935498a9f3c181ea2a69b5cd6d3c0841a816d5557",
+    "file_id": "evidence_23",
+    "model": "gemini-3.8-flash",
+    "prompt_version": "png-facts-v2-compact"
+  },
+  {
+    "entry": "2c246aa5843bec609b9ddfdf1154cd81e0fd61996f83954735e9856e48c18bf3/gemini-3.5-flash-lite__png-facts-v2-compact.json",
+    "entry_sha256": "8047a0bdb25cec4d1e4ce84963625b968f587f8c97813b3c745a6a566348e173",
+    "source_sha256": "2c246aa5843bec609b9ddfdf1154cd81e0fd61996f83954735e9856e48c18bf3",
+    "file_id": "evidence_32",
+    "model": "gemini-3.5-flash-lite",
+    "prompt_version": "png-facts-v2-compact"
+  },
+  {
+    "entry": "4e4cb259bc2010b622b0c53fe5872258f994fefc23452a83bb27473758693484/gemini-3.5-flash-lite__png-facts-v2-compact.json",
+    "entry_sha256": "1a8cdc8654b717046c9f793c2c1792d9e0bb4e2ebb5fd8a488fdf02e6a5023c7",
+    "source_sha256": "4e4cb259bc2010b622b0c53fe5872258f994fefc23452a83bb27473758693484",
+    "file_id": "evidence_19",
+    "model": "gemini-3.5-flash-lite",
+    "prompt_version": "png-facts-v2-compact"
+  },
+  {
+    "entry": "51fa0e6a38f8fa3629ba1b0d0b90b4ed139715956b97bfd09a6f1a6232c15df5/gemini-3.5-flash-lite__png-facts-v2-compact.json",
+    "entry_sha256": "28fc1c75db3a883a53ed0ea054a42494dde30186afbd09680fca3baae8d4052a",
+    "source_sha256": "51fa0e6a38f8fa3629ba1b0d0b90b4ed139715956b97bfd09a6f1a6232c15df5",
+    "file_id": "evidence_60",
+    "model": "gemini-3.5-flash-lite",
+    "prompt_version": "png-facts-v2-compact"
+  },
+  {
+    "entry": "75afdb0ae53a4510c83399a70d88073cb4fb2747454095756e4ddad1a8c70605/gemini-3.8-flash__png-facts-v1.json",
+    "entry_sha256": "1a1398c1322ae15ba7019aec1c8f6188a2c8c67ee59288844e84a64670dc0c96",
+    "source_sha256": "75afdb0ae53a4510c83399a70d88073cb4fb2747454095756e4ddad1a8c70605",
+    "file_id": "evidence_09",
+    "model": "gemini-3.8-flash",
+    "prompt_version": "png-facts-v1"
+  },
+  {
+    "entry": "e81fabc93ea1b5f4c918d934cdb2bea05d61737adfcc29f281494f5d8ec46355/gemini-3.8-flash__png-facts-v1.json",
+    "entry_sha256": "0e148444f3aef0f8faf3d9d5b1ec3080ec55280cd5fd16e7cbe731f102464937",
+    "source_sha256": "e81fabc93ea1b5f4c918d934cdb2bea05d61737adfcc29f281494f5d8ec46355",
+    "file_id": "evidence_14",
+    "model": "gemini-3.8-flash",
+    "prompt_version": "png-facts-v1"
+  }
+]

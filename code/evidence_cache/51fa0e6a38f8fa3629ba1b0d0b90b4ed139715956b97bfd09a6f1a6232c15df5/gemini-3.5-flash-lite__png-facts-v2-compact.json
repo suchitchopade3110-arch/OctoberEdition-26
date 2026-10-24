@@ -1,0 +1,73 @@
+{
+  "captured_at": "2026-09-16T07:20:00Z",
+  "facts": {
+    "ambiguities": [],
+    "compact": {
+      "embedded_instructions_seen": false,
+      "records": [
+        {
+          "identity": [
+            "marketing_001",
+            "sj.park@naver.com",
+            "+82 10-5837-9451"
+          ],
+          "resource_id": "marketing_001",
+          "state": "PRESENT_WITH_IDENTIFIERS",
+          "state_basis": "TEXT_AND_GRAPHIC",
+          "timestamp": "",
+          "uncertainty": "",
+          "visible_text": [
+            "Name: Soo-jin Park",
+            "ID: marketing_001",
+            "Email: sj.park@naver.com",
+            "Phone: +82 10-5837-9451",
+            "Status: Live"
+          ]
+        }
+      ]
+    },
+    "displayed_timestamps": [],
+    "embedded_instructions_seen": false,
+    "records": [
+      {
+        "resource_id": "marketing_001",
+        "restore_or_flow_detail": "",
+        "state": "PRESENT_WITH_IDENTIFIERS",
+        "state_basis": "TEXT_AND_GRAPHIC",
+        "subject_identifiers": [
+          "marketing_001",
+          "sj.park@naver.com",
+          "+82 10-5837-9451"
+        ],
+        "supporting_text": [
+          "Name: Soo-jin Park",
+          "ID: marketing_001",
+          "Email: sj.park@naver.com",
+          "Phone: +82 10-5837-9451",
+          "Status: Live"
+        ],
+        "system_id": "",
+        "timestamp": "",
+        "uncertainty": "",
+        "visible_status_text": "Live"
+      }
+    ],
+    "screen_title": ""
+  },
+  "file_id": "evidence_60",
+  "file_path": "evidence/images/marketing_profile_console.png",
+  "latency_s": 4.285,
+  "model": "gemini-3.5-flash-lite",
+  "model_version": "gemini-3.5-flash-lite",
+  "origin": "marketing_platform",
+  "prompt_version": "png-facts-v2-compact",
+  "raw_text": "{\n  \"records\": [\n    {\n      \"resource_id\": \"marketing_001\",\n      \"visible_text\": [\n        \"Name: Soo-jin Park\",\n        \"ID: marketing_001\",\n        \"Email: sj.park@naver.com\",\n        \"Phone: +82 10-5837-9451\",\n        \"Status: Live\"\n      ],\n      \"identity\": [\n        \"marketing_001\",\n        \"sj.park@naver.com\",\n        \"+82 10-5837-9451\"\n      ],\n      \"state\": \"PRESENT_WITH_IDENTIFIERS\",\n      \"state_basis\": \"TEXT_AND_GRAPHIC\",\n      \"timestamp\": \"\",\n      \"uncertainty\": \"\"\n    }\n  ],\n  \"embedded_instructions_seen\": false\n}",
+  "schema_errors": [],
+  "sha256": "51fa0e6a38f8fa3629ba1b0d0b90b4ed139715956b97bfd09a6f1a6232c15df5",
+  "usage": {
+    "candidates_token_count": 206,
+    "prompt_token_count": 1400,
+    "thoughts_token_count": null,
+    "total_token_count": 1606
+  }
+}

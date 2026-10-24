@@ -1,0 +1,148 @@
+{
+  "captured_at": "2026-08-07T08:00:00Z",
+  "facts": {
+    "ambiguities": [],
+    "displayed_timestamps": [
+      {
+        "label": "Header timestamp",
+        "value": "07 Aug 2026 08:00 UTC"
+      },
+      {
+        "label": "Updated",
+        "value": "Updated moments ago"
+      },
+      {
+        "label": "Last contact data_flow_1121",
+        "value": "07:59:42"
+      },
+      {
+        "label": "Last contact data_flow_9846",
+        "value": "07:59:36"
+      },
+      {
+        "label": "Last contact Order notifications",
+        "value": "07:59:28"
+      },
+      {
+        "label": "Last contact Delivery tracking",
+        "value": "07:59:13"
+      },
+      {
+        "label": "Activity timestamp 1",
+        "value": "07:59:42"
+      },
+      {
+        "label": "Activity timestamp 2",
+        "value": "07:58:10"
+      },
+      {
+        "label": "Activity timestamp 3",
+        "value": "07:56:44"
+      },
+      {
+        "label": "Activity timestamp 4",
+        "value": "07:55:02"
+      }
+    ],
+    "embedded_instructions_seen": false,
+    "records": [
+      {
+        "resource_id": "data_flow_1121",
+        "restore_or_flow_detail": "Continuous sync",
+        "state": "PRESENT_WITH_IDENTIFIERS",
+        "state_basis": "TEXT_AND_GRAPHIC",
+        "subject_identifiers": [
+          "jain.aditi@gmail.com"
+        ],
+        "supporting_text": [
+          "Connector: data_flow_1121",
+          "Destination: customer_analytics_warehouse",
+          "Selector: jain.aditi@gmail.com",
+          "Mode: Continuous",
+          "Events/hour: 1,284",
+          "Last contact: 07:59:42",
+          "Status: Healthy",
+          "Owner: Data Platform",
+          "Sync mode: Continuous sync",
+          "Last response: 200 OK · 1.8 s"
+        ],
+        "system_id": "customer_analytics_warehouse",
+        "uncertainty": "",
+        "visible_status_text": "Healthy"
+      },
+      {
+        "resource_id": "data_flow_9846",
+        "restore_or_flow_detail": "Continuous",
+        "state": "PRESENT_WITH_IDENTIFIERS",
+        "state_basis": "VISIBLE_TEXT",
+        "subject_identifiers": [
+          "lucia-torres@gmail.com"
+        ],
+        "supporting_text": [
+          "Connector: data_flow_9846",
+          "Destination: customer_analytics_warehouse",
+          "Selector: lucia-torres@gmail.com",
+          "Mode: Continuous",
+          "Events/hour: 842",
+          "Last contact: 07:59:36"
+        ],
+        "system_id": "customer_analytics_warehouse",
+        "uncertainty": "",
+        "visible_status_text": ""
+      },
+      {
+        "resource_id": "Order notifications",
+        "restore_or_flow_detail": "Continuous",
+        "state": "FLOW_ENABLED",
+        "state_basis": "VISIBLE_TEXT",
+        "subject_identifiers": [],
+        "supporting_text": [
+          "Connector: Order notifications",
+          "Destination: notification_service",
+          "Selector: order events",
+          "Mode: Continuous",
+          "Events/hour: 650",
+          "Last contact: 07:59:28"
+        ],
+        "system_id": "notification_service",
+        "uncertainty": "",
+        "visible_status_text": ""
+      },
+      {
+        "resource_id": "Delivery tracking",
+        "restore_or_flow_detail": "Continuous",
+        "state": "FLOW_ENABLED",
+        "state_basis": "VISIBLE_TEXT",
+        "subject_identifiers": [],
+        "supporting_text": [
+          "Connector: Delivery tracking",
+          "Destination: logistics_warehouse",
+          "Selector: shipment events",
+          "Mode: Continuous",
+          "Events/hour: 420",
+          "Last contact: 07:59:13"
+        ],
+        "system_id": "logistics_warehouse",
+        "uncertainty": "",
+        "visible_status_text": ""
+      }
+    ],
+    "screen_title": "Connections"
+  },
+  "file_id": "evidence_14",
+  "file_path": "evidence/images/connector_management_console_20260807.png",
+  "latency_s": 60.533,
+  "model": "gemini-3.8-flash",
+  "model_version": "gemini-3.8-flash",
+  "origin": "integration_admin",
+  "prompt_version": "png-facts-v1",
+  "raw_text": "{\"screen_title\":\"Connections\",\"displayed_timestamps\":[{\"label\":\"Header timestamp\",\"value\":\"07 Aug 2026 08:00 UTC\"},{\"label\":\"Updated\",\"value\":\"Updated moments ago\"},{\"label\":\"Last contact data_flow_1121\",\"value\":\"07:59:42\"},{\"label\":\"Last contact data_flow_9846\",\"value\":\"07:59:36\"},{\"label\":\"Last contact Order notifications\",\"value\":\"07:59:28\"},{\"label\":\"Last contact Delivery tracking\",\"value\":\"07:59:13\"},{\"label\":\"Activity timestamp 1\",\"value\":\"07:59:42\"},{\"label\":\"Activity timestamp 2\",\"value\":\"07:58:10\"},{\"label\":\"Activity timestamp 3\",\"value\":\"07:56:44\"},{\"label\":\"Activity timestamp 4\",\"value\":\"07:55:02\"}],\"records\":[{\"resource_id\":\"data_flow_1121\",\"system_id\":\"customer_analytics_warehouse\",\"subject_identifiers\":[\"jain.aditi@gmail.com\"],\"visible_status_text\":\"Healthy\",\"state\":\"PRESENT_WITH_IDENTIFIERS\",\"state_basis\":\"TEXT_AND_GRAPHIC\",\"restore_or_flow_detail\":\"Continuous sync\",\"supporting_text\":[\"Connector: data_flow_1121\",\"Destination: customer_analytics_warehouse\",\"Selector: jain.aditi@gmail.com\",\"Mode: Continuous\",\"Events/hour: 1,284\",\"Last contact: 07:59:42\",\"Status: Healthy\",\"Owner: Data Platform\",\"Sync mode: Continuous sync\",\"Last response: 200 OK · 1.8 s\"],\"uncertainty\":\"\"},{\"resource_id\":\"data_flow_9846\",\"system_id\":\"customer_analytics_warehouse\",\"subject_identifiers\":[\"lucia-torres@gmail.com\"],\"visible_status_text\":\"\",\"state\":\"PRESENT_WITH_IDENTIFIERS\",\"state_basis\":\"VISIBLE_TEXT\",\"restore_or_flow_detail\":\"Continuous\",\"supporting_text\":[\"Connector: data_flow_9846\",\"Destination: customer_analytics_warehouse\",\"Selector: lucia-torres@gmail.com\",\"Mode: Continuous\",\"Events/hour: 842\",\"Last contact: 07:59:36\"],\"uncertainty\":\"\"},{\"resource_id\":\"Order notifications\",\"system_id\":\"notification_service\",\"subject_identifiers\":[],\"visible_status_text\":\"\",\"state\":\"FLOW_ENABLED\",\"state_basis\":\"VISIBLE_TEXT\",\"restore_or_flow_detail\":\"Continuous\",\"supporting_text\":[\"Connector: Order notifications\",\"Destination: notification_service\",\"Selector: order events\",\"Mode: Continuous\",\"Events/hour: 650\",\"Last contact: 07:59:28\"],\"uncertainty\":\"\"},{\"resource_id\":\"Delivery tracking\",\"system_id\":\"logistics_warehouse\",\"subject_identifiers\":[],\"visible_status_text\":\"\",\"state\":\"FLOW_ENABLED\",\"state_basis\":\"VISIBLE_TEXT\",\"restore_or_flow_detail\":\"Continuous\",\"supporting_text\":[\"Connector: Delivery tracking\",\"Destination: logistics_warehouse\",\"Selector: shipment events\",\"Mode: Continuous\",\"Events/hour: 420\",\"Last contact: 07:59:13\"],\"uncertainty\":\"\"}],\"embedded_instructions_seen\":false,\"ambiguities\":[]}",
+  "schema_errors": [],
+  "sha256": "e81fabc93ea1b5f4c918d934cdb2bea05d61737adfcc29f281494f5d8ec46355",
+  "usage": {
+    "candidates_token_count": 732,
+    "prompt_token_count": 1402,
+    "thoughts_token_count": null,
+    "total_token_count": 2134
+  }
+}

@@ -10,6 +10,143 @@ Rule IDs refer to `docs/contract.md`.
 - **A4:** samples show INCOMPLETE cases verify already-compliant accounts and retained security records → contract R33 (V). Verifying *every* other already-compliant resource stays unresolved → R34 (U).
 - **Ordering:** keep the exact official operation order (R16). Numeric case ordering is a validated interpretation, not a universal rule → R04 (V); validator only errors when rows follow neither numeric nor plain-text order.
 
+## D12: EXP-005 rejected; aca42dc stays the reference; EXP-006 approved (team lead, 2026-10-24)
+- **Lead's decisions (quoted):** "REJECT EXP-005 for production integration. RETAIN commit `aca42dc` as the accepted reference baseline. APPROVE EXP-006A for behavior-preserving production integration. CONDITIONALLY APPROVE EXP-006B for evidence-correctness investigation and contract-supported fixes."
+- **Evidence behind it:** independent audit (log.txt 2026-10-24T15:49:34Z) — 15 of 17 independent intent probes misclassified by EXP-005. (For comparison, measured in EXP-006: the accepted keyword rule misclassifies 9 of the same 17.)
+
+## D13 (DRAFT, not decided): accept EXP-006A
+- **Proposal:** accept `code/main.py` + `code/ghostaudit/` as the production entry point. Evidence: byte-identical 518 and dev predictions, identical observation index, clean-copy run, validation-gated publication.
+- **Status:** awaiting team lead (`keep` required before any commit).
+
+## D14: Option A approved with safeguards — extract multimodal evidence first (team lead, 2026-10-24)
+- **Lead's decision:** "I select Option A: Extract multimodal evidence first." Safeguards: never fabricate evidence ids or verification steps; never equate missing evidence with ABSENT; no COMPLETE→INCOMPLETE without contract-supported findings; no evidence captured after `audit_at`; no hardcoded case ids; if evidence stays insufficient, keep the case unresolved and block publication. No paid model calls; do not invoke paid AI/VLM APIs without approval.
+- **Result so far (EXP-007, PDFs only):** see EXPERIMENTS.md. 1 of the 9 R12 errors resolved through valid evidence (case_33 `export_1842`), 1 cleared only by case_33's status change (`export_1260` still UNKNOWN), 7 remain; F12 (case_45) resolved through evidence. Publication stays blocked.
+- **Open sub-decision D14-PNG (needs the lead):** how PNG screenshots may be read — see EXPERIMENTS.md EXP-007 "PNG options".
+
+### D14 options as originally drafted (for the record)
+- **Facts:** 7 cases (33, 35, 39, 50, 52, 55, 63) are COMPLETE in the accepted output but cannot cite evidence for at least one relevant resource; case_45 drops a retained record. All unproven resources are catalog-linked and shown only in PNG/PDF evidence.
+- **Options:** (A) extract the multimodal evidence first (PDF text via pypdf needs no model; PNG needs the D7 model or manual transcription) and let the evidence decide — recommended; (B) INCOMPLETE with a finding citing the `LINK_RESOURCE_IDENTITY` activity_id — relies on a catalog claim as proof of presence (C04); (C) keep COMPLETE and drop the unprovable steps — hides relevant copies (S01); (D) NOT_APPLICABLE — contradicts a valid deletion request.
+- **Until decided:** no output change; root `output.csv` is not published (strict validation fails with 9 R12 errors).
+- **Status:** awaiting team lead.
+
+## D15 (DRAFT, not decided): accept EXP-006B's contract-unambiguous changes
+- Validator: authorised rows with `[]` become errors (R12/R13); internal UNKNOWN / UNPROVEN notes; audit repro fixture and clean-entry-point tests. Output unchanged.
+- **Status:** awaiting team lead.
+
+## D22: secure the D18 baseline in a local commit — APPROVED (team lead, 2026-10-25)
+
+KEEP the verified D18 production baseline as a local commit (no push). Included: production code (code/main.py,
+code/ghostaudit/), the EXP-006B validator change (team lead: include; it only makes validation stricter and D18's results
+depend on it), production tests and fixture, code/evidence_cache (team lead: include locally only; shipping it in code.zip
+remains under D18-A), docs (DECISIONS, EXPERIMENTS, TRAP_FINDINGS), log.txt and .env.example. Excluded: rejected or unreviewed
+material (spike/, docs/CHATGPT_HANDOFF_PROMPT.md, docs/INTENT_REVIEW.md, docs/PROJECT_STATUS.md,
+docs/intent_review_decisions.csv), runs/, .env. Verified before commit: 134 tests pass; 518 output byte-identical to the frozen
+D18 baseline (sha256 51289291…); clean copy with an empty environment reproduces it; secret scan clean.
+
+## D21: EXP-009 — REJECTED for production integration (team lead, 2026-10-25)
+
+D18 stays the production baseline. EXP-009 artifacts kept for provenance: runs/exp009_cache (validated responses incl. raw
+model text, source sha256, model, prompt version), spike/exp009_extract.py, spike/exp009_eval.sh, attempt ledger.
+Grounding failures: evidence_28 — the model omitted the printed resource id and put the ticket number in the id field;
+evidence_42 — the model labelled a tombstone showing only the permitted stable reference as "identifiers present", and the
+resource id is not printed. Approved follow-up: one offline reconciliation (no API calls), reported separately.
+
+## D20: EXP-009 screenshot coverage — APPROVED (team lead, 2026-10-25); result: REJECT for integration (recommended)
+
+Approved: 3 attempts (evidence_28, 42, 46), isolated, stop on failure, ambiguity or identity contradiction. The catalog row
+7 minutes after capture is a discovery heuristic, not proof of ownership. Executed 2 attempts: both extractions omitted or
+mis-slotted the printed resource id and evidence_42's state was mislabelled; grounding rejected every row; 0 prediction
+changes. Stopped before evidence_46. 15 of 16 attempts used. Production cache and D18 baseline unchanged.
+
+## D19: EXP-008 worker-event resource linking — REJECTED for production (team lead, 2026-10-25)
+
+Hypothesis: deletion-worker events (ANONYMIZE_RECORD, REDACT_RECORD, ...) could attribute resources that carry no personal
+identifiers (e.g. already-anonymized analytics profiles) to the right person, improving exact-sequence accuracy.
+Measured: worker rows carry no subject, trace or workflow id; the anonymized records have every identifier null. A safe rule
+(explicit catalog link or a trace naming exactly one person) found 0 new links among 145 unowned worker-touched resources.
+Timing-only diagnostic: 138 of 139 in-window resources fall in several request windows (dev examples: 3-12 windows each).
+0 changed predictions; dev metrics unchanged (0.955 / 0.903 / 0.846 / 0.409); R12 3.
+Reason: no legitimate evidence supports the links; any gain would rest on unsupported identity attribution.
+Principle (binding): **temporal proximity alone is insufficient for identity attribution.**
+Kept: spike/exp008.py and spike/test_exp008.py (15 tests) as the record of the rejected approach. Not integrated. D18 stays
+the production baseline.
+Known limitations: ~4 dev exact-sequence misses (anonymized analytics profiles) stay unfixable from current evidence.
+**Correctness risk flagged:** production's account resolution (Auditor.resolve_accounts) assigns accounts such as
+account_2595 (case_55) by workflow time window plus elimination/tie-break, with no identifier link; three account deletions
+fall in case_55's window. This conflicts with the principle above and needs a separate investigation.
+
+## D18: EXP-007G production integration — ACCEPTED WITH CONDITIONS (team lead, 2026-10-25)
+
+Decisions (team lead):
+- Integration: ACCEPTED. Integrated baseline frozen in runs/d18_accepted/ with its reproducibility tests.
+- D18-A: CONDITIONALLY APPROVED — ship code/evidence_cache only after confirming the official rules permit derived
+  extraction artifacts and that it holds no secrets, prohibited personal data, golden answers or hardcoded predictions.
+- D18-B: OPTION 2 — backup_9287 stays unresolved; its existence does not prove restore eligibility. Look for an
+  independently supported violation under another policy.
+- D18-D: OPTION 2 — marketing_001 stays unresolved; the screenshot identifiers contradict the catalog identity.
+- Final output.csv: NOT APPROVED while R12 errors remain. No behaviour-changing policy interpretation without approval.
+
+### D18 record as drafted (for the record)
+
+Approved: integrate PDF extraction, cached Gemini image facts, per-row linking, cross-user contradiction detection,
+resource-id recovery, data-flow state rules and provenance checks into code/ghostaudit, with no new model calls. Not
+approved: the final 518-row output or submission. Done as described in EXPERIMENTS.md "D18".
+
+Open decisions for the team lead:
+- D18-A: ship code/evidence_cache (derived, fictional, 64 KB) in code.zip so a clean run needs no key (recommended), with
+  the one-time extraction calls disclosed in README/usage_report; or ship without it (clean runs then need keys or lose
+  image evidence).
+- D18-B: case_55 backup_9287 — screenshot shows the user's archive present but no restore permission. Options: (1) report
+  a restore risk citing evidence_32 (makes case_55 INCOMPLETE; account_2595 then becomes a future check); (2) leave unresolved.
+- D18-C: case_55 account_2595 — only a SUCCESS delete claim (C04). No valid COMPLETE citation exists; resolved only via D18-B(1)
+  or by a contract decision.
+- D18-D: case_63 marketing_001 — catalog links it to the subject, screenshot shows an unknown person. Options: (1) trust the
+  catalog link and report the record present citing evidence_60; (2) keep it unresolved (current guard).
+
+## D17: one gemini-3.5-flash-lite attempt on evidence_19 — APPROVED and executed (team lead, 2026-10-25)
+
+Model switched from gemini-3.8-flash (6 timeouts in 9 attempts) to gemini-3.5-flash-lite (4 of 4 requests OK, 4-19 s).
+Result: case_50 resolved by evidence (exposed PII on analytics_7438). Extraction phase stops here; 3 of 16 attempts unused.
+Open evidence problems kept unresolved by design: case_55 account_2595 (no evidence), case_55 backup_9287 (screenshot shows
+no restore permission), case_63 marketing_001 (screenshot shows a person who matches no known identity, contradicting the
+catalog link). Integration of EXP-007G into production is NOT yet approved.
+
+## D16: EXP-007G per-row identity linking — ACCEPTED WITH SAFEGUARDS, isolated only (team lead, 2026-10-25)
+
+Scope: the generic per-row linking and printed flow-state rules inside isolated EXP-007G (`spike/exp007g.py`). This is
+**not** acceptance of the EXP-007 multimodal pipeline and **not** production integration. Previous Gemini route decisions:
+OCR (Tesseract, Cloud Vision) were dropped; Gemini approved with a 16-attempt budget (7 used, 9 remain).
+
+Safeguards (conditions of acceptance):
+1. Per-row linking: a screenshot naming several people links each row only through identifiers printed in that row;
+   rows with no identifier, two people, or a resource id shared by different people stay unresolved; identifiers are
+   never borrowed from neighbouring rows; single-person screenshots behave as before; row provenance is kept.
+2. Flow state only from printed words in the row. FLOW_ACTIVE needs an explicit active status (active, running,
+   enabled, syncing, live), or a health status in the status field (healthy, connected) plus a mode word from the
+   same row. A sync mode (continuous, scheduled, ...) alone never establishes FLOW_ACTIVE. Contradictions or
+   insufficient wording -> unresolved for human review. The model's state label and selector emails are ignored.
+3. No new API calls, no credential changes, no case-specific behaviour, no commits or pushes.
+
+Evidence for acceptance: case_39 COMPLETE -> INCOMPLETE on data_flow_1121 (evidence_14 row 1, "Healthy" +
+"Continuous sync", row email = request subject, captured before audit_at); with case_35 (evidence_09) the R12
+errors go 7 -> 5; dev predictions identical; all regression suites pass.
+
+## D11: EXP-005 intent classification — superseded by D12 (rejected for production integration)
+- **Lead's decision:** direction approved; do not integrate or commit until the 80-example independent review, the partial-deletion question and the ABSTAIN checks are resolved. EXP-004 (`aca42dc`) stays the accepted baseline.
+
+### D11-P: partial deletion — APPROVED by the team lead (2026-10-24), implemented in EXP-005 (uncommitted)
+- **Lead's conditions:** (1) a request that explicitly preserves the account does not authorise full-account deletion; (2) classify it `NOT_APPLICABLE`, `steps_json=[]`; (3) record `PARTIAL_SCOPE_UNSERVED` internally with the conflicting clauses; (4) document it as **our conservative interpretation of an unspecified scenario, not an explicit rule of the official contract**; (5) do not confuse it with full deletion that allows anonymous or legally required retention; (6) never start account deletion merely because one data category is to be deleted; (7) independent tests, no case-specific phrases.
+- **Implemented as:** `resolve()` returns not authorised + `PARTIAL_SCOPE_UNSERVED` for (a) erase + keep-account, (b) erase + refused account deletion, (c) erase of a single named data category with no account, all-data or deleted-account context (condition 6). Conflicting clauses are stored in `Intent.conflicts`. "Keep X" where X is not the account (anonymous statistics, legally required records, a deleted-account reference) remains full deletion.
+- **Status:** approved interpretation; EXP-005 itself is not yet finally accepted (human labels pending).
+
+#### Analysis that led to D11-P
+- **What the contract says (quoted):** "Use `NOT_APPLICABLE` with `steps_json=[]` when the request does not authorize deletion." (AGENTS.md §6.3); "First determine whether `request_text` authorizes deletion. A request for access, correction, export, marketing opt-out, or another non-deletion action is `NOT_APPLICABLE`" (§6.5); `rule_01,USER_PROFILE,Always,DELETE` (deletion_rules.csv). Every one of the 32 official sample answers contains an `account_service` step.
+- **Consequence:** the contract has two outcomes only — authorised (the whole policy applies, including deleting the user profile) or `NOT_APPLICABLE` with `[]`. There is no status for "erase X but keep the account".
+- **Contract-supported interpretation (proposed):** a request that explicitly keeps the account (or refuses its deletion) does not authorise the deletion the audit models, so it resolves to **not authorised → `NOT_APPLICABLE`, `[]`**, with an internal flag `PARTIAL_SCOPE_UNSERVED`. This follows the lead's instruction not to authorise full-account deletion against an explicit keep request.
+- **Unresolved ambiguity:** the requester *did* ask to erase some data; `NOT_APPLICABLE` leaves that part unaddressed and the contract offers no way to express it. Rejected alternatives: (a) authorise and audit everything — deletes the account against the request; (b) authorise but drop the account step — contradicts `rule_01` and R31 (32/32 samples).
+- **Measured reach:** 0 of 540 non-reserved real request texts are partial-scope; affects unseen data only.
+- **Applied after approval** (see above); check 3 now passes 5/5.
+
 ## D10: EXP-004 temporal reconstruction — ACCEPTED with safeguards (2026-10-24)
 - **Rule:** state at `audit_at` = latest *observation* time among evidence available at `audit_at`; line order is never chronology; reappearance is flagged, cause not assumed.
 - **D10-A, equal-timestamp conflicts (lead's conditions):** keep every tied observation with provenance (file, line, scope, system, state); mark the result ambiguous; apply the least-compliant preference only when scope and authority are comparable (same copy/system), and never as proof of a violation; no fabricated findings, citations or associations; never merge replica copies — SQL observations carry their table as scope, per-copy states are kept, and C08 (a remaining copy means the record exists) still applies.

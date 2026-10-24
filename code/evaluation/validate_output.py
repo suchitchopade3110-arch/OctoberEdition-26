@@ -102,6 +102,13 @@ def _check_steps(case_id: str, status: str, steps: list, audit_at: str,
         return
     if not steps:
         res.warn(case_id, "R11", "authorized deletion with no steps")
+        # Explicit rules, not readings: COMPLETE must contain evidence-backed verification steps proving the
+        # state (AGENTS.md §6.3, problem_statement "For COMPLETE, include only verification steps proving the
+        # current state"); INCOMPLETE must contain findings (R13). [] is the NOT_APPLICABLE form only.
+        if status == "COMPLETE":
+            res.error(case_id, "R12", "COMPLETE with steps_json [] proves nothing; it needs evidence-backed verification steps")
+        else:
+            res.error(case_id, "R13", "INCOMPLETE with steps_json [] has no FINDING step")
         return
 
     valid_steps: list[dict] = []

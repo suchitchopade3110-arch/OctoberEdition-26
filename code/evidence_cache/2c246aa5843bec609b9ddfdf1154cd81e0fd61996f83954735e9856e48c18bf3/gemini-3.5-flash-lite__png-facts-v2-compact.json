@@ -1,0 +1,204 @@
+{
+  "captured_at": "2026-04-29T09:00:00Z",
+  "facts": {
+    "ambiguities": [],
+    "compact": {
+      "embedded_instructions_seen": false,
+      "records": [
+        {
+          "identity": [
+            "bluepeakco@outlook.com"
+          ],
+          "resource_id": "backup_9291",
+          "state": "PRESENT_WITH_IDENTIFIERS",
+          "state_basis": "VISIBLE_TEXT",
+          "timestamp": "26 Apr 02:00",
+          "uncertainty": "",
+          "visible_text": [
+            "Archive ID: backup_9291",
+            "Account: bluepeakco@outlook.com",
+            "Region: ap-southeast-1",
+            "Created: 26 Apr 02:00",
+            "Size: 102.3 GB",
+            "Encryption: AES-256",
+            "Tier: Archive"
+          ]
+        },
+        {
+          "identity": [
+            "miller.logistics@company.com"
+          ],
+          "resource_id": "backup_9288",
+          "state": "PRESENT_WITH_IDENTIFIERS",
+          "state_basis": "VISIBLE_TEXT",
+          "timestamp": "26 Apr 02:00",
+          "uncertainty": "",
+          "visible_text": [
+            "Archive ID: backup_9288",
+            "Account: miller.logistics@company.com",
+            "Region: us-west-2",
+            "Created: 26 Apr 02:00",
+            "Size: 67.1 GB",
+            "Encryption: AES-256",
+            "Tier: Archive"
+          ]
+        },
+        {
+          "identity": [
+            "areed1433@gmail.com"
+          ],
+          "resource_id": "backup_9287",
+          "state": "PRESENT_WITH_IDENTIFIERS",
+          "state_basis": "VISIBLE_TEXT",
+          "timestamp": "26 Apr 02:00",
+          "uncertainty": "",
+          "visible_text": [
+            "Archive ID: backup_9287",
+            "Account: areed1433@gmail.com",
+            "Region: eu-west-1",
+            "Created: 26 Apr 02:00",
+            "Size: 84.7 GB",
+            "Encryption: AES-256",
+            "Tier: Archive",
+            "Path: s3://northstar-backups/customer-platform/weekly/segment-42-20260426.tar.zst",
+            "Checksum: Verified",
+            "Last drill: 29 Mar 2026",
+            "Retention end: 26 Jul 2026"
+          ]
+        },
+        {
+          "identity": [
+            "summit-retail@company.com"
+          ],
+          "resource_id": "backup_9286",
+          "state": "PRESENT_WITH_IDENTIFIERS",
+          "state_basis": "VISIBLE_TEXT",
+          "timestamp": "26 Apr 02:00",
+          "uncertainty": "",
+          "visible_text": [
+            "Archive ID: backup_9286",
+            "Account: summit-retail@company.com",
+            "Region: us-east-1",
+            "Created: 26 Apr 02:00",
+            "Size: 91.4 GB",
+            "Encryption: AES-256",
+            "Tier: Archive"
+          ]
+        }
+      ]
+    },
+    "displayed_timestamps": [],
+    "embedded_instructions_seen": false,
+    "records": [
+      {
+        "resource_id": "backup_9291",
+        "restore_or_flow_detail": "",
+        "state": "PRESENT_WITH_IDENTIFIERS",
+        "state_basis": "VISIBLE_TEXT",
+        "subject_identifiers": [
+          "bluepeakco@outlook.com"
+        ],
+        "supporting_text": [
+          "Archive ID: backup_9291",
+          "Account: bluepeakco@outlook.com",
+          "Region: ap-southeast-1",
+          "Created: 26 Apr 02:00",
+          "Size: 102.3 GB",
+          "Encryption: AES-256",
+          "Tier: Archive"
+        ],
+        "system_id": "",
+        "timestamp": "26 Apr 02:00",
+        "uncertainty": "",
+        "visible_status_text": ""
+      },
+      {
+        "resource_id": "backup_9288",
+        "restore_or_flow_detail": "",
+        "state": "PRESENT_WITH_IDENTIFIERS",
+        "state_basis": "VISIBLE_TEXT",
+        "subject_identifiers": [
+          "miller.logistics@company.com"
+        ],
+        "supporting_text": [
+          "Archive ID: backup_9288",
+          "Account: miller.logistics@company.com",
+          "Region: us-west-2",
+          "Created: 26 Apr 02:00",
+          "Size: 67.1 GB",
+          "Encryption: AES-256",
+          "Tier: Archive"
+        ],
+        "system_id": "",
+        "timestamp": "26 Apr 02:00",
+        "uncertainty": "",
+        "visible_status_text": ""
+      },
+      {
+        "resource_id": "backup_9287",
+        "restore_or_flow_detail": "26 Jul 2026",
+        "state": "PRESENT_WITH_IDENTIFIERS",
+        "state_basis": "VISIBLE_TEXT",
+        "subject_identifiers": [
+          "areed1433@gmail.com"
+        ],
+        "supporting_text": [
+          "Archive ID: backup_9287",
+          "Account: areed1433@gmail.com",
+          "Region: eu-west-1",
+          "Created: 26 Apr 02:00",
+          "Size: 84.7 GB",
+          "Encryption: AES-256",
+          "Tier: Archive",
+          "Path: s3://northstar-backups/customer-platform/weekly/segment-42-20260426.tar.zst",
+          "Checksum: Verified",
+          "Last drill: 29 Mar 2026",
+          "Retention end: 26 Jul 2026"
+        ],
+        "system_id": "",
+        "timestamp": "26 Apr 02:00",
+        "uncertainty": "",
+        "visible_status_text": ""
+      },
+      {
+        "resource_id": "backup_9286",
+        "restore_or_flow_detail": "",
+        "state": "PRESENT_WITH_IDENTIFIERS",
+        "state_basis": "VISIBLE_TEXT",
+        "subject_identifiers": [
+          "summit-retail@company.com"
+        ],
+        "supporting_text": [
+          "Archive ID: backup_9286",
+          "Account: summit-retail@company.com",
+          "Region: us-east-1",
+          "Created: 26 Apr 02:00",
+          "Size: 91.4 GB",
+          "Encryption: AES-256",
+          "Tier: Archive"
+        ],
+        "system_id": "",
+        "timestamp": "26 Apr 02:00",
+        "uncertainty": "",
+        "visible_status_text": ""
+      }
+    ],
+    "screen_title": ""
+  },
+  "file_id": "evidence_32",
+  "file_path": "evidence/images/backup_restore_console_20260429.png",
+  "latency_s": 5.901,
+  "model": "gemini-3.5-flash-lite",
+  "model_version": "gemini-3.5-flash-lite",
+  "origin": "backup_service",
+  "prompt_version": "png-facts-v2-compact",
+  "raw_text": "{\n  \"records\": [\n    {\n      \"resource_id\": \"backup_9291\",\n      \"visible_text\": [\n        \"Archive ID: backup_9291\",\n        \"Account: bluepeakco@outlook.com\",\n        \"Region: ap-southeast-1\",\n        \"Created: 26 Apr 02:00\",\n        \"Size: 102.3 GB\",\n        \"Encryption: AES-256\",\n        \"Tier: Archive\"\n      ],\n      \"identity\": [\n        \"bluepeakco@outlook.com\"\n      ],\n      \"state\": \"PRESENT_WITH_IDENTIFIERS\",\n      \"state_basis\": \"VISIBLE_TEXT\",\n      \"timestamp\": \"26 Apr 02:00\",\n      \"uncertainty\": \"\"\n    },\n    {\n      \"resource_id\": \"backup_9288\",\n      \"visible_text\": [\n        \"Archive ID: backup_9288\",\n        \"Account: miller.logistics@company.com\",\n        \"Region: us-west-2\",\n        \"Created: 26 Apr 02:00\",\n        \"Size: 67.1 GB\",\n        \"Encryption: AES-256\",\n        \"Tier: Archive\"\n      ],\n      \"identity\": [\n        \"miller.logistics@company.com\"\n      ],\n      \"state\": \"PRESENT_WITH_IDENTIFIERS\",\n      \"state_basis\": \"VISIBLE_TEXT\",\n      \"timestamp\": \"26 Apr 02:00\",\n      \"uncertainty\": \"\"\n    },\n    {\n      \"resource_id\": \"backup_9287\",\n      \"visible_text\": [\n        \"Archive ID: backup_9287\",\n        \"Account: areed1433@gmail.com\",\n        \"Region: eu-west-1\",\n        \"Created: 26 Apr 02:00\",\n        \"Size: 84.7 GB\",\n        \"Encryption: AES-256\",\n        \"Tier: Archive\",\n        \"Path: s3://northstar-backups/customer-platform/weekly/segment-42-20260426.tar.zst\",\n        \"Checksum: Verified\",\n        \"Last drill: 29 Mar 2026\",\n        \"Retention end: 26 Jul 2026\"\n      ],\n      \"identity\": [\n        \"areed1433@gmail.com\"\n      ],\n      \"state\": \"PRESENT_WITH_IDENTIFIERS\",\n      \"state_basis\": \"VISIBLE_TEXT\",\n      \"timestamp\": \"26 Apr 02:00\",\n      \"uncertainty\": \"\"\n    },\n    {\n      \"resource_id\": \"backup_9286\",\n      \"visible_text\": [\n        \"Archive ID: backup_9286\",\n        \"Account: summit-retail@company.com\",\n        \"Region: us-east-1\",\n        \"Created: 26 Apr 02:00\",\n        \"Size: 91.4 GB\",\n        \"Encryption: AES-256\",\n        \"Tier: Archive\"\n      ],\n      \"identity\": [\n        \"summit-retail@company.com\"\n      ],\n      \"state\": \"PRESENT_WITH_IDENTIFIERS\",\n      \"state_basis\": \"VISIBLE_TEXT\",\n      \"timestamp\": \"26 Apr 02:00\",\n      \"uncertainty\": \"\"\n    }\n  ],\n  \"embedded_instructions_seen\": false\n}",
+  "schema_errors": [],
+  "sha256": "2c246aa5843bec609b9ddfdf1154cd81e0fd61996f83954735e9856e48c18bf3",
+  "usage": {
+    "candidates_token_count": 846,
+    "prompt_token_count": 1374,
+    "thoughts_token_count": null,
+    "total_token_count": 2220
+  }
+}
