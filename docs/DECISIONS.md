@@ -33,6 +33,26 @@ Rule IDs refer to `docs/contract.md`.
 - Validator: authorised rows with `[]` become errors (R12/R13); internal UNKNOWN / UNPROVEN notes; audit repro fixture and clean-entry-point tests. Output unchanged.
 - **Status:** awaiting team lead.
 
+## D24: D23 documentation accepted; local commit authorised (team lead, 2026-10-25)
+
+KEEP the D23 submission documentation as one local commit (no push). Pre-commit reconciliation found that the D23 draft
+overstated the request count: the attempt ledger has 15 API requests (14 image extraction attempts, 8 successful and 6
+timed out, plus 1 models.get metadata request), not 16. usage_report.md and the D23 record were corrected; tokens, latency
+and cost were already computed from the 8 successful extractions and are unchanged. S4 stays a failing scenario. The
+314/500 account time-window attribution risk is documented in the evaluation report and README.
+
+## D23: submission documentation — APPROVED (team lead, 2026-10-25); ACCEPTED in D24
+
+Created code/evaluation/evaluation_report.md, code/evaluation/usage_report.md, code/evaluation/custom_scenarios.py
+(5 synthetic end-to-end scenarios, 4 pass; S4 exposes a real defect: a later covering snapshot that omits a record does not
+override an earlier PRESENT, contract C06b), code/requirements.txt, and replaced the starter README.md. No prediction logic,
+validator or evidence-cache change; 518 output byte-identical to D18. Measured for the report: 314 of 500 account steps in
+the 518 output are attributed only by the workflow time window (D19 risk). Usage: 15 Gemini API requests during development
+(14 image extraction attempts: 8 successful, 2 of them later rejected by grounding, and 6 timeouts; plus 1 metadata
+request), 11,166 input / 4,086 output tokens, $0.0177 at verified paid-tier rates; final run 0 calls.
+Claims depending on organizer guidance: shipping code/evidence_cache in code.zip (D18-A); treating the one-time extraction
+as development usage in usage_report.md; local dev metrics are not the judge's score.
+
 ## D22: secure the D18 baseline in a local commit — APPROVED (team lead, 2026-10-25)
 
 KEEP the verified D18 production baseline as a local commit (no push). Included: production code (code/main.py,

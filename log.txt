@@ -2937,3 +2937,187 @@ branch=main
 repo_root=C:\Users\SUCHIT CHOPADE\OneDrive\Desktop\Hackerank\hackerrank-orchestrate-october26
 worktree=main
 parent_agent=none
+
+## [2026-10-24T22:32:35Z] D23: evaluation report, usage report, custom scenarios and README written
+
+User Prompt (verbatim, secrets redacted):
+STARKS — D23: Submission Documentation
+Decision: APPROVED WITH SAFEGUARDS
+The accepted D18 production baseline has been committed locally as `6c0533c`.
+We are now entering the mandatory submission-documentation phase.
+Do not change the production agent's prediction logic.
+Phase 1 — Evaluation Report
+Create:
+`code/evaluation/evaluation_report.md`
+Include:
+
+1. Architecture and evaluation methodology.
+2. Development dataset size and evaluation limitations.
+3. Reproduced status accuracy, step F1, field accuracy and exact-sequence accuracy.
+4. At least 3 independently constructed custom evaluation scenarios, executed with actual pass/fail results.
+5. Evidence-validation checks.
+6. Temporal correctness checks.
+7. Identity-linking reliability.
+8. Experiment history and measured improvements.
+9. Rejected experiments, including EXP-005 and EXP-008.
+10. Known failures and unresolved validation errors.
+11. Clear separation of measured results, estimates and unsupported claims.
+
+Current reference metrics:
+
+* Status accuracy: 0.955
+* Step F1: 0.903
+* Field accuracy: 0.846
+* Exact-sequence accuracy: 0.409
+* Development sample: 22 cases
+* Remaining validator errors: 3 R12 errors across case_55 and case_63
+
+Recalculate these metrics from actual artifacts before including them.
+Do not access or tune against reserved evaluation answers.
+Phase 2 — Usage Report
+Create:
+`code/evaluation/usage_report.md`
+Include:
+
+1. Final production-run model usage.
+2. Historical Gemini extraction usage.
+3. Models used.
+4. Successful and failed API attempts.
+5. Verified input/output token consumption.
+6. Recorded latency.
+7. Cache behavior and reproducibility.
+8. Cost calculation where official rates are verified.
+9. Explicit disclosure of missing usage information.
+
+Distinguish clearly between:
+
+* The final cached production run: 0 model calls.
+* The development-time extraction experiments: 15 API attempts recorded so far.
+
+Do not report zero total development cost merely because the final run uses cached evidence.
+Do not invent token usage for timed-out requests.
+Phase 3 — Production README
+Replace the starter root `README.md` with professional documentation.
+Include:
+
+* Project overview and problem statement.
+* Deterministic-first hybrid architecture.
+* Gemini's limited role in evidence extraction.
+* Installation requirements.
+* Exact commands to run the agent.
+* Dataset directory requirements.
+* Environment variables without secrets.
+* Offline cached execution.
+* Optional live extraction.
+* Output schema.
+* Validation and testing commands.
+* Known limitations.
+* Reproducibility instructions.
+
+Ensure all commands are tested against the actual committed implementation.
+Phase 4 — Verification
+
+1. Run relevant tests.
+2. Confirm documentation matches real code.
+3. Verify reported measurements.
+4. Check that no secrets or real personal data have been introduced.
+5. Confirm the 518-case output remains byte-identical to D18.
+6. Preserve the append-only log.
+7. Identify any documentation claims that depend on unresolved organizer guidance.
+
+Hard constraints
+
+* No prediction-logic modifications.
+* No Gemini API calls.
+* No golden-answer leakage.
+* No fabricated metrics.
+* No changes to validator behavior.
+* No changes to the evidence cache.
+* No final code.zip packaging yet.
+* No commits or pushes without approval.
+
+Required Report
+A. Files created or modified.
+B. Evaluation metrics and custom-case results.
+C. Actual Gemini usage and cost accounting.
+D. README commands tested.
+E. Test results.
+F. Remaining submission blockers.
+G. Recommended ACCEPT / REJECT decision.
+Stop after completing the documentation and request my approval.
+Goal: Finish the mandatory submission documents while preserving the accepted D18 baseline.
+
+(followed by: "continue" after an interrupted turn)
+
+Agent Response Summary:
+Reproduced dev metrics from the committed code (status 0.9545, step F1 0.9027, field 0.8455, exact 0.4091, evidence validity 1.0). Built 5 synthetic end-to-end scenarios run through the production pipeline: 4 pass; S4 fails and exposes a real defect (a later covering snapshot omitting a record does not override an earlier PRESENT; contract C06b). Measured that 314 of 500 account steps rely only on time-window attribution. Wrote evaluation_report.md, usage_report.md (16 development requests: 8 successful extractions, 6 timeouts, 1 metadata; 11,166 in / 4,086 out tokens; $0.0177 at paid-tier rates verified on Google's pricing page; final run 0 calls), code/requirements.txt and a new root README; every README command was run. No prediction, validator or cache change; 518 output byte-identical to D18; tests pass; no keys or real personal data added. Recorded D23. Nothing committed.
+
+Actions:
+* Wrote code/evaluation/{evaluation_report.md,usage_report.md,custom_scenarios.py}, code/requirements.txt, README.md; edited docs/DECISIONS.md (D23)
+* Ran main (518 and samples), eval.py, validator, custom scenarios, unittest discovery, test_evaluator, subset and no-cache runs
+* WebSearch and WebFetch of Google's Gemini API pricing page; read the attempt ledger
+
+Context:
+tool=Claude Code (Claude desktop app)
+model=claude-opus-5-5
+branch=main
+repo_root=C:\Users\SUCHIT CHOPADE\OneDrive\Desktop\Hackerank\hackerrank-orchestrate-october26
+worktree=main
+parent_agent=none
+
+## [2026-10-24T22:36:11Z] D24: D23 documentation verified and committed locally (no push)
+
+User Prompt (verbatim, secrets redacted):
+STARKS — D24 / D23 Acceptance
+Decision: ACCEPT WITH SAFEGUARDS
+I accept the D23 submission documentation and authorize a local Git commit.
+1. Pre-commit verification
+
+1. Confirm evaluation_report.md contains the actual measured development metrics.
+2. Preserve the S4 failing scenario and its explanation. Do not remove or weaken it.
+3. Document the 314/500 account attribution risk.
+4. Reconcile the 16 API requests against the 15-attempt image extraction ledger, clearly distinguishing metadata requests.
+5. Preserve uncertainty in the reported Gemini cost.
+6. Verify README commands remain accurate.
+7. Run secret and staged-file scans.
+
+2. Commit authorization
+KEEP — D23 submission documentation.
+Stage only the approved documentation changes, custom evaluation scenarios, requirements file, D23/D24 decision records and authentic log updates.
+Do not stage experimental files, credentials, temporary outputs or unrelated changes.
+Create one local commit with a descriptive message.
+DO NOT PUSH.
+3. Restrictions
+
+* No prediction-logic changes.
+* No validator modifications.
+* No Gemini API calls.
+* No changes to the accepted evidence cache.
+* No fabrication of passing results.
+* No modification of existing experimental metrics.
+
+4. Required report
+Provide:
+A. Commit hash and committed files.
+B. Final documentation verification results.
+C. Updated test results.
+D. Confirmation that D18 predictions remain unchanged.
+E. Remaining submission blockers.
+F. Recommendation for the next submission phase.
+Stop after committing.
+
+Agent Response Summary:
+Reconciled the usage figures against the attempt ledger: there are 15 API requests (14 image extraction attempts, 8 successful and 6 timed out, plus 1 models.get metadata request). The previous turn's summary and the D23 draft said 16; that was an error, now corrected in usage_report.md and the D23 record (the earlier log entry is left as written, per the append-only rule). Re-checked every reported metric against a fresh evaluation, the S4 failing scenario, the 314/500 account risk and the cost-uncertainty disclosures; all present. 101 + 33 tests pass, README commands work, the 518 output is byte-identical to D18, and logic, validator, evaluator and cache are unchanged. Recorded D24 and committed the documentation set locally; nothing pushed.
+
+Actions:
+* Edited code/evaluation/usage_report.md (request totals) and docs/DECISIONS.md (D23 correction, D24)
+* Fresh dev evaluation, content checks, custom scenarios, unittest discovery, test_evaluator, full 518 run, gemini --check
+* Secret scan; git add of the explicit documentation set; git commit (local only)
+
+Context:
+tool=Claude Code (Claude desktop app)
+model=claude-opus-5-5
+branch=main
+repo_root=C:\Users\SUCHIT CHOPADE\OneDrive\Desktop\Hackerank\hackerrank-orchestrate-october26
+worktree=main
+parent_agent=none

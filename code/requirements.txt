@@ -1,0 +1,4 @@
+# Required (offline audit, PDF text extraction)
+pypdf>=6.0
+# Optional: only for `--live-extraction` / `python -m ghostaudit.gemini` (new or changed screenshots)
+google-genai>=2.16
