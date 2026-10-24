@@ -1,0 +1,33 @@
+# Secrets (read credentials from environment variables only)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+
+# Throwaway experiments and local run artifacts
+spike/
+cache/
+.cache/
+runs/
+*.tmp
+
+# Packaging outputs (built on demand, never committed)
+code.zip
+agent-trace/
+agent-trace.zip
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
