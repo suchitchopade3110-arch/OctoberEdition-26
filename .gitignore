@@ -66,6 +66,7 @@ runs/
 
 # Submission packaging outputs and raw agent traces
 code.zip
+code-*.zip
 agent-trace/
 agent-trace.zip
 *.trace
