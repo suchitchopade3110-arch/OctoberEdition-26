@@ -33,6 +33,29 @@ Rule IDs refer to `docs/contract.md`.
 - Validator: authorised rows with `[]` become errors (R12/R13); internal UNKNOWN / UNPROVEN notes; audit repro fixture and clean-entry-point tests. Output unchanged.
 - **Status:** awaiting team lead.
 
+## D36: best-effort root output.csv authorized and created (team lead, 2026-10-25)
+
+Decision (team lead): "APPROVED — GENERATE ROOT output.csv … as a best-effort artifact." This follows D35:
+- no organizer clarification was found (ORGANIZER_QUESTIONS.md is unanswered; upstream `0eddbbd` only fixes the
+  submission URL; the mailbox could not be checked);
+- no defensible R12 correction exists from the evidence (D25, D30). None was fabricated.
+
+Done:
+- `output.csv` = a byte-for-byte copy of the frozen F1 candidate `runs/f1_baseline/output_518_NOT_VALIDATED.csv`,
+  sha256 `1503deba33ea51f173e6e11f8da6e538be86c078f8df5cc55f6b38cc017b91eb`, 587,294 bytes.
+- 518 rows with unique ids equal to `deletion_requests.csv`; case_55 and case_63 are kept unchanged.
+- The production code (6fe50ba), validator, evidence cache and F1 baseline are all unchanged.
+
+**Validation status: FAILS strict validation. It is not valid and not fully verified.**
+- The unmodified validator reports 3 errors: R12 on case_55 step 1 (account_2595), case_55 step 2 (backup_9287) and
+  case_63 step 1 (marketing_001). These are COMPLETE verifications with an empty `evidence_id`.
+- It reports 8 warnings (R31; case_50, 63, 127, 169, 226, 256, 301, 472).
+- An independent schema check found no other problem.
+
+The file was created by a deliberate copy, outside `main.py`'s validation gate, as recorded here.
+
+Known risks: runs/submission/D35_FINAL_SUBMISSION_CHECKLIST.md. Nothing is committed, pushed, uploaded or submitted.
+
 ## D32: F1 accepted and integrated; F1 is the new production baseline (team lead, 2026-10-25)
 
 Decision (team lead): "ACCEPT D31/F1. AUTHORIZE PRODUCTION INTEGRATION AND LOCAL COMMIT." No push.

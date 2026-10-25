@@ -1,33 +1,86 @@
-# Secrets (read credentials from environment variables only)
+# Environment and Secrets (read credentials from environment variables only)
 .env
 .env.*
+.env.local
 !.env.example
 *.pem
 *.key
+*.cert
+*.crt
+id_rsa
+id_ecdsa
+id_ed25519
 
-# Python
+# Python build and cache artifacts
 __pycache__/
 *.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
 .venv/
 venv/
 env/
+ENV/
+env.bak/
+venv.bak/
+
+# Testing and coverage caches
 .pytest_cache/
 .mypy_cache/
+.tox/
+.nox/
+.coverage
+.coverage.*
+nosetests.xml
+coverage.xml
+*.cover
+htmlcov/
+.hypothesis/
 
-# Throwaway experiments and local run artifacts
+# Local run artifacts, spikes, and throwaway experiments
 spike/
 cache/
 .cache/
 runs/
 *.tmp
+*.bak
+*.swp
+*~
 
-# Packaging outputs (built on demand, never committed)
+# Submission packaging outputs and raw agent traces
 code.zip
 agent-trace/
 agent-trace.zip
+*.trace
+.claude/
+.codex/
 
-# OS / editor
+# OS and Editor files
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
 .vscode/
 .idea/
+*.sublime-project
+*.sublime-workspace
