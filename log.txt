@@ -5038,3 +5038,259 @@ branch=claude/intelligent-sagan-ytlgrk
 repo_root=/home/user/OctoberEdition-26
 worktree=main
 parent_agent=none
+
+## [2026-10-25T09:40:58Z] D47: OCR second reader, traces, lineage; candidate built (official scores unverified)
+
+User Prompt (verbatim, secrets redacted):
+D47 — HIGH-BAR GOAL-DRIVEN REFINEMENT
+MISSION
+We have received actual HackerRank Orchestrate evaluation scores:
+
+* OUTPUT.CSV: 25.2/30
+* CODE.ZIP: 16.8/30
+
+Our new targets are STRICT:
+OUTPUT.CSV > 28/30
+CODE.ZIP > 25/30
+Combined target: > 53/60
+These are official evaluation-score targets, not development sample accuracy targets.
+You are authorized to perform iterative, independently tested engineering experiments to pursue these goals.
+Do not claim either target has been reached unless an actual official evaluation or an equivalent authorized scoring result confirms it. Local proxy scores are diagnostic only.
+SOURCE AND BASELINE
+Repository:
+https://github.com/suchitchopade3110-arch/OctoberEdition-26
+Base release:
+`4f61906`
+Accepted output hash:
+`059df99510a0f49244fa8e3460f8b31e873dd5b5102ed32003ab089dd9ff3246`
+Create a new isolated experiment branch.
+Preserve the entire accepted release as rollback.
+Before expensive work, verify whether revised submissions are allowed and whether the challenge deadline has passed.
+If resubmission is unavailable, do not spend credits pursuing an unattainable leaderboard change; report that constraint.
+OBJECTIVE 1 — CODE.ZIP ABOVE 25/30
+This is our highest-priority scoring weakness.
+Do not perform cosmetic refactoring merely to increase the apparent complexity of the system.
+Audit the real system and improve:
+1. Genuine agent architecture
+Investigate whether bounded, model-assisted evidence investigation can improve performance on difficult cases.
+Our current implementation has:
+
+* A deterministic execution pipeline.
+* Gemini screenshot extraction, primarily precomputed.
+* A content-addressed evidence cache.
+* Rule-based intent classification.
+* No live model reasoning in the default execution path.
+
+Determine whether model-assisted capabilities can add measurable value through:
+
+* Ambiguous request classification.
+* Evidence-gap investigation.
+* Selecting relevant read-only evidence retrieval tools.
+* Extracting and validating missing visual evidence.
+* Detecting conflicting observations.
+* Escalating uncertain resources to verification instead of guessing.
+
+Implement model components only when genuinely useful and demonstrably connected to the executable pipeline.
+Do not introduce fake model calls or decorative multi-agent systems.
+2. Prompt and tool engineering
+Any implemented model-assisted component must provide:
+
+* Clear system-level responsibilities.
+* Structured output schemas.
+* Explicit tool definitions.
+* Input validation.
+* Resource and evidence grounding.
+* Bounded retries and budgets.
+* Failure handling.
+* Cache reuse.
+* Prompt-injection resistance.
+* Deterministic verification of proposed findings.
+
+The LLM must never fabricate deletion facts, resource ownership, evidence IDs or final verification.
+3. Engineering robustness
+Strengthen:
+
+* Separation between identity, attribution, temporal reconstruction, policy and step generation.
+* Typed internal data contracts.
+* Error propagation.
+* Observability and case-level reasoning traces.
+* Reproducibility.
+* Evidence integrity.
+* Security.
+* Clean installation and execution.
+
+Every architectural improvement must have a real test and an actual runtime use.
+CODE ACCEPTANCE GATE
+Aim for an independently defensible engineering-quality proxy above 83.3%.
+This is a screening target, NOT an official score.
+Any claimed improvement must include:
+
+* Changed implementation.
+* Demonstrated runtime behavior.
+* Passing regression tests.
+* Demonstrated benefit.
+* Reproducibility.
+* Honest tradeoffs.
+
+Do not award yourself points simply for adding components.
+OBJECTIVE 2 — OUTPUT.CSV ABOVE 28/30
+Our previous official score was 25.2/30.
+Prioritize improvements with plausible impact on hidden-case correctness.
+The current public-sample metrics are:
+
+* Status accuracy: 93.75%.
+* Step precision: 97.09%.
+* Step recall: 86.53%.
+* Step F1: 91.51%.
+* Field accuracy: 85.79%.
+* Exact sequence: 53.12%.
+
+The largest measured opportunities are STEP RECALL, FIELD CORRECTNESS and EXACT SEQUENCE.
+Investigate, in order:
+A. Missing evidence
+Five of eleven screenshots remain unread in the existing default evidence coverage.
+Determine whether extracting additional grounded observations can safely recover missing resources and operations.
+Use only participant-authorized evidence.
+Do not assume an extraction is correct merely because an LLM returned valid JSON.
+B. Resource attribution
+Review the 145 ambiguous account assignments.
+Investigate stronger evidence-based linking and unresolved-ownership handling.
+Never treat temporal proximity or reported worker success as independent ownership proof.
+C. Missing policy operations
+Investigate:
+
+* Required retained-record verification.
+* Anonymization verification.
+* Missing downstream records.
+* Search index copies.
+* Backup restoration controls.
+* Active flows and recreation risks.
+* System ID mismatches.
+* Tombstones.
+* Incomplete verification plans.
+
+D. Temporal correctness
+Investigate:
+
+* Conflicting states.
+* Replica survival.
+* Post-cutoff evidence.
+* Missing snapshot scope.
+* Incorrect UNKNOWN treatment.
+* Duplicate observations.
+* Resource recreation.
+
+E. Remaining R12 errors
+Investigate the three known errors.
+Resolve them only through contract-compliant, authoritative evidence.
+Never fabricate findings, citations, blocked restore states or unsupported INCOMPLETE statuses just to make validation pass.
+MEASUREMENT LOOP
+For every improvement:
+
+1. Identify the root cause.
+2. Construct independent tests.
+3. Implement a generic solution.
+4. Execute focused tests.
+5. Execute the full test suite.
+6. Evaluate development and previously inspected reserved samples separately.
+7. Regenerate all 518 predictions.
+8. Compare the candidate against the frozen release.
+9. Inspect EVERY changed status.
+10. Inspect EVERY new COMPLETE verification.
+11. Measure step precision, recall, F1, field accuracy and exact sequence.
+12. Run strict validation.
+13. Keep, revise or revert.
+
+Do not train or tune directly against reserved sample labels.
+Do not use hidden answers, another contestant's submitted output, or case-specific hardcoding.
+Do not alter organizer labels or weaken tests.
+QUALITY CONTROL
+Every accepted experiment must:
+
+* Preserve valid existing behavior.
+* Improve demonstrated correctness or engineering quality.
+* Pass the relevant regression tests.
+* Avoid unsupported evidence.
+* Avoid new false COMPLETE certifications.
+* Produce deterministic, explainable output.
+* Be reproducible from the packaged source.
+
+If an experimental code architecture makes no measurable difference and creates new operational risks, reject it.
+If a candidate improves local F1 but worsens evidence grounding, reject it.
+Never trade deletion-audit safety for superficial scoring gains.
+PRIORITIZATION
+Allocate approximately:
+55% of development effort — CODE.ZIP architectural and robustness improvements.
+45% — OUTPUT.CSV evidence coverage, step recall and exact-sequence correctness.
+Shift toward whichever workstream demonstrates the greatest verified improvement.
+BUDGET AND DEADLINE
+Use only the remaining authorized Claude Code Cloud credits.
+Do not assume the initial $90 is still available.
+Do not make separately billed Gemini calls without explicit approval.
+Use an isolated branch and preserve rollback artifacts.
+If the contest is still open, freeze experiments at least 45 minutes before the verified submission deadline.
+Stop when time, budget, available evidence, or permitted submission opportunities prevent further responsible improvement.
+FINAL ACCEPTANCE
+Targets:
+
+* Official OUTPUT.CSV score >28/30.
+* Official CODE.ZIP score >25/30.
+
+Until those scores have actually been observed, report:
+
+* OFFICIAL TARGET: NOT YET VERIFIED.
+* LOCAL QUALITY GATE: PASS / FAIL.
+* CURRENT BEST VERIFIED CANDIDATE.
+* MEASURED GAINS.
+* KNOWN RISKS.
+
+Do not claim success based on an internal score estimate.
+DELIVERABLES
+Produce candidate artifacts:
+
+* `code-d47.zip`
+* `output-d47.csv`
+* `D47_EVALUATION_REPORT.md`
+* `D47_CODE_AUDIT.md`
+* `D47_REGRESSION_REPORT.md`
+
+Provide:
+
+1. Baseline versus candidate metric comparisons.
+2. Every changed output row and its rationale.
+3. Model and tool behavior actually implemented.
+4. Unit and integration test results.
+5. Strict validator results.
+6. Clean-room reproduction results.
+7. Source and artifact hashes.
+8. Rejected experiments and their measured failures.
+9. Honest estimate of remaining improvement opportunities.
+10. Clear recommendation on whether the candidate should replace the accepted release.
+
+Do not overwrite the accepted release or submit without explicit authorization.
+EXECUTION
+Do not begin with a massive rewrite.
+Begin with the highest-confidence cause of lost Code ZIP points and missing Output CSV steps.
+Follow:
+AUDIT → EXPERIMENT → VALIDATE → MEASURE → ACCEPT/REVERT → REPEAT
+Pursue the highest achievable verified quality, not a fabricated score.
+START D47.
+
+Agent Response Summary:
+Could not verify the deadline or resubmission rules (HackerRank blocked by the container proxy); a third-party listing implies the window closes 25 Oct 12:30 UTC, so work was time-boxed and frozen early; session spend at start was $19.81. On an isolated branch (d47-experiments; release kept on tag release-accepted) four experiments were accepted: D1 a local OCR model (RapidOCR/ONNX) reads every screenshot at runtime, confirms all 6 cached Gemini facts and supplies grounded facts for 2 unread screenshots (case_34, case_53); D2 explicit restore-authorization decisions with UNKNOWN for flag-less backups/flows (0 rows); D3 typed per-resource decisions, case_traces.jsonl and a trace consistency gate (byte-identical output); D4 lineage links from connector/restore repopulation events (case_421). Phone digit normalisation was measured (0 new links) and not built; no LLM investigator was built because no credentials or approved budget exist and the remaining gaps (anonymized analytics, retained records absent from evidence, ambiguous accounts) have no evidence a model could use. Candidate output e03e7a16... differs from the release in 3 test rows, has the same 3 R12 errors, identical public-sample metrics, and reproduces byte for byte in a clean room with the OCR engine blocked. Official targets are NOT YET VERIFIED; the local code-quality proxy (~78%) does not pass the 83.3% gate.
+
+Actions:
+* git tag release-accepted 4f61906; git checkout -b d47-experiments; froze runs/release_accepted/
+* Added code/ghostaudit/ocr.py, decisions.py; edited multimodal.py, auditor.py, evidence.py, evidence_cache.py, main.py, requirements.txt; shipped code/evidence_cache/ocr/ (11 OCR line files)
+* Tests: test_ocr.py, test_decisions.py, additions to test_f1_flags.py and test_evidence_cache.py; adapted synthetic-world helpers; 156 + 33 tests OK, 5/5 scenarios
+* experiments/cloud/compare.py per experiment; clean-room run of code-d47.zip with the OCR import blocked
+* Wrote docs/d47/D47_EVALUATION_REPORT.md, D47_REGRESSION_REPORT.md, D47_CODE_AUDIT.md; updated README and evaluation/usage reports
+* Commits ebf8413, cf05ff4, 597abd0, ba26f87, 2841b66, 09bcc92, eb37fca
+
+Context:
+tool=Claude Code (claude.ai/code cloud session)
+model=claude-opus-5-5
+branch=d47-experiments
+repo_root=/home/user/OctoberEdition-26
+worktree=main
+parent_agent=none
