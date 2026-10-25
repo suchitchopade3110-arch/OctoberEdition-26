@@ -21,7 +21,7 @@ def world(observations: list[ev.Obs], activity: list[dict]) -> Auditor:
     a.keys = defaultdict(set, {"user_1": {"subject@x.test", "user_1"}, "user_2": {"other@x.test", "user_2"}})
     a.idx = ev.Index({})
     a.idx.obs = observations
-    a.links, a.activity = [], activity
+    a.links, a.activity, a.lineage = [], activity, []
     return a
 
 

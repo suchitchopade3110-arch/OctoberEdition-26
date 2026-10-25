@@ -51,7 +51,7 @@ def audit_synthetic(observations: list, cutoff: str) -> tuple[str, list]:
     a.obs_by_res = defaultdict(list)
     for o in a.idx.obs:
         a.obs_by_res[o.resource_id].append(o)
-    a.links, a.activity, a.state_log = [], [], {}
+    a.links, a.activity, a.state_log, a.lineage = [], [], {}, []
     q = {"case_id": "synthetic", "email": "subject@x.io", "audit_at": cutoff, "request_text": "Please delete my account."}
     # Production passes the primary account from resolve_accounts (identifier links first); mirror that here so an
     # account observation is still audited (audit() no longer adds account ids on its own).
