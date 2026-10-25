@@ -1,4 +1,4 @@
-"""EXP-D1: local OCR second reader — fact building, cross-checks, injection guard, cache behaviour.
+"""Local OCR second reader — fact building, cross-checks, injection guard, cache behaviour.
 
 Synthetic OCR lines (fictional ids) test the rules without the OCR engine; the integration tests run the real engine
 on one dataset screenshot only when it is installed.
@@ -67,7 +67,7 @@ def users_for(ids):
 
 
 class RecordLocal(unittest.TestCase):
-    """D48: corroboration is per record (row / side panel / detail header), never whole-page."""
+    """Corroboration is per record (row / side panel / detail header), never whole-page."""
     TWO_PEOPLE = page((370, "Account | Email | Status"), (406, "account_77 | a@x.test | Active"),
                       (448, "1account_88 | b@x.test | Active"))
 

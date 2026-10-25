@@ -1,4 +1,4 @@
-"""Synthetic tests for PDF extraction rules (production ghostaudit.documents; ported from EXP-007)."""
+"""Synthetic tests for PDF extraction rules (production ghostaudit.documents)."""
 from __future__ import annotations
 
 import sys

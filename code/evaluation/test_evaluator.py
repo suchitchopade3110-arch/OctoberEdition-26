@@ -283,7 +283,7 @@ class TestEvaluator(Base):
     def test_splits_cover_all_samples_once(self):
         self.assertEqual(sorted(DEV + RESERVED), [f"case_{i:02d}" for i in range(1, 33)])
         steps = {r[0]: len(r[2]) for r in read_rows()[1:]}
-        self.assertTrue(any(steps[c] == 14 for c in RESERVED), "D4: reserved set needs a 14-step case")
+        self.assertTrue(any(steps[c] == 14 for c in RESERVED), "reserved set needs a 14-step case")
 
 
 if __name__ == "__main__":

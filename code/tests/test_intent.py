@@ -1,4 +1,4 @@
-"""EXP-C3 intent rules: one family per rule, written independently of the dataset's request texts."""
+"""Intent rules: one family per rule, written independently of the dataset's request texts."""
 from __future__ import annotations
 
 import sys

@@ -22,8 +22,8 @@ during development (section B). So the **$0 above is the run cost, not the total
 Without the cache (`--no-evidence-cache`) or on a cache miss, a screenshot adds no observation. Its resources stay
 UNKNOWN; they are never treated as deleted.
 
-In the final release (cloud session, 2026-10-25) the solution made **no model calls of any provider**: EXP-C1–C4
-changed only deterministic code. (The coding assistant used to develop it is not part of the solution and is not
+In the final release (cloud session, 2026-10-25) the solution made **no model calls of any provider**: the final changes
+were to deterministic code only. (The coding assistant used to develop it is not part of the solution and is not
 counted here.) The 518-row output was produced with 0 calls, 0 tokens, $0.
 
 ## B. Development-time extraction (Google Gemini API)
@@ -57,8 +57,8 @@ Per-request detail (`runs/gemini_cache/attempt_ledger.jsonl`):
 | 11 | evidence_32 | 3.5-flash-lite | success | 5.9 | 1,374 | 846 |
 | 12 | evidence_60 | 3.5-flash-lite | success | 4.3 | 1,400 | 206 |
 | 13 | evidence_19 | 3.5-flash-lite | success | 18.6 | 1,374 | 186 |
-| 14 | evidence_28 | 3.5-flash-lite | success (rejected by grounding, EXP-009) | 9.8 | 1,388 | 205 |
-| 15 | evidence_42 | 3.5-flash-lite | success (rejected by grounding, EXP-009) | 6.1 | 1,400 | 866 |
+| 14 | evidence_28 | 3.5-flash-lite | success (rejected by the grounding guards) | 9.8 | 1,388 | 205 |
+| 15 | evidence_42 | 3.5-flash-lite | success (rejected by the grounding guards) | 6.1 | 1,400 | 866 |
 
 Average over the 8 successful extractions: 1,396 input + 511 output = **1,907 tokens per image**.
 Six of these extractions are in the shipped cache. The other two (rows 14–15) were rejected and are not shipped.

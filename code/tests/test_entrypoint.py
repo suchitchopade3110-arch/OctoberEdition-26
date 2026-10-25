@@ -62,7 +62,7 @@ class CleanEntryPoint(unittest.TestCase):
 
 
 class TraceGateBlocksPublication(unittest.TestCase):
-    """D48: an inconsistent trace must never publish, not even with --best-effort; an existing output is untouched."""
+    """An inconsistent trace must never publish, not even with --best-effort; an existing output is untouched."""
 
     def test_inconsistent_trace_cannot_publish(self):
         import importlib.util

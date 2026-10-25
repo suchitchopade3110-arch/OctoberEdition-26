@@ -1,11 +1,11 @@
-"""F1 regression tests: boolean restore/flow flags (D30 finding, D31 approval).
+"""Regression tests: restore / data-flow flags and explicit restore decisions.
 
 SQL inventory snapshots declare `enabled` and `restore_allowed` as `INTEGER NOT NULL CHECK (x IN (0,1))`, so sqlite
-returns them as 0/1 integers. Before F1 those were not read as flags, and the policy then verified open restores and
+returns them as 0/1 integers. Before this fix those were not read as flags, and the policy then verified open restores and
 active flows as blocked/disabled. Expected rows below are written from the contract (problem_statement.md, Allowed
 Operations and Rules), not from a run.
 
-Run: python -m unittest discover -s code/tests -p "test_f1_flags.py" -v
+Run: python -m unittest discover -s code/tests -p "test_restore_and_flow_flags.py" -v
 """
 from __future__ import annotations
 
@@ -78,7 +78,7 @@ class FlagValues(unittest.TestCase):
         self.assertEqual(state({"resource_id": "d", "enabled": None}), "FLOW_UNKNOWN")
 
     def test_6b_missing_flag_keeps_previous_behaviour(self):
-        # No flag field at all is not a flag observation; this path (D30 F3, backup_9287) is deliberately untouched.
+        # No flag field at all is not a flag observation; this path (e.g. backup_9287) is deliberately untouched.
         self.assertEqual(state({"resource_id": "b", "customer_email": "x@example.test"}), "PRESENT_ID")
         self.assertEqual(state({"resource_id": "b", "archive_key": "k"}), "PRESENT_CLEAN")
 
@@ -132,7 +132,7 @@ class SqlSchemaFlags(unittest.TestCase):
                 self.assertEqual([(o.resource_id, o.state, o.category) for o in obs], [("data_flow_9501", want, "DATA_FLOW")])
 
 
-# ----------------------------------------------------------------------- unit: contradictory observations (D10-A)
+# ----------------------------------------------------------------------- unit: contradictory observations
 class Contradictions(unittest.TestCase):
     def obs(self, fid, t, st, scope=None):
         o = ev.Obs(fid, t, "backup_service", "backup_1", st, "BACKUP_ARCHIVE")
@@ -275,7 +275,7 @@ class EndToEnd(unittest.TestCase):
         self.assertFalse([s for s in steps if s["evidence_id"] == "evidence_951"], steps)
         self.assertFalse([s for s in steps if s["phase"] == "FINDING"], steps)
         self.assertTrue(any(n.startswith("UNKNOWN flag state: backup_9501") for n in notes), notes)
-        # How a COMPLETE row with an unproven verification is labelled is the separate open decision (D30 F2 / R12);
+        # How a COMPLETE row with an unproven verification is labelled is a separate open question (validator rule R12);
         # here the strict validator must flag it instead of accepting a false citation.
         if st == "COMPLETE":
             self.assertIn("R12", {i.rule for i in v.errors})
@@ -312,7 +312,7 @@ class DatasetFlags(unittest.TestCase):
 
 
 class RestoreDecisionAndUnknown(unittest.TestCase):
-    """EXP-D2 (D30 F3): explicit restore-authorization decisions; no signal means unknown, never blocked."""
+    """Explicit restore-authorization decisions; no signal means unknown, never blocked."""
 
     def test_decision_deny_is_blocked_allow_is_open_other_unknown(self):
         from ghostaudit.evidence import infer_state

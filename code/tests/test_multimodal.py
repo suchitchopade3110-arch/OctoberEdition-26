@@ -1,5 +1,5 @@
 """Offline tests for image grounding, per-row linking, the evidence cache and the opt-in Gemini client
-(production ghostaudit; ported from EXP-007G). No network, no real key; synthetic people and ids."""
+(production ghostaudit). No network, no real key; synthetic people and ids."""
 import sys
 import tempfile
 import unittest
@@ -313,7 +313,7 @@ class Integration(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        import csv, json, hashlib
+        import csv, hashlib
         from ghostaudit.multimodal import MultimodalAuditor
         root = Path(__file__).resolve().parents[2]
         data = root / "dataset"
@@ -335,7 +335,7 @@ class Integration(unittest.TestCase):
                                    "origin": row["origin"], "captured_at": row["captured_at"], "sha256": sha,
                                    "model": "m", "prompt_version": "p", "schema_errors": [], "facts": f})
         # The facts above are synthetic and deliberately differ from what the image prints, so the OCR cross-check
-        # (EXP-D1) would reject them; this test exercises the fact-linking rules alone.
+        # would reject them; this test exercises the fact-linking rules alone.
         cls.aud = MultimodalAuditor(data, Path(cls.tmp.name), use_ocr=False)
 
     @classmethod

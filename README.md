@@ -1,167 +1,172 @@
-# Ghost Data Still Exists
+# Ghost Data Still Exists — deletion-audit agent
 
-Ghost Data Still Exists is an AI-assisted deletion auditing system built for HackerRank Orchestrate. It addresses a consequential problem: a system can report that personal data was deleted while copies remain in databases, backups, logs, search indexes, or downstream services.
+HackerRank Orchestrate, October 2026. A workflow can report a deletion as **Complete** while personal data survives in
+replicas, logs, search indexes, exports, support attachments or backups, and while a sync job or restore can bring it
+back. For each request in `dataset/deletion_requests.csv` this agent answers four questions, from evidence only:
 
-The project processes 518 deletion requests and evaluates whether each request is supported by the available evidence. Its pipeline starts by determining whether the user actually requested deletion. It then resolves current and historical identities, retrieves records from structured and unstructured sources, reconstructs resource states at the specified audit timestamp, and evaluates obligations across 15 deletion policies.
+1. **Did the person ask for deletion?** If not: `NOT_APPLICABLE`, `[]`.
+2. **Who are they?** Every current and historical email, phone, hash and user id.
+3. **What did the evidence show at `audit_at`?** Claims ("worker SUCCESS", "COMPLETE") are not proof.
+4. **Does every copy meet `deletion_rules.csv`?** If yes: `COMPLETE` with evidence-backed verifications. If not:
+   `INCOMPLETE` with findings, an ordered remediation plan and the checks that must pass afterwards.
 
-Evidence comes from CSV, JSON, SQL, event logs, PDFs, and screenshots. Gemini is used selectively to extract structured observations from visual material. These extractions are checked against source identifiers and stored in an integrity-verified cache, enabling reproducible offline execution without new model calls. Deterministic Python components handle temporal filtering, policy interpretation, findings, remediation planning, and output validation.
+The full contract is in [`problem_statement.md`](./problem_statement.md) and [`AGENTS.md`](./AGENTS.md).
 
-The system distinguishes deletion claims from independent verification. A worker reporting SUCCESS does not prove that every copy has disappeared. Similarly, the presence of a backup does not automatically establish a violation when legitimate retention may apply. The audit attempts to evaluate ownership, retention conditions, restore permissions, and risks of data recreation before deciding what actions are required.
-
-Results are structured as COMPLETE, INCOMPLETE, or NOT_APPLICABLE, with ordered findings, remediation actions, verification steps, and evidence references. A strict validator checks the output contract and flags unsupported claims.
-
-Engineering priorities include modular architecture, controlled AI usage, regression testing, reproducibility, auditable decisions, and explicit documentation of limitations. Testing includes production unit tests, evaluator checks, synthetic scenarios, and comparisons against available development samples. One investigation identified an integer flag parsing defect affecting 24 predictions; a generic correction was implemented and regression tested.
-
-The system remains a challenge prototype rather than production certified software. Some cases have unresolved evidence validation errors, and identity attribution and temporal edge cases require additional work. Those gaps are documented rather than concealed.
-
-The central principle is straightforward: use AI to interpret difficult evidence, but require grounded, testable reasoning before making deletion compliance claims.
-
----
-
-## Technical Overview & How It Works
-
-HackerRank Orchestrate, October 2026. The challenge contract is in [`problem_statement.md`](./problem_statement.md) and [`AGENTS.md`](./AGENTS.md).
-
-For each request in `dataset/deletion_requests.csv`, this agent works through four questions:
-
-- Did the person actually ask for deletion?
-- Who are they, across current and historical identifiers?
-- What did the evidence show at `audit_at`?
-- Does every copy meet `deletion_rules.csv`?
-
-It writes `COMPLETE`, `INCOMPLETE` or `NOT_APPLICABLE` with the ordered finding, remediation and verification steps.
-
-The agent is **deterministic first**. No model is called while auditing a request.
-
-| Stage | What it does | Code |
-|---|---|---|
-| Intent | Five ordered rules — negated deletion, account kept, marketing-only opt-out, deletion word (several languages), otherwise no deletion — each decision returns its rule and text span; non-deletion requests become `NOT_APPLICABLE` with `[]` | `ghostaudit/intent.py` |
-| Identity | Current snapshot plus `user_audit_log.csv`, giving all historical emails, phones, hashes and user IDs; the primary account comes from identifier links first (own record, keyed lookup, or a subject record naming it), and only otherwise from the deletion workflow's account event, with the basis of each decision in the run notes | `ghostaudit/auditor.py` |
-| Evidence | JSON/TXT/SQL (with replicas), four log formats, PDF text (pypdf), screenshot facts from the evidence cache cross-checked record by record by a local OCR model, OCR facts for screenshots without cached facts, and lineage links for copies repopulated by a connector or restore | `ghostaudit/evidence.py`, `documents.py`, `images.py`, `ocr.py`, `multimodal.py` |
-| Time | Only evidence captured at or before `audit_at`; the latest valid observation wins; post-dated rows are ignored | `ghostaudit/temporal.py` |
-| Policy | DELETE / REDACT / ANONYMIZE / RETAIN / tombstone per category; findings, then remediation, then verification | `ghostaudit/policy.py`, `auditor.py` |
-| Decisions | One typed `ResourceDecision` per resource (attribution, rule, state incl. UNKNOWN, cited evidence); `case_traces.jsonl` per run; the run fails before publishing if a step is not backed by a decision | `ghostaudit/decisions.py`, `auditor.py`, `main.py` |
-| Gate | Strict validator; `output.csv` is published only if it reports 0 errors, unless `--best-effort` is given (then every error is printed and recorded, and the exit status is 1) | `main.py`, `evaluation/validate_output.py` |
-
-**Gemini's role is limited to evidence extraction.** Screenshots were transcribed once, during development, into structured facts with a fixed JSON schema. The facts are stored in `code/evidence_cache/`, keyed by each image's SHA-256, and the deterministic rules decide everything else. Gemini never sees a case or request and never decides a status. A transcribed fact is used only if it passes these checks:
-
-- **The resource ID is grounded.** It must be printed in the record and known to the dataset.
-- **The person is grounded.** Rows are linked to a person one by one, through each row's own printed identifiers. A row showing an unknown person is never linked through its resource ID alone.
-- **The state is printed.** States shown only by a toggle, colour or icon go to review.
-
-## Requirements
-
-- Python 3.10 or newer (developed and tested on 3.14.3).
-- `pip install -r code/requirements.txt`
-  - `pypdf` is required.
-  - `google-genai` is only needed for optional live extraction.
-- The participant `dataset/` folder at the repository root, unchanged. The agent reads `deletion_requests.csv`, `sample_deletion_requests.csv`, `user_identities.csv`, `user_audit_log.csv`, `system_activity.csv`, `deletion_rules.csv`, `evidence_files.csv` and `evidence/`.
-
-## Run
-
-From the repository root:
+## Quick start
 
 ```bash
-python code/main.py
+pip install -r code/requirements.txt      # pypdf is the only required package
+python code/main.py --best-effort         # audits all 518 requests, writes ./output.csv (seconds, offline)
+python code/evaluation/main.py            # metrics on the public samples, validator, synthetic scenarios
+python -m unittest discover -s code/tests -p "test_*.py"
 ```
 
-The run takes about 3 seconds, makes no network calls and needs no keys. The steps:
+Python 3.10 or newer. No network, no API key and no `.env` are needed: the run reads only `code/` and `dataset/`.
 
-1. It writes `runs/output.candidate.csv` and `runs/run_notes.json`.
-2. It runs the strict validator.
-3. Only if the validator reports 0 errors does it publish `./output.csv`. Otherwise it exits with status 1 and leaves any existing `output.csv` untouched.
+## Architecture
 
-**This candidate's `output.csv` is produced with `python code/main.py --best-effort`.** The validator reports 3 errors
-(R12, case_55 and case_63: COMPLETE verifications that no evidence can back, see Known limitations). The team lead
-decided to publish them as a disclosed best effort rather than invent citations or violations; `--best-effort` makes
-that explicit, prints the errors and exits with status 1. The run reproduces the submitted file byte for byte
-(D47 candidate sha256 `e03e7a16442b4547b9a99fc57f9c43d83bd8fa7cbe4ea04339e725c0782e271b`; the previously accepted
-release `059df995…` is kept as rollback on tag `release-accepted`).
+```text
+request ──► 1 Intent ──── no deletion ──────────────────────────► NOT_APPLICABLE, []
+               │ deletion
+               ▼
+            2 Identity     current snapshot + audit log → every current and historical identifier
+               ▼
+            3 Evidence     JSON · TXT · SQL replicas · logs · PDF · screenshots
+               │           (cached Gemini facts, cross-checked record by record by local OCR)
+               ▼
+            4 Time         only evidence captured ≤ audit_at; the latest valid observation wins
+               ▼
+            5 Policy       DELETE · REDACT · ANONYMIZE · RETAIN · tombstone → one ResourceDecision each
+               ▼
+            6 Plan         FINDING → REMEDIATION (flows and restores first) → VERIFICATION
+               ▼
+            7 Gates        every step backed by a decision → strict validator → publish output.csv
+```
 
-Useful options:
+| Stage | Module | Key behaviour |
+|---|---|---|
+| Intent | `ghostaudit/intent.py` | Five ordered rules (negated deletion, account kept, marketing-only opt-out, deletion vocabulary in ten languages, otherwise no deletion). Each decision returns the rule and the text span that decided it. |
+| Identity | `ghostaudit/identity.py` | Resources are linked to a person only through printed identifiers, the evidence catalog, or activity lineage (a connector or restore that repopulated a copy). Never through timing alone. |
+| Primary account | `ghostaudit/accounts.py` | Identifier links first; only when no evidence names an account does the deletion workflow's own account event decide. Each choice records its basis (confirmed, corroborated, workflow-matched, ambiguous). |
+| Evidence | `ghostaudit/evidence.py`, `documents.py` | JSON, TXT tables, SQL snapshots (primary, regional, reporting, failover replicas), four log formats, PDF text (pypdf). Restore and flow flags read only from schema-declared fields; an unreadable flag is UNKNOWN. |
+| Screenshots | `ghostaudit/multimodal.py`, `images.py`, `ocr.py`, `gemini.py` | Two independent readers (next section). |
+| Time | `ghostaudit/temporal.py` | Evidence after `audit_at` is ignored; the latest valid observation sets the state; ties are recorded. |
+| Policy and plan | `ghostaudit/policy.py`, `auditor.py` | Applies `deletion_rules.csv` per category. Remediation always disables flows and blocks restores before any record is changed; steps then follow a fixed order (operation, system, resource), so output is deterministic. |
+| Decisions | `ghostaudit/decisions.py` | `ResourceDecision` (attribution, category, rule, state including UNKNOWN, cited evidence) and a `CaseTrace` per case, written to `runs/case_traces.jsonl`. |
+| Entry point | `code/main.py` | Candidate → trace gate → strict validator → publish `output.csv`. |
+
+### How AI is used, and how it is kept honest
+
+Screenshots (admin consoles, connector screens, archive listings) need a model to read them. The agent uses two:
+
+- **Gemini (vision LLM), development time.** Each screenshot was transcribed once into structured facts with a fixed
+  JSON schema. The prompts are in [`code/prompts/`](code/prompts/). The facts are cached in `code/evidence_cache/`,
+  keyed by the image's SHA-256 (each entry records the prompt version), so the audit never needs a key or a network call. Gemini never
+  sees a case or a request and never decides a status.
+- **RapidOCR (local ONNX OCR model), every run.** It reads the same image offline. Its text lines are cached in
+  `code/evidence_cache/ocr/`, so a machine without the OCR package reproduces the output byte for byte.
+
+A Gemini fact is used only if all of these hold:
+
+1. **Both readers agree.** OCR shows the same resource id and every reported identifier inside the same record (table
+   row, side panel or detail header), and no record of that id shows another person.
+2. **The resource is grounded.** The id matches the id pattern, is known to the dataset and is printed in the record.
+3. **The state is printed.** A state shown only by a toggle, colour or icon goes to review.
+
+A screenshot without Gemini facts gets OCR-built facts that pass the same guards. Absence of an identifier is never
+read as redaction. Text in an image addressed to an assistant ("ignore previous instructions…") quarantines the image.
+
+Optional live extraction for new screenshots: copy `.env.example` to `.env`, set your own `GEMINI_*` values (never
+commit `.env`), check the configuration with `cd code && python -m ghostaudit.gemini --check` (prints which key slots
+are set, never their values, and makes no call), then run `python code/main.py --live-extraction`.
+
+### Safety rules built into the code
+
+- A worker's SUCCESS never proves absence; a FAILED one never proves presence.
+- A resource with no usable observation is **UNKNOWN**, never ABSENT, and is never cited as proof.
+- Every finding and every COMPLETE-case verification cites a participant `file_id`, `activity_id` or `audit_id`
+  captured at or before `audit_at`. Planned remediation and post-remediation checks cite nothing.
+- Records that policy retains, redacts, anonymizes or keeps as a tombstone are not deleted.
+- If any step is not backed by a typed decision, the run stops before publishing (exit 2), even with `--best-effort`.
+
+## Running
+
+```bash
+python code/main.py                 # strict: publish ./output.csv only if the validator reports 0 errors
+python code/main.py --best-effort   # publish even with validator errors (each printed and recorded; exit 1)
+```
+
+Each run writes `runs/output.candidate.csv`, `runs/run_notes.json` (per-case reasoning notes and attribution basis)
+and `runs/case_traces.jsonl`, then validates, then publishes.
+
+**The submitted `output.csv` comes from `python code/main.py --best-effort`** (sha256
+`e03e7a16442b4547b9a99fc57f9c43d83bd8fa7cbe4ea04339e725c0782e271b`). The validator reports 3 errors (rule R12, see
+Limitations): COMPLETE-case checks that no evidence can back. They are disclosed rather than hidden behind an invented
+citation.
 
 | Option | Effect |
 |---|---|
-| `--best-effort` | Publish `output.csv` even if strict validation fails (errors printed and recorded; exit status 1) |
-| `--cases case_33,case_45` | Audit a subset (work dir only, never published) |
+| `--best-effort` | Publish even if strict validation fails |
+| `--cases case_33,case_45` | Audit a subset (written to the work dir, never published) |
 | `--requests PATH` | Another requests file, e.g. `dataset/sample_deletion_requests.csv` |
-| `--dataset PATH` / `--output PATH` / `--work-dir PATH` | Other locations |
-| `--no-evidence-cache` | Ignore screenshot facts (PDF and structured evidence only) |
-| `--no-ocr` | Skip the local OCR second reader (no OCR cross-check, no OCR facts; only case_34 and case_53 differ) |
-| `--evidence-cache PATH` | Use another evidence cache |
-| `--live-extraction` | Opt-in: call Gemini for screenshots that have no cache entry (see below) |
-
-### Offline cached execution and reproducibility
-
-The default run uses only `code/` and `dataset/`. A copy of just those two folders, run with an empty environment and no `.env`, reproduces the 518-row output byte for byte (checked 2026-10-25). On a cache miss a screenshot adds no observation: its resources stay UNKNOWN and are never treated as deleted. `code/evidence_cache/index.json` records the SHA-256 of every entry, and `.gitattributes` keeps those bytes unchanged across platforms.
-
-### Optional live extraction
-
-Only needed for new or changed screenshots. Copy `.env.example` to `.env` at the repository root and fill in your own values. Never commit `.env`.
-
-| Variable | Meaning |
-|---|---|
-| `GEMINI_API_KEY_PRIMARY`, `GEMINI_API_KEY_FALLBACK_1`, `GEMINI_API_KEY_FALLBACK_2` | Keys, tried in this order; failover happens only on credential errors |
-| `GEMINI_MODEL` | e.g. `gemini-3.5-flash-lite` |
-| `GEMINI_ENABLED` | `true` to allow calls |
-| `GEMINI_MAX_TOTAL_ATTEMPTS` | Hard cap on API requests (a persistent ledger in `runs/gemini_cache/`) |
-| `GEMINI_REQUEST_TIMEOUT_SECONDS`, `GEMINI_THINKING_LEVEL`, `GEMINI_MAX_OUTPUT_TOKENS` | Request settings |
-| `GEMINI_PRICE_INPUT_PER_MTOK`, `GEMINI_PRICE_OUTPUT_PER_MTOK` | Optional, for cost reporting |
-
-```bash
-cd code
-python -m ghostaudit.gemini --check
-```
-
-`--check` prints the configuration and which key slots are set, without showing values or making any call. A real extraction then runs through `python code/main.py --live-extraction`, or `python -m ghostaudit.gemini --only evidence_XX`.
+| `--dataset` / `--output` / `--work-dir PATH` | Other locations |
+| `--no-evidence-cache` | Ignore screenshot facts (structured and PDF evidence only) |
+| `--no-ocr` | Skip the OCR reader (no cross-check, no OCR facts) |
+| `--evidence-cache PATH` | Another evidence cache |
+| `--live-extraction` | Call Gemini for screenshots without a cache entry (needs keys) |
 
 ## Output
 
-`output.csv`: header `case_id,deletion_status,steps_json`, one row per request, sorted by `case_id`. `deletion_status` is `COMPLETE`, `INCOMPLETE` or `NOT_APPLICABLE`. `steps_json` is a JSON array of steps, each with exactly these fields: `step_no`, `phase`, `system_id`, `resource_id`, `operation`, `state` and `evidence_id`.
+`output.csv`: header `case_id,deletion_status,steps_json`, 518 rows sorted by `case_id`. `steps_json` is a JSON array;
+each step has exactly `step_no`, `phase`, `system_id`, `resource_id`, `operation`, `state`, `evidence_id`. Phases are
+ordered FINDING → REMEDIATION → VERIFICATION and steps are numbered from 1.
 
-- Phases come in order: FINDING, then REMEDIATION, then VERIFICATION.
-- Findings and COMPLETE-case verifications cite participant evidence.
-- Planned remediation and post-remediation checks use `""` as `evidence_id`.
+## Evaluation
 
-## Validate and test
+`python code/evaluation/main.py` reproduces every number below. Full report:
+[`code/evaluation/evaluation_report.md`](code/evaluation/evaluation_report.md); model usage:
+[`code/evaluation/usage_report.md`](code/evaluation/usage_report.md).
 
-```bash
-python code/evaluation/validate_output.py --output runs/output.candidate.csv
-python code/main.py --requests dataset/sample_deletion_requests.csv --output runs/dev.csv --work-dir runs/devwork
-python code/evaluation/eval.py --pred runs/dev.csv --requests dataset/sample_deletion_requests.csv --split dev
-python code/evaluation/custom_scenarios.py
-python -m unittest discover -s code/tests -p "test_*.py"
-python code/evaluation/test_evaluator.py
-```
+| Public samples | Status accuracy | Step F1 | Field accuracy | Exact sequence |
+|---|---|---|---|---|
+| Dev (22, used for tuning) | 1.0 | 0.950 | 0.906 | 0.591 |
+| Reserved (10, inspected; not a clean holdout) | 0.80 | 0.830 | 0.748 | 0.40 |
+| All 32 | 0.9375 | 0.915 | 0.858 | 0.531 |
 
-What each command does:
+These are local metrics, not the hidden grader's score. Evidence validity and policy compliance are 1.0 on all splits.
 
-1. The validator checks a candidate file without publishing it.
-2. `main.py` runs the agent on the 32 public samples.
-3. `eval.py` scores the 22 development cases against the public answers.
-4. `custom_scenarios.py` runs 5 synthetic end-to-end scenarios; it exits with status 1 if any fails.
-5. The two test commands run the production suites.
+| Test suite | Command | Result |
+|---|---|---|
+| Production unit and regression tests | `python -m unittest discover -s code/tests -p "test_*.py"` | 164 pass, plus 12 expected failures that pin known defects |
+| Evaluator and validator tests | `python code/evaluation/test_evaluator.py` | 33 pass |
+| Synthetic end-to-end scenarios | `python code/evaluation/custom_scenarios.py` | 5/5 pass |
 
-Results are in [`code/evaluation/evaluation_report.md`](code/evaluation/evaluation_report.md). Model usage is in [`code/evaluation/usage_report.md`](code/evaluation/usage_report.md).
+The validator alone: `python code/evaluation/validate_output.py --output runs/output.candidate.csv`. Each rule id it
+reports is explained in `code/evaluation/contract_spec.py`.
 
-## Known limitations
+## Limitations
 
-- **3 validator errors (R12) remain** in the 518-case output (case_55: account_2595 and backup_9287; case_63: marketing_001). No evidence establishes those resources' state; the file is published best effort with the errors disclosed.
-- **Account attribution.** Of 508 authorised cases, 152 primary accounts are identifier-backed, 203 are matched to the workflow's own account event, 145 are ambiguous picks within a reporting batch (flagged in the run notes) and 8 have none.
-- **Unlinkable records.** Anonymized analytics profiles carry no identifier, and some retained audit records appear only in evidence captured after audit_at; they are not attributed by timing alone.
-- **Screenshots.** 8 of 11 give usable facts (6 Gemini facts confirmed by OCR, 2 OCR-only). 3 give none (no printed resource id, or no printed identifier); their resources stay UNKNOWN, never treated as deleted.
-- **Intent.** 5 pinned probes still fail (e.g. "don't keep any of my data", field-level removals such as "remove my old phone number").
+- **3 validator errors (R12)**: case_55 (account_2595, backup_9287) and case_63 (marketing_001) are COMPLETE-case checks
+  with no evidence of the resource's state. Fixing them would need an invented citation or ownership link.
+- **Account attribution**: of 508 authorised cases, 152 primary accounts are identifier-backed, 203 match the
+  workflow's own account event, 145 are ambiguous within one reporting batch (flagged in the run notes) and 8 have none.
+- **Unlinkable records**: anonymized analytics profiles carry no identifier, and some retained audit records appear only
+  in evidence captured after `audit_at`. They are not attributed by timing.
+- **Screenshots**: 8 of 11 give usable facts (6 Gemini facts confirmed by OCR, 2 from OCR alone). The other 3 print no
+  resource id or no identifier, so their resources stay UNKNOWN.
+- **Intent**: 5 pinned probes still fail (e.g. "don't keep any of my data"; field-level removals such as "remove my old
+  phone number").
 
 ## Repository layout
 
 ```text
-code/main.py                  entry point
-code/ghostaudit/              agent package (identity, evidence, time, policy, multimodal, Gemini client)
-code/evidence_cache/          screenshot facts, content-addressed by image SHA-256
-code/evaluation/              validator, evaluator, splits, custom scenarios, reports
-code/tests/                   production test suites
-docs/                         contract, decisions (D1-D37, cloud C0-C2), experiments, scorecard, handoff
-log.txt                       AI-assistant transcript log (AGENTS.md)
-output.csv                    518-row prediction artifact
-LICENSE                       Apache 2.0 License
+code/main.py                 entry point
+code/ghostaudit/             agent package: intent, identity, accounts, evidence, documents, images, ocr,
+                             multimodal, gemini, temporal, policy, decisions, auditor, output
+code/prompts/                Gemini extraction prompts (versioned; the cache records the version used)
+code/evidence_cache/         screenshot facts and OCR lines, content-addressed by image SHA-256
+code/evaluation/             validator, evaluator, splits, synthetic scenarios, one-command runner, reports
+code/tests/                  production test suites
+log.txt                      AI coding-assistant transcript (AGENTS.md)
+output.csv                   518-row predictions
 ```

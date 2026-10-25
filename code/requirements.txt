@@ -2,6 +2,6 @@
 pypdf>=6.0
 # Optional: only for `--live-extraction` / `python -m ghostaudit.gemini` (new or changed screenshots)
 google-genai>=2.16
-# Optional: local OCR second reader for screenshots (EXP-D1). Needed only when an image has no entry in
+# Optional: local OCR second reader for screenshots. Needed only when an image has no entry in
 # code/evidence_cache/ocr/ (the shipped cache covers all 11 dataset screenshots); Apache-2.0.
 rapidocr_onnxruntime>=1.2.3

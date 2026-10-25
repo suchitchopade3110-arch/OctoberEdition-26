@@ -7,7 +7,6 @@ Run: python -m unittest discover -s code/tests -v
 from __future__ import annotations
 
 import json
-import re
 import sys
 import unittest
 from collections import defaultdict
@@ -136,11 +135,11 @@ class DatasetRegressions(unittest.TestCase):
         bad = [cid for cid, (st, steps) in full_run().items() if st == "COMPLETE" and any(not s["evidence_id"] for s in steps)]
         self.assertEqual(bad, [])
 
-    def test_R12_EMPTY_no_empty_complete_row(self):  # fixed by D18; now a guard
+    def test_R12_EMPTY_no_empty_complete_row(self):  # fixed; now a regression guard
         bad = [cid for cid, (st, steps) in full_run().items() if st == "COMPLETE" and not steps]
         self.assertEqual(bad, [])
 
-    def test_F12_linked_retained_record_not_silently_dropped(self):  # fixed by D18; now a guard
+    def test_F12_linked_retained_record_not_silently_dropped(self):  # fixed; now a regression guard
         case = next(c for c in FIX["dataset_regressions"] if c["id"] == "F12")
         st, steps = full_run()[case["cases_observed"][0]]
         self.assertTrue(st != "COMPLETE" or any(s["resource_id"] == case["resource"] for s in steps))

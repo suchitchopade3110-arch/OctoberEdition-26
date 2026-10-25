@@ -1,4 +1,4 @@
-"""EXP-C1 regression tests: primary-account attribution (identifier links first, workflow event second).
+"""Regression tests: primary-account attribution (identifier links first, workflow event second).
 
 Synthetic worlds only (fictional ids, no dataset files). Run: python -m unittest discover -s code/tests
 """
@@ -71,7 +71,7 @@ class AccountAttribution(unittest.TestCase):
 
 
 class CollectionOrigin(unittest.TestCase):
-    """EXP-C2: a collection file whose records name no system takes its manifest origin, if that is a known system."""
+    """A collection file whose records name no system takes its manifest origin, if that is a known system."""
 
     def _parse(self, origin: str, known: set[str] | None):
         import json

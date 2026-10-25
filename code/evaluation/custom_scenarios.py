@@ -2,7 +2,7 @@
 
 Each scenario builds a tiny synthetic dataset (fictional people, `.test` email domains) in a temporary folder, runs the
 production pipeline (`code/main.py` -> `run()`, no evidence cache, no model calls) and compares the result with an expected
-row written by hand from the contract (docs/contract.md) before running. Only `deletion_rules.csv` is copied from the
+row written by hand from the contract (problem_statement.md) before running. Only `deletion_rules.csv` is copied from the
 participant dataset, because the policy table is shared input, not case data.
 
     python code/evaluation/custom_scenarios.py            # prints a table; exit status 1 if any scenario fails
@@ -57,8 +57,8 @@ SCENARIOS = [
      "evidence": [("evidence_901", "2026-05-01T09:00:00Z", search_snapshot([search_doc(PERSON["email"])])),
                   ("evidence_902", "2026-06-01T09:00:00Z", search_snapshot([]))],          # later snapshot, record gone
      "audit_log": [], "expect": ("INCOMPLETE", REMAINING)},
-    # S4 originally expected COMPLETE (our contract reading C06b: a later snapshot that omits the record proves
-    # absence). EXP-C4 implemented that reading and it contradicted two official sample answers: sample case_05 keeps
+    # S4 originally expected COMPLETE (our first contract reading: a later snapshot that omits the record proves
+    # absence). An experiment implemented that reading and it contradicted two official sample answers: sample case_05 keeps
     # account_005 as a remaining record (evidence_54) although the later evidence_90 omits it, and sample case_24 does
     # the same for account_5334 (evidence_92 vs evidence_51). The official answers decide, so the expectation follows
     # them: omission from a later snapshot is not proof of absence; the copy is still reported as remaining.

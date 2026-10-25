@@ -1,4 +1,4 @@
-"""EXP-D3: typed per-resource decisions and the trace consistency gate."""
+"""Typed per-resource decisions and the trace consistency gate."""
 from __future__ import annotations
 
 import sys
@@ -60,7 +60,7 @@ class Decisions(unittest.TestCase):
 
 
 class Lineage(unittest.TestCase):
-    """EXP-D4: a copy repopulated from (or into) a subject's resource is linked; later events are ignored."""
+    """Lineage links: a copy repopulated from (or into) a subject's resource is linked; later events are ignored."""
 
     def _world(self, event_time):
         o = ev.Obs("evidence_1", "2026-09-01T00:00:00Z", "integration_service", "data_flow_1", "FLOW_ACTIVE", "DATA_FLOW",
