@@ -652,3 +652,36 @@ Validator: 3 R12 errors and 8 R31 warnings (unchanged). Clean copy reproduces th
 - D30 F4: a catalog row contradicted by its own artifact.
 - D30 F5: time-window account attribution.
 - S4.
+
+---
+
+## Cloud session (2026-10-25) — EXP-C1 to EXP-C4
+
+Harness: `experiments/cloud/compare.py --tag <name>` runs the 518 cases and the samples, scores dev, validates, and
+diffs every row against the frozen F1 output (`runs/baseline_f1/`). All numbers are dev (22) unless stated.
+
+**EXP-C1 — primary-account attribution.** Root causes found: (a) sample case_06's account is named inside the
+subject's own search document (`search_001 … account_006`), which was never treated as a link; (b) sample case_17 has
+two lookup links keyed by the subject's email, and only `account_4092` has the workflow's own FAILED event; the other
+(`account_6523`) is a March lookup from an earlier workflow; (c) the fallback window ran to the end of the reporting day,
+so case_55 took `account_2595` from a batch reported ten hours later. Label-free check: hide the identifier links of the
+162 confirmed cases and re-derive accounts from the workflow window — F1 rules 106/162; strict result + 15-min skew
+102/162; 120-min lead window 122/162 (but dev F1 0.898 and the multimodal cases lose their accounts); PARTIAL also
+accepting SUCCESS 83/162. Accepted variant (C1e): identifier links incl. references, corroboration among several links,
+F1 window rules otherwise. Dev F1 0.903 -> 0.914, exact 0.409 -> 0.500. 518: 1 row changes (case_72).
+
+**EXP-C2 — collection-file system.** `evidence_59` (`customer_export_jobs`) names no system; the prefix map gave
+`object_store`, the gold uses `export_service`, which is the file's manifest origin. Rule: use the manifest origin when
+structured evidence already uses it as a system. Dev F1 0.914 -> 0.938, exact 0.500 -> 0.545. 518: 0 rows change.
+
+**EXP-C3 — intent.** The F1 phrase list contained dataset-specific phrases ("copy of", "misspelled", "resetting the
+login"); "copy of" made sample case_05 ("remove any remaining copy of my profile") NOT_APPLICABLE. Replaced by five
+ordered rules with explanations. Of 550 request texts only case_05 changes. Dev status 1.0, F1 0.950, exact 0.591.
+Pinned probes I02, I10, I11, I12 fixed; one regression found during the run ("don't hesitate to delete") and fixed.
+
+**EXP-C4 — rejected.** Reading C06b ("a later covering snapshot that omits the record proves absence") passed scenario
+S4 but contradicted official answers (case_05: account_005 remaining per evidence_54 although evidence_90 omits it;
+reserved case_24 likewise). Dev status 1.0 -> 0.955. Reverted; S4's expectation now follows the official answers.
+
+**Not attempted (deadline):** screenshot coverage for evidence_04/28/37/42/46 (would need an approved model call or a
+local OCR dependency); anonymized-analytics linking (no identifier exists; timing alone rejected in D19).

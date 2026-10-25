@@ -35,12 +35,12 @@ The agent is **deterministic first**. No model is called while auditing a reques
 
 | Stage | What it does | Code |
 |---|---|---|
-| Intent | Keyword/clause rule: access, export, correction and opt-out requests become `NOT_APPLICABLE` with `[]` | `ghostaudit/intent.py` |
-| Identity | Current snapshot plus `user_audit_log.csv`, giving all historical emails, phones, hashes and user IDs | `ghostaudit/auditor.py` |
+| Intent | Five ordered rules — negated deletion, account kept, marketing-only opt-out, deletion word (several languages), otherwise no deletion — each decision returns its rule and text span; non-deletion requests become `NOT_APPLICABLE` with `[]` | `ghostaudit/intent.py` |
+| Identity | Current snapshot plus `user_audit_log.csv`, giving all historical emails, phones, hashes and user IDs; the primary account comes from identifier links first (own record, keyed lookup, or a subject record naming it), and only otherwise from the deletion workflow's account event, with the basis of each decision in the run notes | `ghostaudit/auditor.py` |
 | Evidence | JSON/TXT/SQL (with replicas), four log formats, PDF text (pypdf), and screenshot facts from the evidence cache | `ghostaudit/evidence.py`, `documents.py`, `images.py`, `multimodal.py` |
 | Time | Only evidence captured at or before `audit_at`; the latest valid observation wins; post-dated rows are ignored | `ghostaudit/temporal.py` |
 | Policy | DELETE / REDACT / ANONYMIZE / RETAIN / tombstone per category; findings, then remediation, then verification | `ghostaudit/policy.py`, `auditor.py` |
-| Gate | Strict validator; `output.csv` is published only if it reports 0 errors | `main.py`, `evaluation/validate_output.py` |
+| Gate | Strict validator; `output.csv` is published only if it reports 0 errors, unless `--best-effort` is given (then every error is printed and recorded, and the exit status is 1) | `main.py`, `evaluation/validate_output.py` |
 
 **Gemini's role is limited to evidence extraction.** Screenshots were transcribed once, during development, into structured facts with a fixed JSON schema. The facts are stored in `code/evidence_cache/`, keyed by each image's SHA-256, and the deterministic rules decide everything else. Gemini never sees a case or request and never decides a status. A transcribed fact is used only if it passes these checks:
 
@@ -70,10 +70,17 @@ The run takes about 3 seconds, makes no network calls and needs no keys. The ste
 2. It runs the strict validator.
 3. Only if the validator reports 0 errors does it publish `./output.csv`. Otherwise it exits with status 1 and leaves any existing `output.csv` untouched.
 
+**The submitted `output.csv` was produced with `python code/main.py --best-effort`.** The validator reports 3 errors
+(R12, case_55 and case_63: COMPLETE verifications that no evidence can back, see Known limitations). The team lead
+decided to publish them as a disclosed best effort rather than invent citations or violations; `--best-effort` makes
+that explicit, prints the errors and exits with status 1. The run reproduces the submitted file byte for byte
+(sha256 `059df99510a0f49244fa8e3460f8b31e873dd5b5102ed32003ab089dd9ff3246`).
+
 Useful options:
 
 | Option | Effect |
 |---|---|
+| `--best-effort` | Publish `output.csv` even if strict validation fails (errors printed and recorded; exit status 1) |
 | `--cases case_33,case_45` | Audit a subset (work dir only, never published) |
 | `--requests PATH` | Another requests file, e.g. `dataset/sample_deletion_requests.csv` |
 | `--dataset PATH` / `--output PATH` / `--work-dir PATH` | Other locations |
@@ -136,11 +143,11 @@ Results are in [`code/evaluation/evaluation_report.md`](code/evaluation/evaluati
 
 ## Known limitations
 
-- **3 validator errors (R12) remain** in the 518-case output (case_55, case_63). The evidence can't establish those resources' state, so `output.csv` is not published until they are decided.
-- **Scoped-snapshot absence.** A later snapshot that simply omits a record does not yet override an earlier PRESENT observation (custom scenario S4 fails). The agent over-reports remaining copies.
-- **Account attribution.** 314 of 500 account steps rely on the deletion-workflow time window, not on an identifier.
-- **Screenshots.** 6 of 11 have usable cached facts. The other 5 stay UNKNOWN.
-- **Intent.** The rule-based classifier misses some phrasings (one dev case; 9 pinned test probes).
+- **3 validator errors (R12) remain** in the 518-case output (case_55: account_2595 and backup_9287; case_63: marketing_001). No evidence establishes those resources' state; the file is published best effort with the errors disclosed.
+- **Account attribution.** Of 508 authorised cases, 152 primary accounts are identifier-backed, 203 are matched to the workflow's own account event, 145 are ambiguous picks within a reporting batch (flagged in the run notes) and 8 have none.
+- **Unlinkable records.** Anonymized analytics profiles carry no identifier, and some retained audit records appear only in evidence captured after audit_at; they are not attributed by timing alone.
+- **Screenshots.** 6 of 11 have usable cached facts. The other 5 stay UNKNOWN (never treated as deleted).
+- **Intent.** 5 pinned probes still fail (e.g. "don't keep any of my data", field-level removals such as "remove my old phone number").
 
 ## Repository layout
 
@@ -150,7 +157,7 @@ code/ghostaudit/              agent package (identity, evidence, time, policy, m
 code/evidence_cache/          screenshot facts, content-addressed by image SHA-256
 code/evaluation/              validator, evaluator, splits, custom scenarios, reports
 code/tests/                   production test suites
-docs/                         contract, decisions (D1-D23), experiments, trap findings
+docs/                         contract, decisions (D1-D37, cloud C0-C2), experiments, scorecard, handoff
 log.txt                       AI-assistant transcript log (AGENTS.md)
 output.csv                    518-row prediction artifact
 LICENSE                       Apache 2.0 License

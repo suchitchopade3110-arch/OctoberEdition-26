@@ -8,20 +8,28 @@ No figures are estimated unless marked.
 
 | Item | Value |
 |---|---|
-| Command | `python code/main.py` |
+| Command | `python code/main.py --best-effort` (publishes despite the 3 disclosed validation errors) |
 | Model providers / models called | **none** |
 | Model calls | **0** |
 | Input / output tokens | 0 / 0 |
 | Total and average tokens per request | 0 / 0 |
 | Cost (total, per request) | $0.00 / $0.00 |
-| Runtime / peak memory (measured 2026-10-25) | ≈2.6 s / ≈20 MB |
+| Runtime / peak memory (measured 2026-10-25, Linux cloud container) | ≈4.4 s / ≈19 MB |
 
 The final run reads screenshot facts from `code/evidence_cache/` instead of calling a model. That cache was made
 during development (section B). So the **$0 above is the run cost, not the total cost of building the evidence**.
 Without the cache (`--no-evidence-cache`) or on a cache miss, a screenshot adds no observation. Its resources stay
 UNKNOWN; they are never treated as deleted.
 
+In the final release (cloud session, 2026-10-25) the solution made **no model calls of any provider**: EXP-C1–C4
+changed only deterministic code. (The coding assistant used to develop it is not part of the solution and is not
+counted here.) The 518-row output was produced with 0 calls, 0 tokens, $0.
+
 ## B. Development-time extraction (Google Gemini API)
+
+Section B is carried over from the desktop sessions of 2026-10-24/25. The attempt ledger
+(`runs/gemini_cache/attempt_ledger.jsonl`) was not transferred to the cloud container, so these figures could not be
+re-checked here; they are unchanged from the earlier verified report.
 
 Provider: Google Gemini Developer API (`google-genai` SDK 2.16.0). Requests went through the PRIMARY key slot only,
 with SDK retries off. No key failover was ever triggered. **15 API requests in total: 14 image extraction attempts

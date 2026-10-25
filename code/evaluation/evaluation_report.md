@@ -1,121 +1,98 @@
 # Evaluation report — Ghost Data Still Exists
 
-Baseline evaluated: **F1 (D32)**, the local commit that applies the integer-flag fix on top of `bc77faf`
-(production `code/main.py` + `code/ghostaudit/`). The previous baseline D18 (`6c0533c`) is kept for comparison.
-Every number below was re-measured on 2026-10-25 from the committed code unless marked otherwise.
+Release evaluated: branch `claude/intelligent-sagan-ytlgrk`, the F1 production code (`6fe50ba`) plus the cloud-session
+changes EXP-C1 (account attribution), EXP-C2 (collection-file system), EXP-C3 (intent rules) and the explicit
+`--best-effort` publication mode. The F1 output is kept as the rollback (`runs/baseline_f1/`, sha256 `1503deba…`).
+Every number below was measured on 2026-10-25 from the committed code (Linux, Python 3.13) unless marked otherwise.
 
-Legend: **[measured]** reproduced by a command in this report · **[estimate]** a judgement, not measured ·
-**[unverified]** depends on information we do not have (for example the hidden grader).
+Legend: **[measured]** reproduced by a command in this report · **[unverified]** depends on information we do not
+have (for example the hidden grader).
 
 ## 1. Architecture and methodology
 
 The agent is **deterministic first**. No model is called while auditing a request.
 
-1. **Intent.** A keyword and clause rule (`ghostaudit/intent.py`) decides whether `request_text` authorises deletion.
-   Requests for access, correction, export or opt-out become `NOT_APPLICABLE` with `[]`.
+1. **Intent** (`ghostaudit/intent.py`). Five ordered, explainable rules: negated deletion, account kept (D11-P),
+   marketing-only opt-out, deletion word (English plus Portuguese, Spanish, French, German, Italian, Dutch, Japanese,
+   Korean, Chinese account-deletion vocabulary), otherwise no deletion. Each decision returns the rule and the text
+   span that decided it.
 2. **Identity.** The current snapshot plus `user_audit_log.csv` give every current and historical email, phone, hash
    and `user_id` of a person. The request email can match any of them.
-3. **Evidence.** Structured files (JSON, TXT tables, SQL snapshots with replicas), four log formats, PDFs (pypdf text)
+3. **Primary account** (`Auditor.resolve_accounts`). Identifier links first: the account's own record or a lookup keyed
+   by a subject identifier, or a subject record that names the account id. Several linked accounts are narrowed to the
+   one the deletion workflow's own worker event names. Only accounts no evidence names fall back to the workflow's
+   account event (request period, reported result preferred). Every decision is labelled in the run notes.
+4. **Evidence.** Structured files (JSON, TXT tables, SQL snapshots with replicas), four log formats, PDFs (pypdf text)
    and screenshots are turned into observations. Screenshots are read through structured facts that Gemini transcribed
-   earlier and that are stored in the content-addressed cache `code/evidence_cache/` (section 7).
-4. **Time.** Only evidence captured at or before `audit_at` is used. The latest valid observation sets a resource's
+   during development and that are stored in the content-addressed cache `code/evidence_cache/`.
+5. **Time.** Only evidence captured at or before audit_at is used. The latest valid observation sets a resource's
    state. Post-dated rows are ignored and ties are recorded.
-5. **Policy.** `deletion_rules.csv` maps each category to DELETE / REDACT / ANONYMIZE / RETAIN / tombstone. The engine
+6. **Policy.** `deletion_rules.csv` maps each category to DELETE / REDACT / ANONYMIZE / RETAIN / tombstone. The engine
    builds findings, an ordered remediation plan and verifications.
-6. **Validation gate.** `main.py` writes a candidate file, runs the strict validator and publishes `output.csv` only
-   if there are 0 errors.
+7. **Validation gate.** `main.py` writes a candidate, runs the strict validator and publishes `output.csv` only if there
+   are 0 errors. `--best-effort` (team-lead decision C2) publishes anyway, prints every error, records
+   `published_despite_validation_errors` in `run_notes.json` and exits 1.
 
-Methodology: the 32 public sample cases are split into **22 development** cases (tuning and measurement) and
-**10 reserved** cases (`code/evaluation/splits.py`). The local evaluator (`code/evaluation/eval.py`) compares
-predictions with the public sample answers.
-
-**Reserved-set disclosure.** All 32 samples, reserved ones included, were inspected during the kickoff analysis. During
-the D30 root-cause investigation the reserved answers were also compared with our output (that is how sample case_09
-was identified as an example of the integer-flag defect). Reserved metrics were then scored at the team lead's request
-in D31/D32 (section 3b). The F1 fix itself was derived from the SQL schema declarations, not tuned on reserved cases.
-Reserved results are therefore **not** an untouched holdout and are reported separately.
+Methodology: the 32 public samples are split into **22 development** cases (tuning) and **10 reserved** cases
+(`code/evaluation/splits.py`). All 32 were inspected in earlier sessions, so the reserved split is **not** a clean
+holdout; it was not used for tuning in this release and is reported separately. Account-attribution changes were also
+checked **without labels** on the 518 test requests (section 7).
 
 ## 2. Dataset size and limitations
 
-- **Development set: 22 cases [measured].** One case is 4.5 percentage points of status accuracy. Small differences
-  are noise.
-- The local metrics are **not** the hidden judge's score **[unverified]**. Where the official scoring is unstated, the
-  evaluator uses the strictest reading.
-- **No dev case exercises the screenshot evidence.** All five predictions that screenshots changed are in the
-  518-case test set, so they cannot be scored locally. They were checked by hand against the screenshots instead
-  (section 5).
+- **Development set: 22 cases [measured].** One case is 4.5 percentage points of status accuracy.
+- The local metrics are **not** the hidden judge's score **[unverified]**.
+- No public sample exercises the screenshot evidence; screenshot-driven test predictions were checked by hand.
 
-## 3. Development metrics (22 dev cases) [measured]
+## 3. Metrics [measured]
 
-Command: `python code/main.py --requests dataset/sample_deletion_requests.csv --output runs/dev.csv --work-dir runs/devwork`
-then `python code/evaluation/eval.py --pred runs/dev.csv --requests dataset/sample_deletion_requests.csv --split dev`.
+Commands: `python code/main.py --requests dataset/sample_deletion_requests.csv --output runs/dev.csv --work-dir runs/devwork`
+then `python code/evaluation/eval.py --pred runs/dev.csv --requests dataset/sample_deletion_requests.csv --split dev`
+(reserved / all: add `--split reserved --allow-reserved` or `--split all --allow-reserved`).
 
-| Metric | Value |
-|---|---|
-| Status accuracy | **0.9545** (21/22) |
-| Step precision / recall / F1 | 0.9431 / 0.8657 / **0.9027** |
-| Field accuracy (strict) | **0.8455** |
-| Positional step accuracy | 0.763 |
-| Sequence accuracy (exact case) | **0.4091** (9/22) |
-| Evidence validity | 1.0 |
-| Policy compliance | 1.0 |
-| Validator errors / warnings (32 sample rows) | 0 / 0 |
+| Metric | Dev F1 baseline | **Dev release** | Reserved (not clean) | All 32 |
+|---|---|---|---|---|
+| Status accuracy | 0.9545 | **1.0** (22/22) | 0.80 | 0.9375 |
+| Step precision | 0.9431 | **0.9840** | 0.9362 | 0.9709 |
+| Step recall | 0.8657 | **0.9179** | 0.7458 | 0.8653 |
+| Step F1 | 0.9027 | **0.9498** | 0.8302 | 0.9151 |
+| Field accuracy (strict) | 0.8455 | **0.9062** | 0.7482 | 0.8579 |
+| Positional step accuracy | 0.763 | 0.8358 | 0.678 | 0.7876 |
+| Sequence accuracy (exact case) | 0.4091 (9/22) | **0.5909** (13/22) | 0.40 | 0.5312 |
+| Evidence validity / policy compliance | 1.0 / 1.0 | 1.0 / 1.0 | 1.0 / 1.0 | 1.0 / 1.0 |
 
-F1 did not change any dev prediction (no dev case has an integer flag); the dev numbers above are identical for D18
-and F1.
+The reserved split is unchanged by this release (same predictions as F1).
 
-On the full 518-case file the strict validator reports **3 errors (all R12) and 8 warnings (R31)** [measured]
-(section 10), the same for D18 and F1.
-
-### 3b. Reserved split (10 cases) — separate, not a clean holdout [measured]
-
-Command: as above, with `--split reserved --allow-reserved`.
-
-| Metric | D18 | F1 |
-|---|---|---|
-| Status accuracy | 0.70 (7/10) | **0.80** (8/10) |
-| Step precision / recall / F1 | 0.889 / 0.678 / 0.769 | 0.936 / 0.746 / **0.830** |
-| Field accuracy (strict) | 0.707 | 0.748 |
-| Sequence accuracy (exact case) | 0.40 | 0.40 |
-
-The only sample row F1 changes is case_09:
-- D18: COMPLETE, verifying backup_4978 as restore-blocked while evidence_93 says `restore_allowed = 1`.
-- F1: INCOMPLETE, `REPORT_RESTORE_RISK` [evidence_93] → `BLOCK_RESTORE` → future checks. This matches the public answer
-  except a separate retained-record check (audit_record_4902).
-
-### 3c. F1 effect on the 518 cases [measured]
-
-F1 changes exactly **24 of 518** rows relative to D18. The candidate's sha256 is
-`1503deba33ea51f173e6e11f8da6e538be86c078f8df5cc55f6b38cc017b91eb`, frozen in `runs/f1_baseline/`, NOT VALIDATED.
-- **6 COMPLETE → INCOMPLETE:** case_123, 128, 248, 399, 447, 495. Each D18 row verified a backup as restore-blocked or a
-  connector as disabled while citing the SQL row that says `restore_allowed = 1` / `enabled = 1`.
-- **18 INCOMPLETE rows gain a cited `REPORT_ACTIVE_DATA_FLOW` and a `DISABLE_DATA_FLOW` step:** case_68, 176, 181, 182,
-  217, 296, 301, 302, 337, 338, 340, 397, 402, 445, 446, 450, 451, 500.
-
-Every cited row is captured before that case's `audit_at` and prints the requester's own email. Whether the 24 rows
-match the hidden labels is **[unverified]**.
+**518-case output [measured]:** 518 rows in request order, 348 INCOMPLETE / 160 COMPLETE / 10 NOT_APPLICABLE,
+2,947 steps, sha256 `059df99510a0f49244fa8e3460f8b31e873dd5b5102ed32003ab089dd9ff3246`. It differs from the F1
+artifact in **one row** (case_72's account, freed when sample case_06 got its evidence-named account). Strict
+validator: **3 errors (R12) and 8 warnings (R31)** — section 10.
 
 ## 4. Custom evaluation scenarios [measured]
 
 `code/evaluation/custom_scenarios.py` builds five tiny synthetic datasets (a fictional person, `.test` emails) and runs
-the production pipeline on each. Every expected row was written from the contract before running.
+the production pipeline on each.
 
-| Scenario | What it checks | Expected | Got | Result |
-|---|---|---|---|---|
-| S1 | An access request is not a deletion | NOT_APPLICABLE, [] | NOT_APPLICABLE, [] | **PASS** |
-| S2 | Workflow says COMPLETE, but a search copy remains | INCOMPLETE: finding (evidence_901), delete, verify | same | **PASS** |
-| S3 | A snapshot captured after audit_at must be ignored | INCOMPLETE, as S2 | same | **PASS** |
-| S4 | A covering snapshot before audit_at that omits the record proves absence (contract C06b) | COMPLETE: VERIFY_RECORD_ABSENT citing evidence_902 | INCOMPLETE (record reported remaining) | **FAIL** |
-| S5 | The request uses a historical email and the copy is keyed by it | INCOMPLETE, as S2 | same | **PASS** |
+| Scenario | What it checks | Expected | Result |
+|---|---|---|---|
+| S1 | An access request is not a deletion | NOT_APPLICABLE, [] | **PASS** |
+| S2 | Workflow says COMPLETE, but a search copy remains | INCOMPLETE: finding (evidence_901), delete, verify | **PASS** |
+| S3 | A snapshot captured after audit_at must be ignored | INCOMPLETE, as S2 | **PASS** |
+| S4 | A later snapshot that merely omits a record does not prove absence | INCOMPLETE, as S2 | **PASS** |
+| S5 | The request uses a historical email and the copy is keyed by it | INCOMPLETE, as S2 | **PASS** |
 
-**4/5 pass.** S4 is a real defect (section 10, item 2). The engine finds scoped-snapshot absence only after a
-resource's latest observation is already ABSENT. A later snapshot that simply omits the record does not override an
-earlier PRESENT. The error is conservative: it over-reports a remaining copy rather than claiming a false deletion.
+**5/5 pass.** S4 previously expected COMPLETE (our reading C06b) and failed. EXP-C4 implemented that reading and it
+contradicted two official sample answers (case_05, case_24 keep the record as remaining although a later snapshot
+omits it); the code change was rejected and S4's expectation now follows the official answers.
+
+Further independent tests: `code/tests/test_intent.py` (one family per intent rule, written without dataset text) and
+`code/tests/test_accounts.py` (identifier, reference and corroboration links; post-cutoff evidence never links;
+collection-file system attribution).
 
 ## 5. Evidence-validation checks [measured]
 
 - **Validator rules.** C01 (every cited ID is a real file_id, activity_id or audit_id) and C03 (every cited item was
-  captured at or before audit_at). The D18 518-case output has **0 C01 and 0 C03 errors**.
+  captured at or before audit_at). The final 518-case output has **0 C01 and 0 C03 errors**.
 - **Claims are not proof.** A SUCCESS activity never proves absence, and a FAILED one never proves presence
   (contract C04). An unresolved resource is never written as ABSENT.
 - **Screenshot facts.** Each of the 6 cached extractions was compared field by field with its image. Text,
@@ -142,12 +119,13 @@ earlier PRESENT. The error is conservative: it over-reports a remaining copy rat
 - S3 (above): post-audit evidence is ignored.
 - Unit and repro suites cover post-dated rows (D10-B), ties that keep provenance (D10-A), and replica versus primary
   scope.
-- **Pinned known defects.** `code/tests/test_audit_repro.py` keeps 16 expected-failure tests documenting known
-  defects:
+- **Pinned known defects.** `code/tests/test_audit_repro.py` keeps 12 expected-failure tests documenting known
+  defects (16 before this release; I02, I10, I11, I12 were fixed by EXP-C3 and are recorded with `fixed_in`):
   - P1–P4: log-timestamp and identifier parsing;
   - T1: a later primary 404 hides a replica copy;
   - T2: a post-dated-only resource treated as ABSENT;
-  - 9 intent cases (I02, I09–I16);
+  - 5 intent probes (I09, I13–I16: "don't keep any of my data", and field-level removals such as "remove the old
+    phone number" that are not account deletion);
   - R12-F01: the remaining uncited COMPLETE steps.
 
   T3 (equal-time ties) is documented, not pinned.
@@ -159,80 +137,62 @@ earlier PRESENT. The error is conservative: it over-reports a remaining copy rat
 | Check | Result |
 |---|---|
 | Per-row linking on screenshots naming several people | synthetic tests pass; identifiers never borrowed from neighbouring rows |
-| Cross-user contamination test (real dataset, synthetic cache) | no keys from another person on any observation |
-| Unknown person printed on a row | unresolved, never linked by resource ID (protects case_63) |
-| Worker-event timing as identity (EXP-008) | 0 legitimate links among 145 unowned resources; timing ambiguous for 138 of 139 → rejected |
-| **Account attribution in the 518 output** | **500 account steps: 186 backed by an identifier in evidence, 314 attributed only by the workflow time window** |
+| Unknown person printed on a row | unresolved, never linked by resource ID (case_63) |
+| Worker-event timing as identity for non-account resources (EXP-008) | rejected: 138 of 139 in-window resources fall in several request windows |
+| **Primary account basis in the 518 output (508 authorised cases)** | 152 identifier-backed (150 corroborated by the workflow event, 2 identifier only); 203 workflow-matched (21 the only candidate left, 182 the only candidate with the reported result); **145 ambiguous** (deterministic pick, flagged in run notes); 8 none |
+| Label-free check of the workflow fallback | hiding the identifier links of the confirmed cases and re-deriving them from the workflow window alone agrees 106/162 times (F1 window rules, kept); two alternatives were measured and rejected (strict result matching with a 15-min skew: 102/162; 120-min lead window: 122/162 but it removed the accounts of the multimodal cases and lowered dev F1 to 0.898) |
 
-The last row is the largest open identity risk. It is recorded in D19 (timing alone is insufficient) and has not
-yet been investigated.
+The ambiguous accounts are the largest open identity risk: within one reporting batch several workflows delete
+accounts with the same result, and nothing but order separates them.
 
-## 8. Experiment history (dev metrics)
+## 8. Experiment history (dev metrics: status / step F1 / exact sequence)
 
-| Experiment | Change | Status / step F1 / exact | Decision |
+| Experiment | Change | Dev | Decision |
 |---|---|---|---|
 | EXP-001 | deterministic baseline | 0.909 / 0.882 / 0.364 | accepted |
-| EXP-002 | worker-based identity linking | 0.909 / 0.869 / 0.409 | **rejected** (lower F1, risky links) |
-| EXP-003 | complete log parsing | 0.909 / 0.882 / 0.364 | accepted (D9; 518-case coverage) |
-| EXP-004 | temporal state reconstruction | 0.909 / 0.882 / 0.364 | accepted (D10) |
-| EXP-005 | clause-level intent classifier | 0.955 / 0.895 / 0.409 | **rejected** for production (D12; failed 9 of 17 independent audit probes) |
-| EXP-006A/B | production entry point; stricter R12 | 0.909 / 0.882 / 0.364 | entry point integrated |
-| EXP-007 | PDF evidence | **0.955 / 0.903 / 0.409** | integrated in D18 |
-| EXP-007G | screenshot facts (Gemini), grounding, per-row linking | same dev; R12 9 → 3 on 518 | integrated in D18 |
-| EXP-008 | worker-event resource linking | 0 changes | **rejected** (D19) |
-| EXP-009 | last screenshots | 2 extractions failed grounding; 0 changes | **rejected** (D21) |
-| F1 (D30–D32) | read SQL integer restore/flow flags; unreadable flag = unknown | same dev; reserved status 0.70 → 0.80; 24 of 518 rows corrected | **integrated** (D32) |
-
-Measured improvement from EXP-001 to D18 on dev: status +0.045 (one case), step F1 +0.021, exact sequence +0.045 (one
-case). On the 518 cases, screenshot evidence turned five COMPLETE predictions into evidence-backed INCOMPLETE ones
-(case_33, 35, 39, 50, 52) and added a retained-record verification to case_45. Whether those five are right is
-**[unverified]** (no labels), but each was checked against its image.
+| EXP-002 | worker-based identity linking | 0.909 / 0.869 / 0.409 | **rejected** |
+| EXP-003/004 | complete log parsing; temporal state | 0.909 / 0.882 / 0.364 | accepted |
+| EXP-005 | clause-level intent classifier | 0.955 / 0.895 / 0.409 | **rejected** (9 of 17 audit probes failed) |
+| EXP-007/007G | PDF text; cached screenshot facts with grounding | 0.955 / 0.903 / 0.409 | accepted (D18) |
+| EXP-008/009 | worker-event linking; more screenshots | no change | **rejected** |
+| F1 | read SQL integer restore/flow flags | 0.955 / 0.903 / 0.409 | accepted (24 of 518 rows corrected) |
+| **EXP-C1** | identifier-first accounts, reference links, workflow corroboration | 0.955 / 0.914 / 0.500 | **accepted** (1 test row changes) |
+| EXP-C1b/c | strict result + 15-min skew; 120-min lead window | 0.955 / 0.910 / 0.500; 0.955 / 0.898 / 0.500 | **rejected** (label-free agreement lower / multimodal accounts lost) |
+| **EXP-C2** | collection file takes its manifest origin as system | 0.955 / 0.938 / 0.545 | **accepted** (0 test rows change) |
+| **EXP-C3** | rule-based intent with explanations | **1.0 / 0.950 / 0.591** | **accepted** (0 test rows change; dev case_05 fixed) |
+| EXP-C4 | later snapshot omission = absence (S4) | 0.955 / 0.934 / 0.545 | **rejected** (contradicts official samples) |
 
 ## 9. Rejected approaches
 
-- **EXP-005 (intent).** Higher dev status, but it failed 9 of 17 independent probes (negation, other languages,
-  partial requests). The simpler keyword rule stays.
-- **EXP-008 (worker timing).** The dataset gives no non-temporal link. Binding principle: temporal proximity alone is
-  insufficient for identity attribution.
-- **EXP-009 (more screenshots).** The model omitted printed resource IDs and mislabelled a permitted stable reference
-  as personal identifiers. Grounding rejected every row.
-- **OCR (Tesseract, Cloud Vision).** Tesseract's installer failed its signature check, and Cloud Vision had no
-  credentials. Neither was used.
+- **Timing as identity** for non-account resources (EXP-008) and tighter account windows (EXP-C1c): no evidence link,
+  or measured losses.
+- **EXP-005 intent**: higher dev status but failed independent probes; EXP-C3 replaced the phrase list instead.
+- **EXP-C4**: "omitted from a later snapshot = absent" contradicts official answers.
+- **Reversing D18-B/D18-D to clear R12** (restore risk on case_55, catalog link on case_63): declined by the team lead
+  (C2) because the evidence does not establish restore permission or resolve the identity conflict.
 
 ## 10. Known failures and unresolved validation errors
 
-1. **3 R12 errors in the 518 output [measured].** `output.csv` stays unpublished until they are decided.
-   - case_55, account_2595: known only from one SUCCESS claim, assigned by time window.
-   - case_55, backup_9287: the screenshot shows no restore permission.
-   - case_63, marketing_001: the screenshot shows a person who matches no known identity and contradicts the catalog.
-
-   The output schema cannot express "state unknown", and no valid correction exists without a policy decision.
-
-   Root cause (D30): a resource with no usable observation is planned as ABSENT, its verification is emitted
-   unconditionally, and the status is set by "no findings". Each resource fails for a different reason:
-   - account_2595: an unsupported time-window attribution with no state evidence;
-   - backup_9287: right owner, restore state never shown;
-   - marketing_001: the only artifact shows the record present for another person.
-
-   Organizer questions Q1–Q3 are pending.
-2. **Scoped-snapshot absence (scenario S4) [measured].** Over-reports remaining copies.
-3. **Dev exact-sequence misses [measured]** (13 of 22 cases not exact):
-   - anonymized analytics profiles and retained audit records never linked to their person (cases 03, 18, 20, 21, 23,
-     25, 27, 28, 29);
-   - wrong or extra account (06, 17, 25, 29);
-   - system attribution (08);
-   - intent (05).
-4. **Account time-window attribution** (section 7).
-5. **5 of 11 screenshots unread or unusable**; their resources stay UNKNOWN.
-6. **Backups and flows with no flag field at all (D30 F3, open).** These are still verified as blocked/disabled
-   (backup_9287; case_264 is right only because its log says `decision="deny"`, which is not parsed).
-7. **Silent omissions (D30, open).** case_46 tombstone_17 and case_53 support_1034 are catalog-linked, have no usable
-   observation, and get no step.
+1. **3 R12 errors in the 518 output [measured]**, published best effort (decision C2):
+   - case_55, account_2595 VERIFY_RECORD_ABSENT with no evidence: assigned by the workflow fallback; its worker event is
+     ten hours after case_55's report (it belongs to another batch), and no evidence shows its state.
+   - case_55, backup_9287 VERIFY_RESTORE_BLOCKED with no evidence: the screenshot (evidence_32) shows the subject's
+     archive but no restore permission or block.
+   - case_63, marketing_001 VERIFY_RECORD_ABSENT with no evidence: the catalog links it to the subject, the screenshot
+     (evidence_60) shows a live profile of a person who matches no known identity.
+2. **8 R31 warnings**: cases with no primary-account step (no identifier link and no free workflow event).
+3. **Dev misses that the evidence cannot fix** (9 of 22 dev cases not exact): anonymized analytics profiles with no
+   identifier (03, 21, 25, 27, 28; only a shared worker time window links them, D19); retained audit records that
+   appear in no participant file (18, 20) or only in a bundle captured after audit_at (23, 29); one ambiguous account
+   pair (25/26).
+4. **Account attribution**: 145 of 508 primary accounts are ambiguous picks (section 7).
+5. **5 of 11 screenshots unread** (no cache entry, no model call allowed): evidence_04, 28, 37, 42, 46. Likely affected
+   test cases: case_34 (evidence_04 shows account_5762 live), case_46 (tombstone_17), case_53 (support_1034),
+   case_61 (attachment object_19). Their resources stay UNKNOWN and are never written as deleted.
+6. **Backups and flows with no flag field** (D30 F3) are still verified as blocked/disabled.
 
 ## 11. Separation of claims
 
-- **Measured:** sections 3 (including 3b/3c), 4, 5, 6, 7 and the 518-case validator counts.
-- **Estimates:** none of the metrics above.
-- **Unverified:** the hidden-grader score; whether the five screenshot-driven test predictions and the 24 F1 changes
-  match the hidden labels;
-  whether shipping the derived evidence cache is allowed (organizer guidance pending, D18-A).
+- **Measured:** sections 3, 4, 5, 6, 7 and the 518-case validator counts.
+- **Unverified:** the hidden-grader score; whether the 518 predictions match the hidden labels; whether shipping the
+  derived evidence cache is allowed (organizer guidance pending, D18-A).

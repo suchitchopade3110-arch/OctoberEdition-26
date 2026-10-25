@@ -164,7 +164,8 @@ class Auditor:
         """case_id -> primary account(s). The basis of every decision is kept in self.account_basis:
         CONFIRMED (identifier link), CORROBORATED (identifier link that the workflow's own event also names),
         WORKFLOW_UNIQUE (no identifier link; the only workflow event left after other cases' links are removed),
-        WORKFLOW_AMBIGUOUS (several remain; deterministic pick, flagged), NONE (no candidate)."""
+        WORKFLOW_RESULT_MATCH (several remain, exactly one with the reported result),
+        WORKFLOW_AMBIGUOUS (no single event fits; deterministic pick, flagged), NONE (no candidate)."""
         self.account_events = [a for a in self.activity if a["event_type"] == "DELETE_RECORD"
                                and a["target_system"] == "account_service" and a["source_system"] == "deletion_worker"]
         self.account_basis: dict[str, str] = {}
@@ -208,7 +209,9 @@ class Auditor:
             live.sort(key=lambda a: (a["reported_result"] != want, abs(_secs(a["event_time"]) - _secs(q["reported_at"]))))
             r = live[0]["resource_id"]
             assigned[cid] = [r]; owner[r] = cid
-            self.account_basis[cid] = f"WORKFLOW_AMBIGUOUS {r} among {sorted(a['resource_id'] for a in live)}"
+            same = [a["resource_id"] for a in live if a["reported_result"] == want]
+            label = "WORKFLOW_RESULT_MATCH" if len(same) == 1 else "WORKFLOW_AMBIGUOUS"
+            self.account_basis[cid] = f"{label} {r} among {sorted(a['resource_id'] for a in live)}"
         return assigned
 
     # -- evidence choice (T04, C02, C06, C10; D10)

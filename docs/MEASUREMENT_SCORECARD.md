@@ -30,3 +30,19 @@ Reserved = 10 public samples, inspected in earlier sessions, **not** a clean hol
 | Wrong account | 06, 17, 25, 29 | 06: yes (account named inside the subject's own search record); 17: yes (two lookup links, only one corroborated by a worker event in the request window); 29: follows 06; 25: no (two identical FAILED candidates) |
 | System attribution | 08 | under investigation |
 | Intent false NOT_APPLICABLE | 05 | yes (over-specific "copy of" pattern) |
+
+## Release (branch claude/intelligent-sagan-ytlgrk, after EXP-C1, C2, C3; measured 2026-10-25)
+
+| Metric | F1 baseline | Release | Target | Status |
+|---|---|---|---|---|
+| 518 output sha256 | 1503deba…91eb | 059df995…3246 (1 row differs: case_72) | — | — |
+| Strict validator errors / warnings | 3 / 8 | 3 (R12) / 8 (R31) | 0 errors | NOT MET (disclosed, decision C2) |
+| Dev status accuracy | 0.9545 | **1.0** | >= 0.95 | MET (dev) |
+| Dev step P / R / F1 | 0.943 / 0.866 / 0.903 | 0.984 / 0.918 / **0.950** | F1 >= 0.94 | MET (dev) |
+| Dev field accuracy | 0.8455 | 0.9062 | improve | MET |
+| Dev exact sequence | 0.409 | **0.591** (13/22) | >= 0.60 | NOT MET (one case short) |
+| Reserved status / F1 / exact | 0.80 / 0.830 / 0.40 | unchanged | report only | — |
+| Production tests | 126 OK, 16 xfail | 136 OK incl. 12 xfail (4 known defects fixed) | no regression | MET |
+| Custom scenarios | 4/5 | 5/5 (S4 expectation corrected to official samples) | — | MET |
+| Model calls in final run | 0 | 0 | — | — |
+| Hidden-set accuracy | unknown | unknown | — | NOT MEASURABLE |
