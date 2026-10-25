@@ -15,7 +15,8 @@ from pathlib import Path
 from contract_spec import step_sort_key
 
 from . import evidence as ev
-from .intent import authorizes_deletion
+from .decisions import UNKNOWN, CaseTrace, ResourceDecision
+from .intent import classify
 from .policy import DEFAULT_BY_PREFIX, load_rules, plan_resource
 from .temporal import choose, obs_time
 
@@ -128,14 +129,22 @@ class Auditor:
         return self.by_email.get(ev.norm(email))
 
     def linked_resources(self, uid: str, audit_at: str) -> set[str]:
+        return set(self.linked_with_reasons(uid, audit_at))
+
+    def linked_with_reasons(self, uid: str, audit_at: str) -> dict[str, str]:
+        """Resource -> first reason it is linked to the subject: a subject identifier in an observation available at
+        audit_at, or a catalog activity naming the subject. Never timing."""
         keys = self.keys[uid]
-        res = {o.resource_id for o in self.idx.obs if o.captured_at <= audit_at and o.keys & keys}
+        res: dict[str, str] = {}
+        for o in self.idx.obs:
+            if o.captured_at <= audit_at and o.keys & keys:
+                res.setdefault(o.resource_id, f"identifier in {o.file_id}")
         for a in self.links:
             if a["event_time"] > audit_at:
                 continue
             words = set(re.findall(r"[\w.+@-]+", ev.norm(a["details"])))
             if words & keys:
-                res.add(a["resource_id"])
+                res.setdefault(a["resource_id"], f"catalog link {a['activity_id']}")
         return res
 
     # -- account resolution (R31): identifier links first, then the deletion workflow's own account event
@@ -239,66 +248,96 @@ class Auditor:
             return s.file_id, "scoped"
         return "", "none"
 
-    # -- one case
+    # -- one case: intent -> subject -> candidate resources -> one decision per resource -> plan -> status
     def audit(self, q: dict, accounts: list[str] | None, notes: list[str]) -> tuple[str, list[dict]]:
-        if not authorizes_deletion(q["request_text"]):
+        intent = classify(q["request_text"])
+        trace = CaseTrace(q["case_id"], intent.rule, intent.evidence)
+        self.last_trace = trace
+        if not intent.authorizes:
+            trace.status, trace.status_reason = "NOT_APPLICABLE", f"request does not authorise deletion ({intent.rule})"
             return "NOT_APPLICABLE", []
         uid = self.subject(q["email"])
+        trace.subject = uid
         audit_at = q["audit_at"]
         if not uid:
             notes.append("no identity match")
+            trace.status, trace.status_reason = "INCOMPLETE", "request email matches no current or historical identity"
             return "INCOMPLETE", []
-        # The primary account comes only from resolve_accounts (identifier links, else the workflow event); other
-        # account ids found by key overlap are not added (a second linked account is a different workflow's).
-        rids = {r for r in self.linked_resources(uid, audit_at) if not r.startswith("account_")}
-        rids |= set(accounts or [])
         if hasattr(self, "account_basis") and q["case_id"] in self.account_basis:
             notes.append(f"account: {self.account_basis[q['case_id']]}")
         F, R, V = [], [], []
-        evidence_for: dict[tuple, str] = {}
-        for rid in sorted(rids):
-            prefix = re.sub(r"_\d+$", "", rid)
-            o = self.latest(rid, audit_at)
-            system = o.system if o else self.idx.system_for(rid)
-            cat = (o.category if o and o.category else None) or DEFAULT_BY_PREFIX.get(prefix)
-            if o and o.category is None:
-                cats = [x.category for x in self.obs_by_res[rid] if x.category and x.captured_at <= audit_at]
-                cat = cats[-1] if cats else cat
-            if cat is None:
-                notes.append(f"unknown category for {prefix}")
+        for rid, attribution in sorted(self._candidates(q, uid, accounts).items()):
+            d = self._decide(rid, attribution, audit_at, notes)
+            if d is None:
+                trace.skipped.append(f"{rid}: no data category (no rule applies)")
                 continue
-            action = "FLOW" if cat == "DATA_FLOW" else self.rules.get(cat)
-            if o is None:
-                # Internal evidence state UNKNOWN (no usable observation at audit_at). It is never an output label.
-                # The accepted baseline still plans the resource as ABSENT (audit finding F02); how such cases
-                # should be output is an open decision (EXP-006B / D12), so behaviour is unchanged here.
-                notes.append(f"UNKNOWN state: {rid} has no usable observation at audit_at")
-                st = "ABSENT"
-            else:
-                st = o.state
-                if st == "PRESENT" and action in ("REDACT", "ANONYMIZE"):
-                    st = "PRESENT_ID"
-            if action == "DELETE" and st == "ABSENT":
-                fid, strength = self.absence_evidence(rid, system, audit_at)
-                if strength == "none":
-                    notes.append(f"absence unproven for {prefix}")
-                evidence_for[(system, rid)] = fid
-            elif st in ev.UNKNOWN_FLAG_STATES:
-                # The record has a restore/flow flag nobody can read: it proves neither blocked nor open.
-                notes.append(f"UNKNOWN flag state: {rid} {st} in {o.file_id}; not cited as proof")
-                evidence_for[(system, rid)] = ""
-            else:
-                evidence_for[(system, rid)] = o.file_id if o else ""
-            f, r, v = plan_resource(cat, action, st, system, rid, o.file_id if o else "")
+            trace.decisions.append(d)
+            f, r, v = plan_resource(d.category, d.action, d.planned_state, d.system, rid, d.state_source_file)
+            d.finding = bool(f)
             F += f; R += r; V += v
         status = "INCOMPLETE" if F else "COMPLETE"
         if status == "COMPLETE":
+            cite = {(d.system, d.resource_id): d.cited_evidence for d in trace.decisions}
             for s in V:
-                s["evidence_id"] = evidence_for.get((s["system_id"], s["resource_id"]), "")
+                s["evidence_id"] = cite.get((s["system_id"], s["resource_id"]), "")
             unproven = [s["resource_id"] for s in V if not s["evidence_id"]]
             if unproven or not V:
                 notes.append(f"UNPROVEN COMPLETE: no evidence proves {unproven or 'any verification'} (audit F01/C07)")
+            trace.status_reason = ("no violation found; every verification cites evidence" if V and not unproven
+                                   else f"no violation found, but unproven: {unproven or 'no verification'}")
+        else:
+            trace.status_reason = "violations: " + ", ".join(d.resource_id for d in trace.decisions if d.finding)
+        trace.status = status
         steps = sorted(F + R + V, key=step_sort_key)
         for i, s in enumerate(steps, start=1):
             s["step_no"] = i
         return status, steps
+
+    def _candidates(self, q: dict, uid: str, accounts: list[str] | None) -> dict[str, str]:
+        """Resources linked to the subject at audit_at, each with the reason it is the subject's. The primary
+        account comes only from resolve_accounts (a second identifier-linked account belongs to another workflow)."""
+        out = {r: why for r, why in self.linked_with_reasons(uid, q["audit_at"]).items() if not r.startswith("account_")}
+        basis = getattr(self, "account_basis", {}).get(q["case_id"], "passed in by caller")
+        for a in accounts or []:
+            out[a] = f"primary account: {basis}"
+        return out
+
+    def _decide(self, rid: str, attribution: str, audit_at: str, notes: list[str]) -> ResourceDecision | None:
+        """Category, rule, state at audit_at and the evidence a verification could cite, for one resource."""
+        prefix = re.sub(r"_\d+$", "", rid)
+        o = self.latest(rid, audit_at)
+        system = o.system if o else self.idx.system_for(rid)
+        cat = (o.category if o and o.category else None) or DEFAULT_BY_PREFIX.get(prefix)
+        if o and o.category is None:
+            cats = [x.category for x in self.obs_by_res[rid] if x.category and x.captured_at <= audit_at]
+            cat = cats[-1] if cats else cat
+        if cat is None:
+            notes.append(f"unknown category for {prefix}")
+            return None
+        action = "FLOW" if cat == "DATA_FLOW" else self.rules.get(cat)
+        if o is None:
+            # UNKNOWN: no usable observation at audit_at. Planned as a future check (a verification step without a
+            # finding); in a COMPLETE case it can cite nothing, so it surfaces as an unproven step (R12), never as proof.
+            notes.append(f"UNKNOWN state: {rid} has no usable observation at audit_at")
+            d = ResourceDecision(rid, system, cat, action, attribution, UNKNOWN,
+                                 "no usable observation at audit_at", planned_state="ABSENT")
+        else:
+            st = o.state
+            if st == "PRESENT" and action in ("REDACT", "ANONYMIZE"):
+                st = "PRESENT_ID"
+            src = f"{o.file_id} @ {obs_time(o)[0]}" + (f" ({o.extraction})" if getattr(o, "extraction", None) else "")
+            d = ResourceDecision(rid, system, cat, action, attribution, st, src, planned_state=st, cited_evidence=o.file_id)
+        d.state_source_file = o.file_id if o else ""
+        if action == "DELETE" and d.planned_state == "ABSENT":
+            fid, strength = self.absence_evidence(rid, system, audit_at)
+            if strength == "none":
+                notes.append(f"absence unproven for {prefix}")
+            d.cited_evidence = fid
+            d.notes.append(f"absence evidence: {strength}" + (f" ({fid})" if fid else ""))
+        elif d.state in ev.UNKNOWN_FLAG_STATES:
+            # The record has a restore/flow flag nobody can read: it proves neither blocked nor open.
+            notes.append(f"UNKNOWN flag state: {rid} {d.state} in {o.file_id}; not cited as proof")
+            d.cited_evidence = ""
+        elif o is None:
+            d.cited_evidence = ""
+        return d

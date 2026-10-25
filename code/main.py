@@ -27,6 +27,7 @@ CODE_DIR = Path(__file__).resolve().parent
 REPO_ROOT = CODE_DIR.parent
 sys.path.insert(0, str(CODE_DIR))
 
+from ghostaudit.decisions import check_steps_backed  # noqa: E402
 from ghostaudit.multimodal import MultimodalAuditor  # noqa: E402
 from ghostaudit.evidence import read_csv  # noqa: E402
 from ghostaudit.intent import authorizes_deletion  # noqa: E402
@@ -74,7 +75,7 @@ def run(data_dir: Path, requests_path: Path, pool_paths: list[Path], cases: set[
     accounts = auditor.resolve_accounts(pool)
     reqs = sorted((q for q in read_csv(requests_path) if cases is None or q["case_id"] in cases),
                   key=lambda q: case_sort_key(q["case_id"]))
-    rows, notes, state_notes = [], {}, {}
+    rows, notes, state_notes, traces, trace_problems = [], {}, {}, [], []
     for q in reqs:
         n: list[str] = []
         auditor.state_log = {}
@@ -82,10 +83,12 @@ def run(data_dir: Path, requests_path: Path, pool_paths: list[Path], cases: set[
         rows.append([q["case_id"], status, serialise_steps(steps)])
         notes[q["case_id"]] = n
         state_notes[q["case_id"]] = auditor.state_log
+        traces.append(auditor.last_trace.to_json())
+        trace_problems += check_steps_backed(auditor.last_trace, steps)  # every step must come from a decision
     meta = {"index_s": round(t_index, 3), "observations": len(auditor.idx.obs), "cases": len(rows),
             "model_calls": 0, "input_tokens": 0, "output_tokens": 0, "cost_usd": 0.0,
             "images": auditor.image_report, "pdfs": auditor.extraction,
-            "notes": notes, "state_notes": state_notes}
+            "notes": notes, "state_notes": state_notes, "traces": traces, "trace_problems": trace_problems}
     return rows, meta
 
 
@@ -131,6 +134,11 @@ def main(argv: list[str] | None = None) -> int:
     args.work_dir.mkdir(parents=True, exist_ok=True)
     candidate = args.work_dir / "output.candidate.csv"
     write_rows(candidate, rows)
+    # Per-case reasoning trace: intent rule, subject, one typed decision per resource (attribution, state, cited
+    # evidence), status reason. One JSON object per line.
+    with (args.work_dir / "case_traces.jsonl").open("w", encoding="utf-8", newline="\n") as fh:
+        for t in meta.pop("traces"):
+            fh.write(json.dumps(t, ensure_ascii=False, sort_keys=True) + "\n")
 
     all_requests = {q["case_id"]: q for q in read_csv(requests_path)}
     scoped = all_requests if cases is None else {c: all_requests[c] for c in cases if c in all_requests}
@@ -149,6 +157,9 @@ def main(argv: list[str] | None = None) -> int:
     (args.work_dir / "run_notes.json").write_text(json.dumps(meta, indent=2, ensure_ascii=False), encoding="utf-8")
 
     s = result.summary()
+    if meta["trace_problems"]:  # a step without a recorded decision is an internal error, never published
+        print("  TRACE CONSISTENCY FAILED:", *meta["trace_problems"][:10], sep="\n    ")
+        return 2
     print(json.dumps({k: meta[k] for k in ("cases", "runtime_s", "peak_mem_mb", "model_calls")} |
                      {"valid": s["valid"], "errors": s["errors"], "warnings": s["warnings"], "published": meta["published"]}))
     for issue in result.errors[:20]:
