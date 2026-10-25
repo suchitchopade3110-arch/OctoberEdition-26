@@ -33,6 +33,61 @@ Rule IDs refer to `docs/contract.md`.
 - Validator: authorised rows with `[]` become errors (R12/R13); internal UNKNOWN / UNPROVEN notes; audit repro fixture and clean-entry-point tests. Output unchanged.
 - **Status:** awaiting team lead.
 
+## D32: F1 accepted and integrated; F1 is the new production baseline (team lead, 2026-10-25)
+
+Decision (team lead): "ACCEPT D31/F1. AUTHORIZE PRODUCTION INTEGRATION AND LOCAL COMMIT." No push.
+
+Background:
+- D30 (investigation only) traced the 3 R12 errors to a shared mechanism: no usable observation is planned as
+  ABSENT, verification is emitted unconditionally, and status means "no findings". Each resource fails for a
+  different reason (runs/d30_rootcause/D30_ROOT_CAUSE_REPORT.md).
+- D30 also found a separate defect: SQL inventories store `restore_allowed` / `enabled` as
+  `INTEGER CHECK (x IN (0,1))`, and `evidence.truthy()` ignored integers. The policy then verified open restores and
+  active flows as blocked/disabled, citing the row that showed the opposite.
+- D31 implemented the fix in an isolated worktree (branch `exp/d31-f1`) and recommended ACCEPT
+  (runs/d31_f1/D31_F1_DECISION_REPORT.md).
+
+Change (applied exactly as reviewed in runs/d31_f1/f1.patch):
+- `code/ghostaudit/evidence.py`: field-scoped `flag()`.
+  - Integers 0/1 are read only for `enabled` and `restore_allowed`. Bools and "true"/"false" are read as before.
+  - "1"/"0" strings, null, malformed and unexpected numbers are unknown.
+  - A present but unreadable flag gives `RESTORE_UNKNOWN` / `FLOW_UNKNOWN`.
+  - `eligible` + `deletion_block`: OPEN only for true/false, BLOCKED for not-eligible or blocked, otherwise unknown.
+- `code/ghostaudit/auditor.py`: an unknown flag state is never cited as proof.
+- `code/tests/test_f1_flags.py`: 25 new tests; 13 of them fail on the pre-F1 code.
+- Not changed: the validator, the evidence cache, S4, the R12 handling, and the policy path for backups/flows that
+  have no flag field (D30 F3).
+
+Verified on main before commit:
+- Production tests: 126 pass (101 + 25; 16 expected failures). Evaluator tests: 33 pass. Custom scenarios: 4/5
+  (S4 still fails, known).
+- 518 output: sha256 `1503deba33ea51f173e6e11f8da6e538be86c078f8df5cc55f6b38cc017b91eb`, identical to the D31 experiment.
+  A clean copy (no .env, minimal env) reproduces it. 0 model calls.
+- Exactly 24 rows change against D18:
+  - 6 COMPLETE → INCOMPLETE: case_123, 128, 248, 399, 447, 495;
+  - 18 INCOMPLETE rows gain a cited `REPORT_ACTIVE_DATA_FLOW` + `DISABLE_DATA_FLOW`: case_68, 176, 181, 182, 217, 296,
+    301, 302, 337, 338, 340, 397, 402, 445, 446, 450, 451, 500.
+  - Every cited row is pre-cutoff and prints the requester's email. There are no unexpected changes.
+- Validator: 3 errors (R12: case_55 ×2, case_63) and 8 warnings (R31), the same as D18.
+- Dev metrics are unchanged (0.9545 / 0.9027 / 0.8455 / 0.4091). Reserved status went 0.70 → 0.80 and step F1
+  0.769 → 0.830. The reserved split was inspected in D30, so those numbers are not a clean holdout and are reported
+  separately.
+- The evidence cache is unchanged (index.json sha `d9a69859…`, equal to the frozen D18 copy).
+
+Baselines:
+- F1 reference: runs/f1_baseline/ (NOT VALIDATED; SHA256SUMS; per-case CHANGES_vs_D18.md).
+- D18 is kept in runs/d18_accepted/ (sha `51289291…`).
+- Pre-F1 checkpoint: local tag `pre-f1-checkpoint` = `bc77faf`.
+
+Still open:
+- the 3 R12 errors (organizer Q1–Q3);
+- D30 F3 (no-flag backups/flows);
+- the silent omissions (case_46, case_53);
+- time-window account attribution;
+- S4.
+
+Root `output.csv` is not published.
+
 ## D27: D26 accepted; D25/D26 documentation committed locally (team lead, 2026-10-25)
 
 KEEP the D25/D26 documentation as one local commit (no push): docs/DECISIONS.md, docs/ORGANIZER_QUESTIONS.md,

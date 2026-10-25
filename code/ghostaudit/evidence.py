@@ -87,6 +87,25 @@ def truthy(v) -> bool | None:
     return True if s == "true" else False if s == "false" else None
 
 
+# Boolean flags stored as SQL `INTEGER NOT NULL CHECK (<field> IN (0,1))` in the inventory snapshots
+# (connector_subscriptions.enabled, backup_restore_entries.restore_allowed). Only these fields accept 0/1.
+SCHEMA_INT_FLAGS = {"enabled", "restore_allowed"}
+# A flag field that is present but cannot be read (null, malformed, unexpected number) is an explicit unknown,
+# never "blocked" or "disabled".
+UNKNOWN_FLAG_STATES = {"RESTORE_UNKNOWN", "FLOW_UNKNOWN"}
+
+
+def flag(field: str, v) -> bool | None:
+    """Read one boolean flag field. True/False, or None when the value is null, malformed or unexpected."""
+    if isinstance(v, bool):
+        return v
+    if isinstance(v, int) and field in SCHEMA_INT_FLAGS:
+        return {1: True, 0: False}.get(v)        # 2, -1, ... stay unknown
+    if isinstance(v, str):
+        return truthy(v)                           # "true"/"false" only; "1"/"0" are not justified by any schema
+    return None
+
+
 def infer_state(rec: dict, category: str | None) -> tuple[str, bool]:
     """Return (state, explicit_absent) from one record's fields."""
     r = {k.lower(): v for k, v in rec.items()}
@@ -99,13 +118,19 @@ def infer_state(rec: dict, category: str | None) -> tuple[str, bool]:
         return ("RESTORE_OPEN" if category == "BACKUP_ARCHIVE" else "FLOW_ACTIVE"), False
     if res in RESULT_STATE and res != "found":
         return RESULT_STATE[res], False
-    if "enabled" in r and truthy(r["enabled"]) is not None:
-        return ("FLOW_ACTIVE" if truthy(r["enabled"]) else "FLOW_DISABLED"), False
-    if "restore_allowed" in r and truthy(r["restore_allowed"]) is not None:
-        return ("RESTORE_OPEN" if truthy(r["restore_allowed"]) else "RESTORE_BLOCKED"), False
+    if "enabled" in r:
+        on = flag("enabled", r["enabled"])
+        return ("FLOW_UNKNOWN" if on is None else "FLOW_ACTIVE" if on else "FLOW_DISABLED"), False
+    if "restore_allowed" in r:
+        allowed = flag("restore_allowed", r["restore_allowed"])
+        return ("RESTORE_UNKNOWN" if allowed is None else "RESTORE_OPEN" if allowed else "RESTORE_BLOCKED"), False
     if "eligible" in r:
-        open_ = truthy(r.get("eligible")) and not truthy(r.get("deletion_block"))
-        return ("RESTORE_OPEN" if open_ else "RESTORE_BLOCKED"), False
+        eligible, blocked = flag("eligible", r.get("eligible")), flag("deletion_block", r.get("deletion_block"))
+        if eligible is False or blocked is True:
+            return "RESTORE_BLOCKED", False
+        if eligible is True and blocked is False:
+            return "RESTORE_OPEN", False
+        return "RESTORE_UNKNOWN", False
     if "direct_identifiers" in r:
         return ("PRESENT_ID" if norm(r["direct_identifiers"]) != "0" else "PRESENT_CLEAN"), False
     ids = [k for k in DIRECT_ID_FIELDS if k in r and norm(r[k]) not in NULLS]

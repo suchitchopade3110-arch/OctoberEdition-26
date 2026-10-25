@@ -621,3 +621,34 @@ Proposed guard (spike/exp009_reconcile.py): PRESENT_WITH_IDENTIFIERS needs a pri
 a stable reference alone -> review. Applied to every cached response: flags only evidence_42's five rows (already rejected);
 0 effect on production entries and predictions. 14 synthetic edge-case tests pass (spike/test_exp009_reconcile.py).
 Prediction changes: none. R12 errors: 3 (case_55 x2, case_63).
+
+## F1 (D30 → D31 → D32) — SQL integer restore/flow flags — INTEGRATED (2026-10-25)
+
+**Finding (D30, read-only probes in runs/d30_rootcause/).** 35 SQL inventory rows store `restore_allowed` / `enabled`
+as `INTEGER CHECK (x IN (0,1))`. `evidence.truthy()` returned None for integers, so the rows fell through to "present
+record". `policy.plan_resource` then verified every non-open backup / non-active flow as blocked/disabled, citing that
+same row. The validator cannot see this: the citations are real and pre-cutoff.
+
+**Simulation (D30).** A monkeypatched run predicted 24 changed rows, 6 of them status changes. R12 stayed unchanged.
+
+**Experiment (D31, branch exp/d31-f1, worktree runs/d31_f1/wt).**
+- Change: a field-scoped `flag()`. Integers only for the two schema-declared fields. Present but unreadable flags
+  become `RESTORE_UNKNOWN` / `FLOW_UNKNOWN`, which the auditor never cites.
+- Tests: 25 new tests, 13 of which fail on the old code.
+- Result: exactly the predicted 24 rows changed, with no unexpected change. Every cited row is pre-cutoff and names
+  the requester.
+- Dev metrics are identical. Reserved status went 0.70 → 0.80 and step F1 0.769 → 0.830 (the reserved split had been
+  inspected).
+- Sample case_09 is now INCOMPLETE with `REPORT_RESTORE_RISK` [evidence_93], as in the public answer (one separate
+  retained-record step is still missing).
+
+**Integration (D32).** The patch was applied unchanged to main and the full verification repeated. The 518 sha256 is
+`1503deba33ea51f173e6e11f8da6e538be86c078f8df5cc55f6b38cc017b91eb`, frozen in runs/f1_baseline/ (NOT VALIDATED).
+Validator: 3 R12 errors and 8 R31 warnings (unchanged). Clean copy reproduces the output; the cache is unchanged.
+
+**Not addressed (open):**
+- D30 F2: the R12 rows' label needs organizer Q1.
+- D30 F3: backups/flows with no flag field still verify as blocked/disabled.
+- D30 F4: a catalog row contradicted by its own artifact.
+- D30 F5: time-window account attribution.
+- S4.

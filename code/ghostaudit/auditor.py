@@ -234,6 +234,10 @@ class Auditor:
                 if strength == "none":
                     notes.append(f"absence unproven for {prefix}")
                 evidence_for[(system, rid)] = fid
+            elif st in ev.UNKNOWN_FLAG_STATES:
+                # The record has a restore/flow flag nobody can read: it proves neither blocked nor open.
+                notes.append(f"UNKNOWN flag state: {rid} {st} in {o.file_id}; not cited as proof")
+                evidence_for[(system, rid)] = ""
             else:
                 evidence_for[(system, rid)] = o.file_id if o else ""
             f, r, v = plan_resource(cat, action, st, system, rid, o.file_id if o else "")

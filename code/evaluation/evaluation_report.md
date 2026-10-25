@@ -1,6 +1,7 @@
 # Evaluation report — Ghost Data Still Exists
 
-Baseline evaluated: **D18**, local commit `6c0533c` (production `code/main.py` + `code/ghostaudit/`).
+Baseline evaluated: **F1 (D32)**, the local commit that applies the integer-flag fix on top of `bc77faf`
+(production `code/main.py` + `code/ghostaudit/`). The previous baseline D18 (`6c0533c`) is kept for comparison.
 Every number below was re-measured on 2026-10-25 from the committed code unless marked otherwise.
 
 Legend: **[measured]** reproduced by a command in this report · **[estimate]** a judgement, not measured ·
@@ -25,8 +26,14 @@ The agent is **deterministic first**. No model is called while auditing a reques
    if there are 0 errors.
 
 Methodology: the 32 public sample cases are split into **22 development** cases (tuning and measurement) and
-**10 reserved** cases (`code/evaluation/splits.py`). Reserved cases were never scored during this work. The local
-evaluator (`code/evaluation/eval.py`) compares predictions with the public sample answers.
+**10 reserved** cases (`code/evaluation/splits.py`). The local evaluator (`code/evaluation/eval.py`) compares
+predictions with the public sample answers.
+
+**Reserved-set disclosure.** All 32 samples, reserved ones included, were inspected during the kickoff analysis. During
+the D30 root-cause investigation the reserved answers were also compared with our output (that is how sample case_09
+was identified as an example of the integer-flag defect). Reserved metrics were then scored at the team lead's request
+in D31/D32 (section 3b). The F1 fix itself was derived from the SQL schema declarations, not tuned on reserved cases.
+Reserved results are therefore **not** an untouched holdout and are reported separately.
 
 ## 2. Dataset size and limitations
 
@@ -54,8 +61,39 @@ then `python code/evaluation/eval.py --pred runs/dev.csv --requests dataset/samp
 | Policy compliance | 1.0 |
 | Validator errors / warnings (32 sample rows) | 0 / 0 |
 
+F1 did not change any dev prediction (no dev case has an integer flag); the dev numbers above are identical for D18
+and F1.
+
 On the full 518-case file the strict validator reports **3 errors (all R12) and 8 warnings (R31)** [measured]
-(section 10).
+(section 10), the same for D18 and F1.
+
+### 3b. Reserved split (10 cases) — separate, not a clean holdout [measured]
+
+Command: as above, with `--split reserved --allow-reserved`.
+
+| Metric | D18 | F1 |
+|---|---|---|
+| Status accuracy | 0.70 (7/10) | **0.80** (8/10) |
+| Step precision / recall / F1 | 0.889 / 0.678 / 0.769 | 0.936 / 0.746 / **0.830** |
+| Field accuracy (strict) | 0.707 | 0.748 |
+| Sequence accuracy (exact case) | 0.40 | 0.40 |
+
+The only sample row F1 changes is case_09:
+- D18: COMPLETE, verifying backup_4978 as restore-blocked while evidence_93 says `restore_allowed = 1`.
+- F1: INCOMPLETE, `REPORT_RESTORE_RISK` [evidence_93] → `BLOCK_RESTORE` → future checks. This matches the public answer
+  except a separate retained-record check (audit_record_4902).
+
+### 3c. F1 effect on the 518 cases [measured]
+
+F1 changes exactly **24 of 518** rows relative to D18. The candidate's sha256 is
+`1503deba33ea51f173e6e11f8da6e538be86c078f8df5cc55f6b38cc017b91eb`, frozen in `runs/f1_baseline/`, NOT VALIDATED.
+- **6 COMPLETE → INCOMPLETE:** case_123, 128, 248, 399, 447, 495. Each D18 row verified a backup as restore-blocked or a
+  connector as disabled while citing the SQL row that says `restore_allowed = 1` / `enabled = 1`.
+- **18 INCOMPLETE rows gain a cited `REPORT_ACTIVE_DATA_FLOW` and a `DISABLE_DATA_FLOW` step:** case_68, 176, 181, 182,
+  217, 296, 301, 302, 337, 338, 340, 397, 402, 445, 446, 450, 451, 500.
+
+Every cited row is captured before that case's `audit_at` and prints the requester's own email. Whether the 24 rows
+match the hidden labels is **[unverified]**.
 
 ## 4. Custom evaluation scenarios [measured]
 
@@ -91,6 +129,13 @@ earlier PRESENT. The error is conservative: it over-reports a remaining copy rat
   - a screenshot whose person contradicts the catalog;
   - a ticket number used instead of the resource ID.
 - **No dev regression.** Dev predictions were byte-identical before and after screenshot integration.
+- **Boolean flags (F1).** SQL inventories store `restore_allowed` and `enabled` as `INTEGER CHECK (x IN (0,1))`. Before
+  F1, those 35 rows were not read as flags, and the policy verified open restores and active flows as blocked/disabled
+  while citing the row that showed the opposite.
+  - Now integers 0/1 are read for these two schema-declared fields only.
+  - A present but unreadable flag (null, malformed, unexpected number) is an explicit unknown that is never cited as
+    proof.
+  - 25 regression tests (`code/tests/test_f1_flags.py`) cover the cases; 13 of them fail on the pre-F1 code.
 
 ## 6. Temporal correctness checks [measured]
 
@@ -136,6 +181,7 @@ yet been investigated.
 | EXP-007G | screenshot facts (Gemini), grounding, per-row linking | same dev; R12 9 → 3 on 518 | integrated in D18 |
 | EXP-008 | worker-event resource linking | 0 changes | **rejected** (D19) |
 | EXP-009 | last screenshots | 2 extractions failed grounding; 0 changes | **rejected** (D21) |
+| F1 (D30–D32) | read SQL integer restore/flow flags; unreadable flag = unknown | same dev; reserved status 0.70 → 0.80; 24 of 518 rows corrected | **integrated** (D32) |
 
 Measured improvement from EXP-001 to D18 on dev: status +0.045 (one case), step F1 +0.021, exact sequence +0.045 (one
 case). On the 518 cases, screenshot evidence turned five COMPLETE predictions into evidence-backed INCOMPLETE ones
@@ -161,6 +207,14 @@ case). On the 518 cases, screenshot evidence turned five COMPLETE predictions in
    - case_63, marketing_001: the screenshot shows a person who matches no known identity and contradicts the catalog.
 
    The output schema cannot express "state unknown", and no valid correction exists without a policy decision.
+
+   Root cause (D30): a resource with no usable observation is planned as ABSENT, its verification is emitted
+   unconditionally, and the status is set by "no findings". Each resource fails for a different reason:
+   - account_2595: an unsupported time-window attribution with no state evidence;
+   - backup_9287: right owner, restore state never shown;
+   - marketing_001: the only artifact shows the record present for another person.
+
+   Organizer questions Q1–Q3 are pending.
 2. **Scoped-snapshot absence (scenario S4) [measured].** Over-reports remaining copies.
 3. **Dev exact-sequence misses [measured]** (13 of 22 cases not exact):
    - anonymized analytics profiles and retained audit records never linked to their person (cases 03, 18, 20, 21, 23,
@@ -170,10 +224,15 @@ case). On the 518 cases, screenshot evidence turned five COMPLETE predictions in
    - intent (05).
 4. **Account time-window attribution** (section 7).
 5. **5 of 11 screenshots unread or unusable**; their resources stay UNKNOWN.
+6. **Backups and flows with no flag field at all (D30 F3, open).** These are still verified as blocked/disabled
+   (backup_9287; case_264 is right only because its log says `decision="deny"`, which is not parsed).
+7. **Silent omissions (D30, open).** case_46 tombstone_17 and case_53 support_1034 are catalog-linked, have no usable
+   observation, and get no step.
 
 ## 11. Separation of claims
 
-- **Measured:** sections 3, 4, 5, 6, 7 and the 518-case validator counts.
+- **Measured:** sections 3 (including 3b/3c), 4, 5, 6, 7 and the 518-case validator counts.
 - **Estimates:** none of the metrics above.
-- **Unverified:** the hidden-grader score; whether the five screenshot-driven test predictions match the hidden labels;
+- **Unverified:** the hidden-grader score; whether the five screenshot-driven test predictions and the 24 F1 changes
+  match the hidden labels;
   whether shipping the derived evidence cache is allowed (organizer guidance pending, D18-A).
