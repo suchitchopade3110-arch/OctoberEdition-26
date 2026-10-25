@@ -28,3 +28,10 @@ python3 code/evaluation/custom_scenarios.py
 
 `docs/GOALS.md` (targets), `docs/MEASUREMENT_SCORECARD.md` (numbers), `docs/ACTIVE_EXPERIMENT.md` (what is in flight),
 `docs/DECISION_REGISTER.md` (cloud-session decisions; the historical register is `docs/DECISIONS.md`, unchanged).
+
+## Release state (2026-10-25, after the deadline override)
+
+- Development closed after EXP-C3 (accepted) and EXP-C4 (rejected). See `docs/RELEASE_READINESS.md` for artifact
+  hashes, the dashboard and the interview brief, and `docs/DECISION_REGISTER.md` for decisions C2 (R12 best effort) and
+  C3 (deadline).
+- Submitted-candidate output: `python code/main.py --best-effort` -> sha256 `059df995…3246`.
