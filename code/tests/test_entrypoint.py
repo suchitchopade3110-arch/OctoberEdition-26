@@ -60,5 +60,26 @@ class CleanEntryPoint(unittest.TestCase):
         self.assertEqual((self.notes["model_calls"], self.notes["input_tokens"], self.notes["output_tokens"]), (0, 0, 0))
 
 
+
+class TraceGateBlocksPublication(unittest.TestCase):
+    """D48: an inconsistent trace must never publish, not even with --best-effort; an existing output is untouched."""
+
+    def test_inconsistent_trace_cannot_publish(self):
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("ghost_main_gate", CODE / "main.py")
+        entry = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(entry)
+        entry.check_steps_backed = lambda trace, steps: [f"{trace.case_id}: injected inconsistency"]
+        with tempfile.TemporaryDirectory() as tmp:
+            out, work = Path(tmp) / "output.csv", Path(tmp) / "work"
+            out.write_text("previous release\n", encoding="utf-8")
+            code = entry.main(["--best-effort", "--output", str(out), "--work-dir", str(work)])
+            self.assertEqual(code, 2)
+            self.assertEqual(out.read_text(encoding="utf-8"), "previous release\n")
+            notes = json.loads((work / "run_notes.json").read_text(encoding="utf-8"))
+            self.assertTrue(notes["blocked_by_trace_gate"])
+            self.assertIsNone(notes["published"])
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

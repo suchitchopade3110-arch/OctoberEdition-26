@@ -148,17 +148,22 @@ def main(argv: list[str] | None = None) -> int:
                 validation=result.summary(), candidate=str(candidate),
                 errors=[vars(i) for i in result.errors], warnings=[vars(i) for i in result.warnings])
 
+    # Trace consistency gate, checked BEFORE anything is published (also under --best-effort): a step that is not
+    # backed by a recorded decision, or a COMPLETE step citing other evidence than its decision, is an internal error.
+    trace_ok = not meta["trace_problems"]
     published = False
-    if cases is None and (result.ok or args.best_effort):
+    if cases is None and trace_ok and (result.ok or args.best_effort):
         shutil.copyfile(candidate, args.output)  # the candidate stays in the work dir for audit
         published = True
     meta["published"] = str(args.output) if published else None
     meta["published_despite_validation_errors"] = published and not result.ok
+    meta["blocked_by_trace_gate"] = not trace_ok
     (args.work_dir / "run_notes.json").write_text(json.dumps(meta, indent=2, ensure_ascii=False), encoding="utf-8")
 
     s = result.summary()
-    if meta["trace_problems"]:  # a step without a recorded decision is an internal error, never published
+    if not trace_ok:
         print("  TRACE CONSISTENCY FAILED:", *meta["trace_problems"][:10], sep="\n    ")
+        print(f"  {args.output} was NOT written (trace gate); candidate kept at {candidate}")
         return 2
     print(json.dumps({k: meta[k] for k in ("cases", "runtime_s", "peak_mem_mb", "model_calls")} |
                      {"valid": s["valid"], "errors": s["errors"], "warnings": s["warnings"], "published": meta["published"]}))

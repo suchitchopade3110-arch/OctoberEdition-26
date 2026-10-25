@@ -113,7 +113,7 @@ class MultimodalAuditor(Auditor):
                     rep["review"].append(f"row {row_no} {rid}: {why_link}")
                     continue
                 if c is not None and lines is not None:
-                    disagree = ocr.cross_check(r, rid, lines)
+                    disagree = ocr.cross_check(r, rid, lines, self._users_for)
                     if disagree:  # the two independent readers must agree on what is printed
                         rep["review"].append(f"row {row_no} {rid}: {disagree}")
                         continue

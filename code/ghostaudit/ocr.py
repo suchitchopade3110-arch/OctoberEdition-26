@@ -4,8 +4,9 @@ Runtime role (no network, no key, deterministic):
   1. read_lines(): every screenshot is read by a local OCR model (RapidOCR, ONNX runtime). The text lines and their
      positions are cached by the image's sha256 in code/evidence_cache/ocr/, so a run without the OCR package still
      reproduces; on a cache miss with the package installed, OCR runs live.
-  2. cross_check(): a Gemini fact row is used only if its resource id and every person identifier it reports are also
-     present in the OCR text of the same image (two independent readers must agree on what is printed).
+  2. cross_check(): a Gemini fact row is used only if the OCR text shows its resource id and every person identifier
+     it reports inside the same record (table row, side panel or detail header; record_contexts) and no record context
+     of that id shows another person (two independent readers must agree on what is printed, record by record).
   3. facts_from_ocr(): for a screenshot with no Gemini facts, the OCR lines become facts in the same schema, which then
      pass the unchanged grounding guards in images.py. A row asserts a state only when a resource id known to the
      dataset AND a person's direct identifier (email / phone) are printed in the same row or detail header; everything
@@ -29,9 +30,14 @@ USER_REF = re.compile(r"\buser_\d+\b")
 # Text addressed to an assistant (not to a console user) quarantines the whole image, as for Gemini facts.
 INJECTION = re.compile(r"ignore (all |any )?(previous|prior) instructions|system prompt|you are (an? )?(ai|assistant|model)|"
                        r"mark (this|the) (case|request) (as )?complete|disregard (the )?(rules|policy)", re.I)
-ROW_TOLERANCE_PX = 14     # lines whose top edges are this close belong to one table row
+ROW_TOLERANCE_PX = 14     # lines whose top edges are this close belong to one table row (same record)
 HEADER_BOTTOM_PX = 170    # page title / subtitle band of these consoles (the resource a detail page is about)
 DETAIL_BOTTOM_PX = 320    # summary cards directly under the title on detail pages
+PANEL_ALIGN_PX = 25       # key/value lines of a side panel start within this many px of its title
+PANEL_DEPTH_PX = 330      # how far below its title a side panel's key/value lines reach
+ROW_SIBLING_PX = 400      # a table cell has another cell this close to its right in the same row
+ID_TOKEN = re.compile(r"(?:account|search|analytics|support|export|data_flow|backup|audit_record|tombstone|cache|"
+                      r"marketing|legal_hold|legal|object)_\d+")   # RID without word boundaries (OCR glues tokens)
 
 
 @dataclass(frozen=True)
@@ -87,46 +93,104 @@ def norm(s: str) -> str:
     return re.sub(r"[\s·•|:,\-–—()]+", "", s.lower())
 
 
-def cross_check(record: dict, rid: str, lines: list[Line]) -> str | None:
-    """None if the OCR text contains the fact row's resource id and every identifier it reports; else the reason."""
-    page = norm(" ".join(ln.text for ln in lines))
-    missing = [x for x in [rid, *record.get("subject_identifiers", [])] if x and norm(x) not in page]
-    return f"OCR does not show {missing}" if missing else None
+def _panel_titles(lines: list[Line]) -> list[Line]:
+    """Side-panel titles: a line naming a resource id below the page header band, with nothing beside it to its right
+    in the same row (a table cell has sibling cells), and at least two aligned lines under it that contain no id-like
+    token, even one glued to OCR noise such as a row number (a key/value column, not a table column of ids)."""
+    out = []
+    for t in lines:
+        if t.y < HEADER_BOTTOM_PX or not RID.search(t.text):
+            continue
+        if any(0 < m.x - t.x <= ROW_SIBLING_PX and abs(m.y - t.y) <= ROW_TOLERANCE_PX for m in lines):
+            continue
+        below = [m for m in lines if abs(m.x - t.x) <= PANEL_ALIGN_PX and 0 < m.y - t.y <= PANEL_DEPTH_PX]
+        if len(below) >= 2 and not any(ID_TOKEN.search(m.text) for m in below):
+            out.append(t)
+    return out
 
 
-def _rows(lines: list[Line]) -> list[list[Line]]:
-    rows: list[list[Line]] = []
-    for ln in sorted(lines, key=lambda l: (l.y, l.x)):
-        if rows and abs(ln.y - rows[-1][0].y) <= ROW_TOLERANCE_PX:
-            rows[-1].append(ln)
+def _emails(text: str, is_known) -> set[str]:
+    """Emails in OCR text. OCR can glue neighbouring tokens onto an email with '-' (e.g. 'user_20-x_7-a.b@c.com' for
+    'user_20 · x_7 · a.b@c.com'); then the longest '-'-suffix that is a known identifier is the email."""
+    out = set()
+    for e in (m.lower() for m in EMAIL.findall(text)):
+        local, _, domain = e.partition("@")
+        cuts = [e] + [local[i + 1:] + "@" + domain for i, ch in enumerate(local) if ch == "-"]
+        out.add(next((c for c in cuts if is_known(c)), e))
+    return out
+
+
+def record_contexts(key: str, lines: list[Line]) -> list[tuple[str, list[Line]]]:
+    """The OCR lines that belong to the same record as each printed occurrence of `key` (a resource id or label):
+      header - key in the page title band: the title band and the summary cards under it;
+      panel  - key titles a side panel: the aligned key/value lines below it;
+      row    - otherwise the table row at the same height, on the same side of any side panel.
+    Text elsewhere on the page never counts as the record's own."""
+    titles = _panel_titles(lines)
+    panel_left = min((t.x for t in titles), default=None) if titles else None
+    def left(m: Line) -> bool:
+        return panel_left is None or m.x < panel_left - PANEL_ALIGN_PX
+    k = norm(key)
+    out = []
+    for occ in lines:
+        if not k or k not in norm(occ.text):
+            continue
+        if occ.y < HEADER_BOTTOM_PX:
+            out.append(("header", [m for m in lines if m.y < DETAIL_BOTTOM_PX and (left(m) or not left(occ))]))
+        elif occ in titles:
+            out.append(("panel", [m for m in lines if m.x >= occ.x - PANEL_ALIGN_PX and occ.y <= m.y <= occ.y + PANEL_DEPTH_PX]))
         else:
-            rows.append([ln])
-    return [sorted(r, key=lambda l: l.x) for r in rows]
+            out.append(("row", [m for m in lines if abs(m.y - occ.y) <= ROW_TOLERANCE_PX and left(m) == left(occ)]))
+    return out
+
+
+def cross_check(record: dict, rid: str, lines: list[Line], users_for=None) -> str | None:
+    """Record-local corroboration of one fact row by the OCR reader. None if it holds, else the reason.
+
+    Holds only if (a) some record context of `rid` (see record_contexts) shows every identifier the row reports, and
+    (b) no record context of `rid` shows an email / user reference of another known person or of nobody known (two
+    people around one id is an ambiguous layout: left for review, not decided)."""
+    ctxs = record_contexts(rid, lines)
+    if not ctxs:
+        return f"OCR does not show {rid}"
+    want = [x for x in record.get("subject_identifiers", []) if x and norm(x) != norm(rid)]
+    rec_ids = {x.lower() for x in want}
+    rec_users = users_for(rec_ids) if users_for else set()
+    supported = False
+    for kind, ctx in ctxs:
+        raw = " ".join(m.text for m in ctx)
+        if all(norm(x) in norm(raw) for x in want):
+            supported = True
+        if users_for:
+            seen = _emails(raw, lambda c: c in rec_ids or bool(users_for({c}))) | {u.lower() for u in USER_REF.findall(raw)}
+            for ident in sorted(seen - rec_ids):
+                who = users_for({ident})
+                if not who or not who <= rec_users:
+                    return f"{kind} context of {rid} also shows {ident!r} ({'unknown person' if not who else 'another person'}); ambiguous"
+    if not supported:
+        return f"OCR does not show {want} in the same record as {rid}"
+    return None
 
 
 def facts_from_ocr(lines: list[Line], known_rids: set[str], label_to_rid: dict[str, str]) -> dict:
-    """Facts in the Gemini schema (records with resource_id, subject_identifiers, supporting_text, state, ...)."""
+    """Facts in the Gemini schema, one record per printed occurrence of a known resource id (or catalog label), built
+    only from that occurrence's record context (record_contexts). A state is asserted only when that context prints a
+    direct identifier (email / phone); anything else is UNCLEAR (needs review)."""
+    page = " ".join(ln.text for ln in lines)
+    keys = sorted({m.group(0) for m in RID.finditer(page) if m.group(0) in known_rids})
+    keys += sorted(lab for lab in label_to_rid if norm(lab) in norm(page))
     records = []
-    detail_text = [ln.text for ln in lines if ln.y < DETAIL_BOTTOM_PX]
-    for row in _rows(lines):
-        text = [ln.text for ln in row]
-        joined = " ".join(text)
-        rids = sorted({m.group(0) for m in RID.finditer(joined) if m.group(0) in known_rids})
-        labels = sorted({lab for lab in label_to_rid if lab in joined})
-        if not rids and not labels:
-            continue
-        in_header = row[0].y < HEADER_BOTTOM_PX
-        support = list(dict.fromkeys(text + (detail_text if in_header else [])))
-        blob = " ".join(support)
-        idents = sorted(set(EMAIL.findall(blob)) | set(PHONE.findall(blob)) | set(USER_REF.findall(blob)))
-        direct = bool(EMAIL.search(blob) or PHONE.search(blob))
-        for rid in rids or [""]:
+    for key in keys:
+        rid = key if key in known_rids else ""
+        for kind, ctx in record_contexts(key, lines):
+            support = list(dict.fromkeys(m.text for m in sorted(ctx, key=lambda m: (m.y, m.x))))
+            blob = " ".join(support)
+            idents = sorted(set(EMAIL.findall(blob)) | set(PHONE.findall(blob)) | set(USER_REF.findall(blob)))
+            direct = bool(EMAIL.search(blob) or PHONE.search(blob))
             records.append({
                 "resource_id": rid, "system_id": "", "subject_identifiers": idents,
                 "supporting_text": support, "visible_status_text": "", "restore_or_flow_detail": "",
-                # Only printed direct identifiers establish a state; anything else needs review.
                 "state": "PRESENT_WITH_IDENTIFIERS" if (direct and rid and not rid.startswith(("data_flow_", "backup_")))
                 else "UNCLEAR",
-                "state_basis": "VISIBLE_TEXT", "timestamp": "", "uncertainty": "",
-                "ocr_rows": "header+detail" if in_header else "row"})
+                "state_basis": "VISIBLE_TEXT", "timestamp": "", "uncertainty": "", "ocr_context": kind})
     return {"records": records, "embedded_instructions_seen": any(INJECTION.search(ln.text) for ln in lines)}
