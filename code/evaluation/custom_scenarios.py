@@ -57,12 +57,17 @@ SCENARIOS = [
      "evidence": [("evidence_901", "2026-05-01T09:00:00Z", search_snapshot([search_doc(PERSON["email"])])),
                   ("evidence_902", "2026-06-01T09:00:00Z", search_snapshot([]))],          # later snapshot, record gone
      "audit_log": [], "expect": ("INCOMPLETE", REMAINING)},
-    {"id": "S4", "title": "Absence proven by a covering snapshot before audit_at",
+    # S4 originally expected COMPLETE (our contract reading C06b: a later snapshot that omits the record proves
+    # absence). EXP-C4 implemented that reading and it contradicted two official sample answers: sample case_05 keeps
+    # account_005 as a remaining record (evidence_54) although the later evidence_90 omits it, and sample case_24 does
+    # the same for account_5334 (evidence_92 vs evidence_51). The official answers decide, so the expectation follows
+    # them: omission from a later snapshot is not proof of absence; the copy is still reported as remaining.
+    {"id": "S4", "title": "A later snapshot that merely omits a record does not prove absence",
      "request": {"email": PERSON["email"], "text": DELETE_TEXT},
      "evidence": [("evidence_901", "2026-05-01T09:00:00Z", search_snapshot([search_doc(PERSON["email"])])),
-                  ("evidence_902", "2026-05-10T09:00:00Z", search_snapshot([]))],          # before audit_at, record gone
+                  ("evidence_902", "2026-05-10T09:00:00Z", search_snapshot([]))],          # before audit_at, record omitted
      "audit_log": [],
-     "expect": ("COMPLETE", [step(1, "VERIFICATION", "VERIFY_RECORD_ABSENT", "search_service", "search_9001", "ABSENT", "evidence_902")])},
+     "expect": ("INCOMPLETE", REMAINING)},
     {"id": "S5", "title": "Request uses a historical email; the copy is keyed by it",
      "request": {"email": "tess.old@example.test", "text": DELETE_TEXT},
      "evidence": [("evidence_901", "2026-05-01T09:00:00Z", search_snapshot([search_doc("tess.old@example.test")]))],
