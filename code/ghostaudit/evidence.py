@@ -93,6 +93,8 @@ SCHEMA_INT_FLAGS = {"enabled", "restore_allowed"}
 # A flag field that is present but cannot be read (null, malformed, unexpected number) is an explicit unknown,
 # never "blocked" or "disabled".
 UNKNOWN_FLAG_STATES = {"RESTORE_UNKNOWN", "FLOW_UNKNOWN"}
+RESTORE_DENIED = {"deny", "denied", "blocked", "rejected"}
+RESTORE_ALLOWED = {"allow", "allowed", "approved", "granted", "permit", "permitted"}
 
 
 def flag(field: str, v) -> bool | None:
@@ -131,8 +133,19 @@ def infer_state(rec: dict, category: str | None) -> tuple[str, bool]:
         if eligible is True and blocked is False:
             return "RESTORE_OPEN", False
         return "RESTORE_UNKNOWN", False
+    if "decision" in r and str(r.get("resource_id", "")).startswith("backup_"):
+        # Restore-authorization outcome (e.g. restore_authorization_completed decision="deny"): an explicit
+        # decision, read only for backups; any other wording is unknown, never "blocked".
+        d = norm(r["decision"])
+        return ("RESTORE_BLOCKED" if d in RESTORE_DENIED else "RESTORE_OPEN" if d in RESTORE_ALLOWED
+                else "RESTORE_UNKNOWN"), False
     if "direct_identifiers" in r:
         return ("PRESENT_ID" if norm(r["direct_identifiers"]) != "0" else "PRESENT_CLEAN"), False
+    rid = str(r.get("resource_id", ""))
+    if category == "BACKUP_ARCHIVE" or rid.startswith("backup_"):
+        return "RESTORE_UNKNOWN", False   # present, but nothing says whether it can be restored (D30 F3)
+    if category == "DATA_FLOW" or rid.startswith("data_flow_"):
+        return "FLOW_UNKNOWN", False      # present, but nothing says whether it runs
     ids = [k for k in DIRECT_ID_FIELDS if k in r and norm(r[k]) not in NULLS]
     doc = r.get("document") if isinstance(r.get("document"), dict) else None
     if doc:

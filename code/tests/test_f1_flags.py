@@ -309,5 +309,27 @@ class DatasetFlags(unittest.TestCase):
         self.assertGreater(checked, 0)
 
 
+
+
+class RestoreDecisionAndUnknown(unittest.TestCase):
+    """EXP-D2 (D30 F3): explicit restore-authorization decisions; no signal means unknown, never blocked."""
+
+    def test_decision_deny_is_blocked_allow_is_open_other_unknown(self):
+        from ghostaudit.evidence import infer_state
+        self.assertEqual(infer_state({"resource_id": "backup_1", "decision": "deny"}, None)[0], "RESTORE_BLOCKED")
+        self.assertEqual(infer_state({"resource_id": "backup_1", "decision": "allow"}, None)[0], "RESTORE_OPEN")
+        self.assertEqual(infer_state({"resource_id": "backup_1", "decision": "pending"}, None)[0], "RESTORE_UNKNOWN")
+
+    def test_backup_or_flow_without_any_signal_is_unknown(self):
+        from ghostaudit.evidence import infer_state
+        self.assertEqual(infer_state({"resource_id": "backup_1", "tier": "Archive"}, "BACKUP_ARCHIVE")[0], "RESTORE_UNKNOWN")
+        self.assertEqual(infer_state({"resource_id": "data_flow_1", "mode": "continuous"}, "DATA_FLOW")[0], "FLOW_UNKNOWN")
+
+    def test_decision_field_on_other_resources_is_not_a_restore_state(self):
+        from ghostaudit.evidence import infer_state
+        self.assertNotIn(infer_state({"resource_id": "support_1", "decision": "deny", "email": "a@x.test"}, None)[0],
+                         ("RESTORE_BLOCKED", "RESTORE_OPEN", "RESTORE_UNKNOWN"))
+
+
 if __name__ == "__main__":
     unittest.main()
