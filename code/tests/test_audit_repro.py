@@ -113,7 +113,8 @@ class Intent(unittest.TestCase):
 for _c in FIX["intent"]:
     def _t(self, c=_c):
         self.assertEqual(authorizes_deletion(c["text"]), c["expected"], c["text"])
-    _c["known_defect"] = _c["expected"] != _c["observed_on_aca42dc"]
+    # observed_on_aca42dc is the historical observation and is never edited; a fix is recorded in fixed_in.
+    _c["known_defect"] = _c["expected"] != _c["observed_on_aca42dc"] and not _c.get("fixed_in")
     setattr(Intent, f"test_{_c['id']}", _mark(_c, _t))
 
 

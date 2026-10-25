@@ -167,7 +167,8 @@
       "id": "I02",
       "text": "Cancel my account permanently.",
       "expected": true,
-      "observed_on_aca42dc": false
+      "observed_on_aca42dc": false,
+      "fixed_in": "EXP-C3 (cloud session 2026-10-25): account-closure vocabulary in ghostaudit/intent.py"
     },
     {
       "id": "I03",
@@ -215,19 +216,22 @@
       "id": "I10",
       "text": "Quiero dar de baja mi cuenta.",
       "expected": true,
-      "observed_on_aca42dc": false
+      "observed_on_aca42dc": false,
+      "fixed_in": "EXP-C3 (cloud session 2026-10-25): account-closure vocabulary in ghostaudit/intent.py"
     },
     {
       "id": "I11",
       "text": "Je souhaite résilier mon compte.",
       "expected": true,
-      "observed_on_aca42dc": false
+      "observed_on_aca42dc": false,
+      "fixed_in": "EXP-C3 (cloud session 2026-10-25): account-closure vocabulary in ghostaudit/intent.py"
     },
     {
       "id": "I12",
       "text": "Quero encerrar minha conta.",
       "expected": true,
-      "observed_on_aca42dc": false
+      "observed_on_aca42dc": false,
+      "fixed_in": "EXP-C3 (cloud session 2026-10-25): account-closure vocabulary in ghostaudit/intent.py"
     },
     {
       "id": "I13",
