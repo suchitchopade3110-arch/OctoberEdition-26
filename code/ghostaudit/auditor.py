@@ -61,7 +61,7 @@ class Auditor:
             if path.suffix.lower() == ".log":
                 ev.parse_log(self.idx, e, path.read_text(encoding="utf-8"), self.known_systems, self.parse_stats[e["file_id"]])
             else:
-                ev.parse_structured(self.idx, e, data_dir)
+                ev.parse_structured(self.idx, e, data_dir, self.known_systems)
         self.obs_by_res: dict[str, list[ev.Obs]] = defaultdict(list)
         for o in self.idx.obs:
             self.obs_by_res[o.resource_id].append(o)

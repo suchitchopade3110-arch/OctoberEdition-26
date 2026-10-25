@@ -208,8 +208,11 @@ def parse_manifest_row(idx: Index, fid, cap, system, rid, rtype, result, subject
 
 # ---------------------------------------------------------------- structured files (TXT, JSON, SQL)
 
-def parse_structured(idx: Index, ev: dict, data_dir: Path) -> None:
-    """TXT handover tables, JSON snapshots/exports/manifests and SQL snapshots. PNG/PDF are not read."""
+def parse_structured(idx: Index, ev: dict, data_dir: Path, known_systems: set[str] | None = None) -> None:
+    """TXT handover tables, JSON snapshots/exports/manifests and SQL snapshots. PNG/PDF are not read.
+
+    known_systems (pass 2 only): system ids that structured evidence uses. A collection file whose records name no
+    system takes its manifest origin as the system when the origin is one of them (EXP-C2)."""
     fid, cap = ev["file_id"], ev["captured_at"]
     path = data_dir / ev["file_path"]
     suffix = path.suffix.lower()
@@ -251,9 +254,10 @@ def parse_structured(idx: Index, ev: dict, data_dir: Path) -> None:
                 parse_manifest_row(idx, fid, cap, r.get("system"), r["resource_id"], r["record_type"], r.get("result", ""), r.get("subject_reference"))
         elif recs and d.get("collection"):
             cat = COLLECTION_CATEGORY.get(d["collection"])
+            hint = ev.get("origin") if known_systems and ev.get("origin") in known_systems else None
             for r in recs:
-                idx.add(fid, cap, r, system=None, category=cat)
-            idx.scopes.append(Scope(fid, cap, {idx.system_for(recs[0]["resource_id"])}))
+                idx.add(fid, cap, r, system=hint, category=cat)
+            idx.scopes.append(Scope(fid, cap, {idx.system_for(recs[0]["resource_id"], hint)}))
         return
     if suffix == ".sql":
         con = sqlite3.connect(":memory:")

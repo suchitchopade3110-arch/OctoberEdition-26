@@ -69,5 +69,30 @@ class AccountAttribution(unittest.TestCase):
         self.assertEqual(a.resolve_accounts([REQ])["c1"], [])
 
 
+
+class CollectionOrigin(unittest.TestCase):
+    """EXP-C2: a collection file whose records name no system takes its manifest origin, if that is a known system."""
+
+    def _parse(self, origin: str, known: set[str] | None):
+        import json
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            (Path(tmp) / "jobs.json").write_text(json.dumps({"collection": "customer_export_jobs", "records": [
+                {"resource_id": "export_5", "owner_email": "subject@x.test"}]}), encoding="utf-8")
+            idx = ev.Index({"export": "object_store"})
+            ev.parse_structured(idx, {"file_id": "evidence_x", "captured_at": "2026-09-01T00:00:00Z",
+                                      "file_path": "jobs.json", "origin": origin}, Path(tmp), known)
+            return idx.obs[0].system, idx.scopes[0].systems
+
+    def test_known_origin_is_used(self):
+        self.assertEqual(self._parse("export_service", {"export_service"}), ("export_service", {"export_service"}))
+
+    def test_unknown_origin_falls_back_to_prefix_map(self):
+        self.assertEqual(self._parse("some_capture_tool", {"export_service"}), ("object_store", {"object_store"}))
+
+    def test_probe_pass_without_known_systems_is_unchanged(self):
+        self.assertEqual(self._parse("export_service", None), ("object_store", {"object_store"}))
+
+
 if __name__ == "__main__":
     unittest.main()
