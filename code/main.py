@@ -2,6 +2,7 @@
 
     python code/main.py                      # audit all requests, validate, publish ./output.csv
     python code/main.py --cases case_33,...  # subset (written to the work dir only)
+    python code/main.py --best-effort        # publish even if validation fails; errors are printed and recorded
 
 Flow: read dataset/ -> audit every request -> write a candidate file in the work dir -> run the strict
 validator -> only if it reports 0 errors, publish the candidate as the root output.csv. A failing run
@@ -16,7 +17,7 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
+import shutil
 import sys
 import time
 import tracemalloc
@@ -101,6 +102,9 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--evidence-cache", type=Path, default=DEFAULT_CACHE,
                     help="content-addressed image-fact cache (default: code/evidence_cache)")
     ap.add_argument("--no-evidence-cache", action="store_true", help="ignore image facts (PDF + structured evidence only)")
+    ap.add_argument("--best-effort", action="store_true",
+                    help="publish output.csv even when strict validation reports errors (team-lead decision C2 / D36); "
+                         "every error is printed, recorded in run_notes.json, and the exit status stays 1")
     ap.add_argument("--live-extraction", action="store_true",
                     help="opt-in: call Gemini for images missing from the cache (needs keys; bounded budget)")
     args = ap.parse_args(argv)
@@ -135,10 +139,11 @@ def main(argv: list[str] | None = None) -> int:
                 errors=[vars(i) for i in result.errors], warnings=[vars(i) for i in result.warnings])
 
     published = False
-    if result.ok and cases is None:
-        os.replace(candidate, args.output)  # publish atomically, only after a clean validation
+    if cases is None and (result.ok or args.best_effort):
+        shutil.copyfile(candidate, args.output)  # the candidate stays in the work dir for audit
         published = True
     meta["published"] = str(args.output) if published else None
+    meta["published_despite_validation_errors"] = published and not result.ok
     (args.work_dir / "run_notes.json").write_text(json.dumps(meta, indent=2, ensure_ascii=False), encoding="utf-8")
 
     s = result.summary()
@@ -147,7 +152,11 @@ def main(argv: list[str] | None = None) -> int:
     for issue in result.errors[:20]:
         print(f"  ERROR [{issue.rule}] {issue.case_id}: {issue.message}")
     if not result.ok:
-        print(f"  validation failed: {args.output} was NOT written; candidate kept at {candidate}")
+        if published:
+            print(f"  BEST-EFFORT: {args.output} WAS written although strict validation FAILED "
+                  f"({s['errors']} errors listed above); it is not a valid output")
+        else:
+            print(f"  validation failed: {args.output} was NOT written; candidate kept at {candidate}")
         return 1
     return 0
 
