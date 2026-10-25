@@ -27,15 +27,17 @@ The agent is **deterministic first**. No model is called while auditing a reques
    and screenshots are turned into observations. Screenshots are read by two independent models: structured facts that
    Gemini transcribed during development (content-addressed cache `code/evidence_cache/`), and a local OCR model
    (RapidOCR/ONNX, `ghostaudit/ocr.py`) that runs at audit time. A Gemini fact is used only if the OCR text shows the
-   same resource id and identifiers; images without Gemini facts get OCR facts through the same grounding guards.
+   same resource id and identifiers inside the same record (table row, side panel or detail header) and no record of
+   that id shows another person (D48); images without Gemini facts get OCR facts built from the same record contexts
+   and passed through the same grounding guards.
    Copies repopulated by a subject's connector or restore job (activity lineage) are linked as the subject's data.
 5. **Time.** Only evidence captured at or before audit_at is used. The latest valid observation sets a resource's
    state. Post-dated rows are ignored and ties are recorded.
 6. **Policy.** `deletion_rules.csv` maps each category to DELETE / REDACT / ANONYMIZE / RETAIN / tombstone. The engine
    builds findings, an ordered remediation plan and verifications.
 7. **Traces.** Every resource gets a typed `ResourceDecision` (attribution, category, rule, state incl. explicit
-   UNKNOWN, cited evidence); `case_traces.jsonl` holds one trace per case, and the run fails if any emitted step is
-   not backed by a decision.
+   UNKNOWN, cited evidence); `case_traces.jsonl` holds one trace per case, and the run fails before publishing anything
+   (also under `--best-effort`) if any emitted step is not backed by a decision (D48).
 8. **Validation gate.** `main.py` writes a candidate, runs the strict validator and publishes `output.csv` only if there
    are 0 errors. `--best-effort` (team-lead decision C2) publishes anyway, prints every error, records
    `published_despite_validation_errors` in `run_notes.json` and exits 1.
@@ -175,6 +177,7 @@ accounts with the same result, and nothing but order separates them.
 | **EXP-D3** | typed decisions, case traces, trace consistency gate | output byte-identical | **accepted** |
 | **EXP-D4** | lineage links (connector/restore repopulated a copy) | dev unchanged | **accepted** (1 test row: case_421) |
 | EXP-D5 (measured, not built) | phone digit normalisation | 0 new links | not pursued |
+| **D48** | trace gate before publication; record-local OCR corroboration | output byte-identical | **accepted** (on the real connector console the D47 whole-page check accepted an id paired with another row's email; D48 rejects it) |
 
 ## 9. Rejected approaches
 
