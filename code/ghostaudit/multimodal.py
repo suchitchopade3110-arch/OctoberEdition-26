@@ -11,15 +11,21 @@ from __future__ import annotations
 from collections import defaultdict
 from pathlib import Path
 
-from . import evidence_cache
+from . import evidence_cache, ocr
 from .auditor import Auditor
 from .documents import CATALOG, EMAIL, USER, document_observations, pdf_text
 from .images import flow_state_from_text, ground_record, link_rows, usable_state
 
+DEFAULT_OCR_DIR = Path(__file__).resolve().parents[1] / "evidence_cache" / "ocr"
+
 
 class MultimodalAuditor(Auditor):
-    def __init__(self, data_dir: Path, cache_dir: Path | None):
+    def __init__(self, data_dir: Path, cache_dir: Path | None, use_ocr: bool = True, ocr_dir: Path | None = None):
         self.cache_dir = cache_dir
+        # Local OCR second reader. Off when image evidence is disabled (cache_dir=None) or use_ocr=False. Its line
+        # cache is shipped in code/evidence_cache/ocr/ and is independent of which fact cache is used.
+        self.use_ocr = bool(use_ocr and cache_dir is not None)
+        self.ocr_dir = (ocr_dir or DEFAULT_OCR_DIR) if self.use_ocr else None
         super().__init__(data_dir)
         self.extraction: list[dict] = []
         self.image_report: list[dict] = []
@@ -78,13 +84,21 @@ class MultimodalAuditor(Auditor):
             c, notes = evidence_cache.lookup(self.cache_dir, sha) if self.cache_dir else (None, ["no cache configured"])
             rep = {"file_id": e["file_id"], "sha256": sha, "cache": notes, "used": [], "rejected": [], "review": []}
             self.image_report.append(rep)
-            if c is None:
+            lines = None
+            if self.use_ocr:
+                rep["ocr"] = []
+                lines = ocr.read_lines(self.data_dir / e["file_path"], sha, self.ocr_dir, rep["ocr"])
+            if c is not None:
+                rep.update(model=c["model"], prompt_version=c["prompt_version"])
+                if c["file_id"] != e["file_id"]:
+                    rep["cache"].append(f"entry was made for {c['file_id']}; same bytes, reused for {e['file_id']}")
+                f, source = c["facts"], f"image:{c['model']}:{c['prompt_version']}"
+            elif lines:
+                f, source = ocr.facts_from_ocr(lines, known_rids, label_to_rid), f"image:ocr:{ocr.SCHEMA}"
+                rep.update(model=ocr.ENGINE, prompt_version=ocr.SCHEMA)
+            else:
                 rep["status"] = "unresolved: no extraction available (resources stay UNKNOWN)"
                 continue
-            rep.update(model=c["model"], prompt_version=c["prompt_version"])
-            if c["file_id"] != e["file_id"]:
-                rep["cache"].append(f"entry was made for {c['file_id']}; same bytes, reused for {e['file_id']}")
-            f = c["facts"]
             if f.get("embedded_instructions_seen"):
                 rep["review"].append("image contains embedded instructions; quarantined")
                 continue
@@ -98,6 +112,11 @@ class MultimodalAuditor(Auditor):
                 if (mode == "per_row" and not users) or why_link.startswith("unresolved"):
                     rep["review"].append(f"row {row_no} {rid}: {why_link}")
                     continue
+                if c is not None and lines is not None:
+                    disagree = ocr.cross_check(r, rid, lines)
+                    if disagree:  # the two independent readers must agree on what is printed
+                        rep["review"].append(f"row {row_no} {rid}: {disagree}")
+                        continue
                 fields, why = flow_state_from_text(r) if rid.startswith("data_flow_") else usable_state(r, rid)
                 if not fields:
                     rep["review"].append(f"row {row_no} {rid}: {why}")
@@ -110,7 +129,7 @@ class MultimodalAuditor(Auditor):
                 before = len(self.idx.obs)
                 self.idx.add(e["file_id"], e["captured_at"], {"resource_id": rid, **fields}, system=hint, extra_keys=keys)
                 for o in self.idx.obs[before:]:
-                    o.extraction = f"image:{c['model']}:{c['prompt_version']}:row{row_no}"
+                    o.extraction = f"{source}:row{row_no}"
                     self.obs_by_res[o.resource_id].append(o)
                     rep["used"].append({"row": row_no, "resource_id": rid, "system": o.system, "state": o.state,
                                         "linked_via": how, "person_link": why_link, "users": sorted(users),

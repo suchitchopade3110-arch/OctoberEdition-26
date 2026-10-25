@@ -1,0 +1,517 @@
+{
+ "schema": "ocr-lines-v1",
+ "source_sha256": "68c28a72afd6ed184d5990d15c543f8a516face204f0360f732755a8a63c28be",
+ "engine": "rapidocr_onnxruntime==1.2.3",
+ "lines": [
+  {
+   "text": "CustomerReference",
+   "x": 243,
+   "y": 13,
+   "conf": 0.8942
+  },
+  {
+   "text": "Search references, orders, support cases or finance records...",
+   "x": 487,
+   "y": 20,
+   "conf": 0.9346
+  },
+  {
+   "text": "Northstar Shop",
+   "x": 55,
+   "y": 23,
+   "conf": 0.818
+  },
+  {
+   "text": "Production Help",
+   "x": 1634,
+   "y": 20,
+   "conf": 0.8951
+  },
+  {
+   "text": "Registry",
+   "x": 241,
+   "y": 28,
+   "conf": 0.8462
+  },
+  {
+   "text": "CR",
+   "x": 1754,
+   "y": 23,
+   "conf": 0.6609
+  },
+  {
+   "text": "Northstar Shop / Customer Reference Registry / Customer references",
+   "x": 244,
+   "y": 80,
+   "conf": 0.8876
+  },
+  {
+   "text": "Home",
+   "x": 51,
+   "y": 99,
+   "conf": 0.7934
+  },
+  {
+   "text": "user_17",
+   "x": 243,
+   "y": 102,
+   "conf": 0.8338
+  },
+  {
+   "text": "Retained reference",
+   "x": 523,
+   "y": 103,
+   "conf": 0.9155
+  },
+  {
+   "text": "Filter",
+   "x": 1592,
+   "y": 107,
+   "conf": 0.7665
+  },
+  {
+   "text": "Export",
+   "x": 1652,
+   "y": 107,
+   "conf": 0.8006
+  },
+  {
+   "text": "Actions",
+   "x": 1721,
+   "y": 107,
+   "conf": 0.8359
+  },
+  {
+   "text": "Customerkey - Account Platform - eu-west",
+   "x": 245,
+   "y": 135,
+   "conf": 0.8832
+  },
+  {
+   "text": "Customer references",
+   "x": 52,
+   "y": 145,
+   "conf": 0.8985
+  },
+  {
+   "text": "Overview",
+   "x": 246,
+   "y": 176,
+   "conf": 0.8482
+  },
+  {
+   "text": "Linked records",
+   "x": 330,
+   "y": 177,
+   "conf": 0.883
+  },
+  {
+   "text": "History",
+   "x": 441,
+   "y": 174,
+   "conf": 0.8477
+  },
+  {
+   "text": "Orders",
+   "x": 51,
+   "y": 189,
+   "conf": 0.8021
+  },
+  {
+   "text": "Support",
+   "x": 51,
+   "y": 232,
+   "conf": 0.8418
+  },
+  {
+   "text": "Reference type",
+   "x": 255,
+   "y": 229,
+   "conf": 0.9211
+  },
+  {
+   "text": "Created",
+   "x": 642,
+   "y": 232,
+   "conf": 0.7737
+  },
+  {
+   "text": "Most recent update",
+   "x": 1026,
+   "y": 232,
+   "conf": 0.9052
+  },
+  {
+   "text": "Owner team",
+   "x": 1413,
+   "y": 233,
+   "conf": 0.8506
+  },
+  {
+   "text": "Customerkey",
+   "x": 256,
+   "y": 250,
+   "conf": 0.8416
+  },
+  {
+   "text": "11Jan202408:42UTC",
+   "x": 643,
+   "y": 253,
+   "conf": 0.8009
+  },
+  {
+   "text": "10Mar202607:18UTC",
+   "x": 1029,
+   "y": 253,
+   "conf": 0.8826
+  },
+  {
+   "text": "Account Platform",
+   "x": 1411,
+   "y": 252,
+   "conf": 0.8519
+  },
+  {
+   "text": "Finance",
+   "x": 51,
+   "y": 277,
+   "conf": 0.8715
+  },
+  {
+   "text": "Datamanagement",
+   "x": 51,
+   "y": 325,
+   "conf": 0.873
+  },
+  {
+   "text": "Overview",
+   "x": 260,
+   "y": 331,
+   "conf": 0.8819
+  },
+  {
+   "text": "Updated moments ago • 4 records",
+   "x": 1218,
+   "y": 331,
+   "conf": 0.9009
+  },
+  {
+   "text": "History",
+   "x": 1438,
+   "y": 328,
+   "conf": 0.8745
+  },
+  {
+   "text": "Reports",
+   "x": 51,
+   "y": 369,
+   "conf": 0.8674
+  },
+  {
+   "text": "System",
+   "x": 256,
+   "y": 371,
+   "conf": 0.7897
+  },
+  {
+   "text": "Record reference",
+   "x": 453,
+   "y": 371,
+   "conf": 0.934
+  },
+  {
+   "text": "Relationship",
+   "x": 715,
+   "y": 371,
+   "conf": 0.9167
+  },
+  {
+   "text": "Created (UTC)",
+   "x": 991,
+   "y": 371,
+   "conf": 0.8827
+  },
+  {
+   "text": "Status",
+   "x": 1265,
+   "y": 371,
+   "conf": 0.8547
+  },
+  {
+   "text": "10Mar2026",
+   "x": 1438,
+   "y": 377,
+   "conf": 0.7858
+  },
+  {
+   "text": "Metadata reviewed",
+   "x": 1555,
+   "y": 378,
+   "conf": 0.8659
+  },
+  {
+   "text": "Orders",
+   "x": 279,
+   "y": 406,
+   "conf": 0.8556
+  },
+  {
+   "text": "Linked to customer",
+   "x": 715,
+   "y": 406,
+   "conf": 0.8542
+  },
+  {
+   "text": "11 Jan 2024 08:45",
+   "x": 991,
+   "y": 406,
+   "conf": 0.9078
+  },
+  {
+   "text": "ORD-20263245",
+   "x": 455,
+   "y": 407,
+   "conf": 0.9057
+  },
+  {
+   "text": "Active",
+   "x": 1265,
+   "y": 405,
+   "conf": 0.7554
+  },
+  {
+   "text": "22 Aug 2024",
+   "x": 1438,
+   "y": 409,
+   "conf": 0.8361
+  },
+  {
+   "text": "Finance link added",
+   "x": 1555,
+   "y": 410,
+   "conf": 0.8731
+  },
+  {
+   "text": "03Jun2024",
+   "x": 1438,
+   "y": 442,
+   "conf": 0.8699
+  },
+  {
+   "text": "Active",
+   "x": 1264,
+   "y": 445,
+   "conf": 0.8285
+  },
+  {
+   "text": "Linked to customer",
+   "x": 714,
+   "y": 446,
+   "conf": 0.9335
+  },
+  {
+   "text": "CS-3245",
+   "x": 454,
+   "y": 447,
+   "conf": 0.8475
+  },
+  {
+   "text": "14 Feb 2024 12:16",
+   "x": 991,
+   "y": 447,
+   "conf": 0.8537
+  },
+  {
+   "text": "Support",
+   "x": 278,
+   "y": 448,
+   "conf": 0.8015
+  },
+  {
+   "text": "2]",
+   "x": 259,
+   "y": 449,
+   "conf": 0.6032
+  },
+  {
+   "text": "Support link added",
+   "x": 1554,
+   "y": 443,
+   "conf": 0.8475
+  },
+  {
+   "text": "14 Feb 2024",
+   "x": 1439,
+   "y": 476,
+   "conf": 0.8074
+  },
+  {
+   "text": "Support link added",
+   "x": 1554,
+   "y": 476,
+   "conf": 0.9029
+  },
+  {
+   "text": "CS-3378",
+   "x": 454,
+   "y": 487,
+   "conf": 0.8505
+  },
+  {
+   "text": "Linked to customer",
+   "x": 714,
+   "y": 487,
+   "conf": 0.8761
+  },
+  {
+   "text": "03 Jun 2024 09:27",
+   "x": 991,
+   "y": 487,
+   "conf": 0.8892
+  },
+  {
+   "text": "Support",
+   "x": 279,
+   "y": 489,
+   "conf": 0.8722
+  },
+  {
+   "text": "3]",
+   "x": 259,
+   "y": 490,
+   "conf": 0.558
+  },
+  {
+   "text": "Active",
+   "x": 1265,
+   "y": 487,
+   "conf": 0.7531
+  },
+  {
+   "text": "11 Jan 2024",
+   "x": 1438,
+   "y": 507,
+   "conf": 0.8665
+  },
+  {
+   "text": "Reference created",
+   "x": 1555,
+   "y": 509,
+   "conf": 0.9172
+  },
+  {
+   "text": "FIN-7742",
+   "x": 453,
+   "y": 528,
+   "conf": 0.8081
+  },
+  {
+   "text": "Linked to customer",
+   "x": 715,
+   "y": 529,
+   "conf": 0.8974
+  },
+  {
+   "text": "22 Aug 2024 15:03",
+   "x": 991,
+   "y": 529,
+   "conf": 0.8661
+  },
+  {
+   "text": "Finance",
+   "x": 278,
+   "y": 530,
+   "conf": 0.8632
+  },
+  {
+   "text": "Active",
+   "x": 1265,
+   "y": 529,
+   "conf": 0.8562
+  },
+  {
+   "text": "Activity",
+   "x": 1439,
+   "y": 556,
+   "conf": 0.8009
+  },
+  {
+   "text": "Reference created",
+   "x": 1461,
+   "y": 578,
+   "conf": 0.9053
+  },
+  {
+   "text": "Recorded",
+   "x": 1460,
+   "y": 592,
+   "conf": 0.8883
+  },
+  {
+   "text": "Order link added",
+   "x": 1462,
+   "y": 625,
+   "conf": 0.9211
+  },
+  {
+   "text": "ORD-20263245",
+   "x": 1462,
+   "y": 640,
+   "conf": 0.8859
+  },
+  {
+   "text": "Support links added",
+   "x": 1460,
+   "y": 668,
+   "conf": 0.909
+  },
+  {
+   "text": "CS-3245, CS-3378",
+   "x": 1462,
+   "y": 683,
+   "conf": 0.8952
+  },
+  {
+   "text": "Finance link added",
+   "x": 1461,
+   "y": 714,
+   "conf": 0.8974
+  },
+  {
+   "text": "FIN-7742",
+   "x": 1461,
+   "y": 729,
+   "conf": 0.8363
+  },
+  {
+   "text": "Metadata reviewed",
+   "x": 1461,
+   "y": 759,
+   "conf": 0.8519
+  },
+  {
+   "text": "Recorded",
+   "x": 1461,
+   "y": 773,
+   "conf": 0.8157
+  },
+  {
+   "text": "Customer Reference Registry",
+   "x": 20,
+   "y": 1019,
+   "conf": 0.8864
+  },
+  {
+   "text": "Production workspace",
+   "x": 20,
+   "y": 1036,
+   "conf": 0.9261
+  },
+  {
+   "text": "build 2026.10.4",
+   "x": 21,
+   "y": 1055,
+   "conf": 0.8366
+  }
+ ]
+}

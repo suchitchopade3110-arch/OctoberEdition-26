@@ -1,0 +1,493 @@
+{
+ "schema": "ocr-lines-v1",
+ "source_sha256": "18b95c1bd8b8956e40216df935498a9f3c181ea2a69b5cd6d3c0841a816d5557",
+ "engine": "rapidocr_onnxruntime==1.2.3",
+ "lines": [
+  {
+   "text": "Search exports...",
+   "x": 487,
+   "y": 20,
+   "conf": 0.8683
+  },
+  {
+   "text": "CustomerDownloadCenter",
+   "x": 244,
+   "y": 21,
+   "conf": 0.9181
+  },
+  {
+   "text": "Northstar Shop",
+   "x": 55,
+   "y": 23,
+   "conf": 0.8323
+  },
+  {
+   "text": "Production Help",
+   "x": 1634,
+   "y": 20,
+   "conf": 0.9104
+  },
+  {
+   "text": "CD",
+   "x": 1754,
+   "y": 23,
+   "conf": 0.6641
+  },
+  {
+   "text": "Northstar Shop/Customer Download Center/ Data exports",
+   "x": 243,
+   "y": 79,
+   "conf": 0.9095
+  },
+  {
+   "text": "Home",
+   "x": 51,
+   "y": 99,
+   "conf": 0.7903
+  },
+  {
+   "text": "Data exports",
+   "x": 244,
+   "y": 103,
+   "conf": 0.9125
+  },
+  {
+   "text": "4jobs",
+   "x": 566,
+   "y": 103,
+   "conf": 0.8295
+  },
+  {
+   "text": "Filter",
+   "x": 1592,
+   "y": 107,
+   "conf": 0.7678
+  },
+  {
+   "text": "Export",
+   "x": 1652,
+   "y": 107,
+   "conf": 0.8068
+  },
+  {
+   "text": "Actions",
+   "x": 1722,
+   "y": 108,
+   "conf": 0.7476
+  },
+  {
+   "text": "Orders",
+   "x": 51,
+   "y": 142,
+   "conf": 0.8553
+  },
+  {
+   "text": "Create and manage customer download packages",
+   "x": 245,
+   "y": 136,
+   "conf": 0.9168
+  },
+  {
+   "text": "Processing",
+   "x": 400,
+   "y": 175,
+   "conf": 0.902
+  },
+  {
+   "text": "All exports",
+   "x": 247,
+   "y": 176,
+   "conf": 0.8509
+  },
+  {
+   "text": "Ready",
+   "x": 338,
+   "y": 176,
+   "conf": 0.8327
+  },
+  {
+   "text": "Expired",
+   "x": 490,
+   "y": 175,
+   "conf": 0.8231
+  },
+  {
+   "text": "Customers",
+   "x": 51,
+   "y": 189,
+   "conf": 0.8787
+  },
+  {
+   "text": "Created today",
+   "x": 1026,
+   "y": 229,
+   "conf": 0.8322
+  },
+  {
+   "text": "Processing",
+   "x": 640,
+   "y": 230,
+   "conf": 0.7864
+  },
+  {
+   "text": "Ready",
+   "x": 256,
+   "y": 231,
+   "conf": 0.831
+  },
+  {
+   "text": "Data exports",
+   "x": 51,
+   "y": 232,
+   "conf": 0.8807
+  },
+  {
+   "text": "Downloads today",
+   "x": 1411,
+   "y": 229,
+   "conf": 0.8813
+  },
+  {
+   "text": "Products",
+   "x": 52,
+   "y": 279,
+   "conf": 0.783
+  },
+  {
+   "text": "Marketing",
+   "x": 51,
+   "y": 321,
+   "conf": 0.7613
+  },
+  {
+   "text": "All exports",
+   "x": 260,
+   "y": 331,
+   "conf": 0.8302
+  },
+  {
+   "text": "Updated moments ago : 4 records",
+   "x": 1217,
+   "y": 330,
+   "conf": 0.8793
+  },
+  {
+   "text": "export_1260",
+   "x": 1438,
+   "y": 331,
+   "conf": 0.9146
+  },
+  {
+   "text": "Analytics",
+   "x": 50,
+   "y": 367,
+   "conf": 0.7963
+  },
+  {
+   "text": "Export ID",
+   "x": 256,
+   "y": 370,
+   "conf": 0.8922
+  },
+  {
+   "text": "Filename",
+   "x": 460,
+   "y": 371,
+   "conf": 0.8803
+  },
+  {
+   "text": "Owner",
+   "x": 756,
+   "y": 371,
+   "conf": 0.7597
+  },
+  {
+   "text": "Status",
+   "x": 1064,
+   "y": 371,
+   "conf": 0.8557
+  },
+  {
+   "text": "Created",
+   "x": 1204,
+   "y": 371,
+   "conf": 0.872
+  },
+  {
+   "text": "Owner",
+   "x": 1438,
+   "y": 377,
+   "conf": 0.798
+  },
+  {
+   "text": "ingrid.dahl@outlook.com",
+   "x": 1555,
+   "y": 378,
+   "conf": 0.9142
+  },
+  {
+   "text": "export_1261",
+   "x": 278,
+   "y": 405,
+   "conf": 0.8458
+  },
+  {
+   "text": "customer_export_1261.zip",
+   "x": 460,
+   "y": 405,
+   "conf": 0.9292
+  },
+  {
+   "text": "marcus.lee@northstar.shop",
+   "x": 755,
+   "y": 406,
+   "conf": 0.8631
+  },
+  {
+   "text": "Collecting",
+   "x": 1064,
+   "y": 403,
+   "conf": 0.9012
+  },
+  {
+   "text": "20 Jun 14:18 UTC",
+   "x": 1204,
+   "y": 406,
+   "conf": 0.8669
+  },
+  {
+   "text": "Created",
+   "x": 1438,
+   "y": 409,
+   "conf": 0.8287
+  },
+  {
+   "text": "Settings",
+   "x": 51,
+   "y": 411,
+   "conf": 0.8369
+  },
+  {
+   "text": "18 Jun 2026 06:42UTC",
+   "x": 1555,
+   "y": 410,
+   "conf": 0.8889
+  },
+  {
+   "text": "Expires",
+   "x": 1438,
+   "y": 442,
+   "conf": 0.8078
+  },
+  {
+   "text": "Ready",
+   "x": 1064,
+   "y": 445,
+   "conf": 0.7511
+  },
+  {
+   "text": "export_1260",
+   "x": 277,
+   "y": 446,
+   "conf": 0.8815
+  },
+  {
+   "text": "customer_export_1260.zip",
+   "x": 461,
+   "y": 447,
+   "conf": 0.9202
+  },
+  {
+   "text": "ingrid.dahl@outlook.com",
+   "x": 757,
+   "y": 447,
+   "conf": 0.9308
+  },
+  {
+   "text": "18 Jun06:42UTC",
+   "x": 1204,
+   "y": 447,
+   "conf": 0.8258
+  },
+  {
+   "text": "25Jun202606:42UTC",
+   "x": 1555,
+   "y": 443,
+   "conf": 0.883
+  },
+  {
+   "text": "Size",
+   "x": 1438,
+   "y": 474,
+   "conf": 0.7958
+  },
+  {
+   "text": "18.4 MB",
+   "x": 1554,
+   "y": 475,
+   "conf": 0.7738
+  },
+  {
+   "text": "Packaging",
+   "x": 1064,
+   "y": 486,
+   "conf": 0.8795
+  },
+  {
+   "text": "customer_export_1259.zip",
+   "x": 461,
+   "y": 488,
+   "conf": 0.9338
+  },
+  {
+   "text": "sara.kim@northstar.shop",
+   "x": 757,
+   "y": 488,
+   "conf": 0.9136
+  },
+  {
+   "text": "export_1259",
+   "x": 277,
+   "y": 489,
+   "conf": 0.9117
+  },
+  {
+   "text": "17 Jun 11:03 UTC",
+   "x": 1205,
+   "y": 487,
+   "conf": 0.872
+  },
+  {
+   "text": "Checksum",
+   "x": 1438,
+   "y": 507,
+   "conf": 0.8316
+  },
+  {
+   "text": "SHA-256 -41ca09...",
+   "x": 1555,
+   "y": 509,
+   "conf": 0.8477
+  },
+  {
+   "text": "export_1258",
+   "x": 277,
+   "y": 529,
+   "conf": 0.8759
+  },
+  {
+   "text": "daniel.park@northstar.shop",
+   "x": 756,
+   "y": 529,
+   "conf": 0.9178
+  },
+  {
+   "text": "Ready",
+   "x": 1064,
+   "y": 529,
+   "conf": 0.7957
+  },
+  {
+   "text": "customer_export_1258.zip",
+   "x": 461,
+   "y": 530,
+   "conf": 0.9177
+  },
+  {
+   "text": "16 Jun 09:27UTC",
+   "x": 1204,
+   "y": 529,
+   "conf": 0.8431
+  },
+  {
+   "text": "Download count",
+   "x": 1439,
+   "y": 542,
+   "conf": 0.9079
+  },
+  {
+   "text": "Included",
+   "x": 1437,
+   "y": 571,
+   "conf": 0.8184
+  },
+  {
+   "text": "Profile · Orders · Saved addresses",
+   "x": 1554,
+   "y": 572,
+   "conf": 0.9109
+  },
+  {
+   "text": "Activity",
+   "x": 1439,
+   "y": 621,
+   "conf": 0.7776
+  },
+  {
+   "text": "06:46",
+   "x": 1461,
+   "y": 643,
+   "conf": 0.8286
+  },
+  {
+   "text": "Ready for download",
+   "x": 1460,
+   "y": 658,
+   "conf": 0.8887
+  },
+  {
+   "text": "06:45",
+   "x": 1461,
+   "y": 688,
+   "conf": 0.748
+  },
+  {
+   "text": "Package created",
+   "x": 1460,
+   "y": 705,
+   "conf": 0.893
+  },
+  {
+   "text": "06:43",
+   "x": 1462,
+   "y": 734,
+   "conf": 0.8275
+  },
+  {
+   "text": "Collecting customer records",
+   "x": 1461,
+   "y": 749,
+   "conf": 0.9038
+  },
+  {
+   "text": "06:42",
+   "x": 1461,
+   "y": 777,
+   "conf": 0.7531
+  },
+  {
+   "text": "Export requested",
+   "x": 1462,
+   "y": 795,
+   "conf": 0.9332
+  },
+  {
+   "text": "Customer Download Center",
+   "x": 21,
+   "y": 1021,
+   "conf": 0.8957
+  },
+  {
+   "text": "Production workspace",
+   "x": 20,
+   "y": 1036,
+   "conf": 0.9157
+  },
+  {
+   "text": "build 2026.10.4",
+   "x": 21,
+   "y": 1055,
+   "conf": 0.8366
+  }
+ ]
+}

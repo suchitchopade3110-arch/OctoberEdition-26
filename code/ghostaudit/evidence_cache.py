@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from pathlib import Path
 
 ENTRY_FIELDS = ("file_id", "file_path", "origin", "captured_at", "sha256", "model", "model_version", "prompt_version",
@@ -39,6 +40,8 @@ def write_entry(cache_dir: Path, entry: dict) -> Path:
 def rebuild_index(cache_dir: Path) -> None:
     rows = []
     for p in sorted(cache_dir.glob("*/*.json")):
+        if not re.fullmatch(r"[0-9a-f]{64}", p.parent.name):
+            continue  # only <image sha256>/ entry folders; e.g. the OCR line cache in ocr/ is not a fact entry
         e = json.loads(p.read_text(encoding="utf-8"))
         rows.append({"entry": p.relative_to(cache_dir).as_posix(), "entry_sha256": sha256_file(p),
                      "source_sha256": e["sha256"], "file_id": e["file_id"], "model": e["model"],

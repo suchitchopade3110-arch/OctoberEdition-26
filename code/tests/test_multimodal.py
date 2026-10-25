@@ -323,7 +323,7 @@ class Integration(unittest.TestCase):
         row = gx.png_manifest()[0]
         cls.row = row
         cls.tmp = tempfile.TemporaryDirectory()
-        probe = MultimodalAuditor(data, Path(cls.tmp.name))
+        probe = MultimodalAuditor(data, Path(cls.tmp.name), use_ocr=False)
         flows = sorted(r for r in probe.obs_by_res if r.startswith("data_flow_"))
         cls.ra, cls.rb = flows[0], flows[1]
         f = facts([rec(resource_id=cls.ra, subject_identifiers=[cls.a["email"]], visible_status_text="Running",
@@ -334,7 +334,9 @@ class Integration(unittest.TestCase):
         evidence_cache.write_entry(Path(cls.tmp.name), {"file_id": row["file_id"], "file_path": row["file_path"],
                                    "origin": row["origin"], "captured_at": row["captured_at"], "sha256": sha,
                                    "model": "m", "prompt_version": "p", "schema_errors": [], "facts": f})
-        cls.aud = MultimodalAuditor(data, Path(cls.tmp.name))
+        # The facts above are synthetic and deliberately differ from what the image prints, so the OCR cross-check
+        # (EXP-D1) would reject them; this test exercises the fact-linking rules alone.
+        cls.aud = MultimodalAuditor(data, Path(cls.tmp.name), use_ocr=False)
 
     @classmethod
     def tearDownClass(cls):

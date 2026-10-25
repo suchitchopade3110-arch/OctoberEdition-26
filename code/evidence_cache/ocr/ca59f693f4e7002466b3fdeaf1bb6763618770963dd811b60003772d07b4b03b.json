@@ -1,0 +1,619 @@
+{
+ "schema": "ocr-lines-v1",
+ "source_sha256": "ca59f693f4e7002466b3fdeaf1bb6763618770963dd811b60003772d07b4b03b",
+ "engine": "rapidocr_onnxruntime==1.2.3",
+ "lines": [
+  {
+   "text": "Sentinel",
+   "x": 242,
+   "y": 21,
+   "conf": 0.8836
+  },
+  {
+   "text": "Search events, users, IP addresses or references..",
+   "x": 487,
+   "y": 21,
+   "conf": 0.8711
+  },
+  {
+   "text": "Production",
+   "x": 1635,
+   "y": 22,
+   "conf": 0.9086
+  },
+  {
+   "text": "Northstar Shop",
+   "x": 54,
+   "y": 24,
+   "conf": 0.8747
+  },
+  {
+   "text": "Help",
+   "x": 1708,
+   "y": 22,
+   "conf": 0.7982
+  },
+  {
+   "text": "Northstar Shop / Sentinel / Account events",
+   "x": 246,
+   "y": 82,
+   "conf": 0.9065
+  },
+  {
+   "text": "Overview",
+   "x": 52,
+   "y": 100,
+   "conf": 0.8598
+  },
+  {
+   "text": "Account events",
+   "x": 244,
+   "y": 103,
+   "conf": 0.8502
+  },
+  {
+   "text": "6 signed events",
+   "x": 539,
+   "y": 104,
+   "conf": 0.8832
+  },
+  {
+   "text": "Fiter",
+   "x": 1591,
+   "y": 107,
+   "conf": 0.7751
+  },
+  {
+   "text": "Actions",
+   "x": 1722,
+   "y": 108,
+   "conf": 0.7413
+  },
+  {
+   "text": "Threats",
+   "x": 51,
+   "y": 144,
+   "conf": 0.8025
+  },
+  {
+   "text": "Subject filter: user_03-18-26 Aug 2026 UTC",
+   "x": 245,
+   "y": 136,
+   "conf": 0.8691
+  },
+  {
+   "text": "Events (6)",
+   "x": 247,
+   "y": 176,
+   "conf": 0.8822
+  },
+  {
+   "text": "Timeline",
+   "x": 335,
+   "y": 176,
+   "conf": 0.8076
+  },
+  {
+   "text": "Integrity",
+   "x": 411,
+   "y": 177,
+   "conf": 0.7327
+  },
+  {
+   "text": "Account events",
+   "x": 53,
+   "y": 189,
+   "conf": 0.9031
+  },
+  {
+   "text": "Audit logs",
+   "x": 51,
+   "y": 231,
+   "conf": 0.8343
+  },
+  {
+   "text": "Events",
+   "x": 257,
+   "y": 233,
+   "conf": 0.8063
+  },
+  {
+   "text": "Categories",
+   "x": 641,
+   "y": 230,
+   "conf": 0.8827
+  },
+  {
+   "text": "Integrity failures",
+   "x": 1028,
+   "y": 234,
+   "conf": 0.8848
+  },
+  {
+   "text": "Partition",
+   "x": 1412,
+   "y": 233,
+   "conf": 0.8231
+  },
+  {
+   "text": "2026-Q3",
+   "x": 1412,
+   "y": 252,
+   "conf": 0.8702
+  },
+  {
+   "text": "Detections",
+   "x": 51,
+   "y": 277,
+   "conf": 0.8859
+  },
+  {
+   "text": "Investigations",
+   "x": 52,
+   "y": 326,
+   "conf": 0.8701
+  },
+  {
+   "text": "Events (6)",
+   "x": 258,
+   "y": 330,
+   "conf": 0.9021
+  },
+  {
+   "text": "Updated moments ago • 6 records",
+   "x": 1218,
+   "y": 332,
+   "conf": 0.8904
+  },
+  {
+   "text": "audit_record_oo3-Rawevent",
+   "x": 1439,
+   "y": 332,
+   "conf": 0.8534
+  },
+  {
+   "text": "Reports",
+   "x": 51,
+   "y": 369,
+   "conf": 0.8682
+  },
+  {
+   "text": "Category",
+   "x": 687,
+   "y": 370,
+   "conf": 0.8467
+  },
+  {
+   "text": "Integrity",
+   "x": 1156,
+   "y": 369,
+   "conf": 0.8169
+  },
+  {
+   "text": "Time (UTC)",
+   "x": 257,
+   "y": 371,
+   "conf": 0.8299
+  },
+  {
+   "text": "Event",
+   "x": 424,
+   "y": 371,
+   "conf": 0.8091
+  },
+  {
+   "text": "Subject",
+   "x": 879,
+   "y": 371,
+   "conf": 0.8711
+  },
+  {
+   "text": "Actor",
+   "x": 971,
+   "y": 372,
+   "conf": 0.8314
+  },
+  {
+   "text": "Reference",
+   "x": 1253,
+   "y": 370,
+   "conf": 0.848
+  },
+  {
+   "text": "event_type",
+   "x": 1438,
+   "y": 376,
+   "conf": 0.8867
+  },
+  {
+   "text": "account_closure_recorded",
+   "x": 1554,
+   "y": 379,
+   "conf": 0.9289
+  },
+  {
+   "text": "Account closure recorded",
+   "x": 425,
+   "y": 406,
+   "conf": 0.8747
+  },
+  {
+   "text": "Automated workflow",
+   "x": 971,
+   "y": 406,
+   "conf": 0.8581
+  },
+  {
+   "text": "Valid",
+   "x": 1157,
+   "y": 406,
+   "conf": 0.7872
+  },
+  {
+   "text": "Account lifecycle",
+   "x": 688,
+   "y": 407,
+   "conf": 0.8756
+  },
+  {
+   "text": "D25Aug04:03",
+   "x": 258,
+   "y": 408,
+   "conf": 0.8021
+  },
+  {
+   "text": "audit_record_003",
+   "x": 1255,
+   "y": 405,
+   "conf": 0.9217
+  },
+  {
+   "text": "subject",
+   "x": 1438,
+   "y": 410,
+   "conf": 0.824
+  },
+  {
+   "text": "user_03",
+   "x": 1555,
+   "y": 411,
+   "conf": 0.8294
+  },
+  {
+   "text": "actor",
+   "x": 1438,
+   "y": 444,
+   "conf": 0.8321
+  },
+  {
+   "text": "Session management",
+   "x": 687,
+   "y": 446,
+   "conf": 0.8924
+  },
+  {
+   "text": "Security system",
+   "x": 971,
+   "y": 446,
+   "conf": 0.882
+  },
+  {
+   "text": "Valid",
+   "x": 1156,
+   "y": 446,
+   "conf": 0.7207
+  },
+  {
+   "text": "user_03",
+   "x": 879,
+   "y": 447,
+   "conf": 0.8631
+  },
+  {
+   "text": "audit_record_002",
+   "x": 1255,
+   "y": 447,
+   "conf": 0.9127
+  },
+  {
+   "text": "25 Aug 03:21",
+   "x": 279,
+   "y": 448,
+   "conf": 0.8466
+  },
+  {
+   "text": "Session revoked",
+   "x": 424,
+   "y": 448,
+   "conf": 0.9231
+  },
+  {
+   "text": "automatedaccountworkflow",
+   "x": 1555,
+   "y": 445,
+   "conf": 0.9461
+  },
+  {
+   "text": "recorded_at",
+   "x": 1440,
+   "y": 477,
+   "conf": 0.8839
+  },
+  {
+   "text": "2026-08-25T04:03:00Z",
+   "x": 1556,
+   "y": 476,
+   "conf": 0.9082
+  },
+  {
+   "text": "Authentication",
+   "x": 687,
+   "y": 486,
+   "conf": 0.8861
+  },
+  {
+   "text": "Recovery challenge completed",
+   "x": 426,
+   "y": 488,
+   "conf": 0.8937
+  },
+  {
+   "text": "User (self)",
+   "x": 970,
+   "y": 488,
+   "conf": 0.8847
+  },
+  {
+   "text": "Valid",
+   "x": 1156,
+   "y": 487,
+   "conf": 0.8282
+  },
+  {
+   "text": "24 Aug 16:14",
+   "x": 278,
+   "y": 489,
+   "conf": 0.8688
+  },
+  {
+   "text": "audit_record_001",
+   "x": 1255,
+   "y": 488,
+   "conf": 0.9328
+  },
+  {
+   "text": "fingerprint",
+   "x": 1440,
+   "y": 509,
+   "conf": 0.8498
+  },
+  {
+   "text": "8fOc...31ad",
+   "x": 1556,
+   "y": 510,
+   "conf": 0.8162
+  },
+  {
+   "text": "Email change confirmed",
+   "x": 425,
+   "y": 529,
+   "conf": 0.8924
+  },
+  {
+   "text": "user_03",
+   "x": 879,
+   "y": 529,
+   "conf": 0.8054
+  },
+  {
+   "text": "User (self)",
+   "x": 971,
+   "y": 527,
+   "conf": 0.857
+  },
+  {
+   "text": "22 Aug 11:27",
+   "x": 279,
+   "y": 530,
+   "conf": 0.8877
+  },
+  {
+   "text": "Valid",
+   "x": 1157,
+   "y": 530,
+   "conf": 0.8245
+  },
+  {
+   "text": "Profile update",
+   "x": 688,
+   "y": 531,
+   "conf": 0.8207
+  },
+  {
+   "text": "audit_record_006",
+   "x": 1255,
+   "y": 529,
+   "conf": 0.9117
+  },
+  {
+   "text": "signature",
+   "x": 1439,
+   "y": 542,
+   "conf": 0.8706
+  },
+  {
+   "text": "Valid",
+   "x": 1556,
+   "y": 542,
+   "conf": 0.7978
+  },
+  {
+   "text": "Authentication",
+   "x": 686,
+   "y": 568,
+   "conf": 0.7969
+  },
+  {
+   "text": "user_03",
+   "x": 879,
+   "y": 570,
+   "conf": 0.8631
+  },
+  {
+   "text": "User (self)",
+   "x": 971,
+   "y": 570,
+   "conf": 0.8166
+  },
+  {
+   "text": "Valid",
+   "x": 1156,
+   "y": 569,
+   "conf": 0.7071
+  },
+  {
+   "text": "520Aug09:42",
+   "x": 258,
+   "y": 571,
+   "conf": 0.8303
+  },
+  {
+   "text": "Login from new device",
+   "x": 425,
+   "y": 571,
+   "conf": 0.9184
+  },
+  {
+   "text": "audit_record_005",
+   "x": 1255,
+   "y": 570,
+   "conf": 0.9118
+  },
+  {
+   "text": "journal",
+   "x": 1437,
+   "y": 573,
+   "conf": 0.8741
+  },
+  {
+   "text": "2026-Q3",
+   "x": 1555,
+   "y": 573,
+   "conf": 0.825
+  },
+  {
+   "text": "user_03",
+   "x": 877,
+   "y": 611,
+   "conf": 0.8731
+  },
+  {
+   "text": "User (self)",
+   "x": 971,
+   "y": 611,
+   "conf": 0.8166
+  },
+  {
+   "text": "18 Aug 14:05",
+   "x": 280,
+   "y": 612,
+   "conf": 0.8014
+  },
+  {
+   "text": "Password changed",
+   "x": 425,
+   "y": 612,
+   "conf": 0.8573
+  },
+  {
+   "text": "Valid",
+   "x": 1157,
+   "y": 612,
+   "conf": 0.8245
+  },
+  {
+   "text": "Authentication",
+   "x": 688,
+   "y": 613,
+   "conf": 0.8681
+  },
+  {
+   "text": "audit_record_004",
+   "x": 1254,
+   "y": 611,
+   "conf": 0.9348
+  },
+  {
+   "text": "Activity",
+   "x": 1440,
+   "y": 621,
+   "conf": 0.7998
+  },
+  {
+   "text": "25 Aug",
+   "x": 1462,
+   "y": 645,
+   "conf": 0.8415
+  },
+  {
+   "text": "Account closure recorded",
+   "x": 1462,
+   "y": 659,
+   "conf": 0.8897
+  },
+  {
+   "text": "25 Aug",
+   "x": 1462,
+   "y": 686,
+   "conf": 0.6669
+  },
+  {
+   "text": "Session revoked",
+   "x": 1462,
+   "y": 706,
+   "conf": 0.9355
+  },
+  {
+   "text": "24 Aug",
+   "x": 1462,
+   "y": 733,
+   "conf": 0.6632
+  },
+  {
+   "text": "Recovery challenge completed",
+   "x": 1461,
+   "y": 749,
+   "conf": 0.9335
+  },
+  {
+   "text": "22 Aug",
+   "x": 1462,
+   "y": 777,
+   "conf": 0.7673
+  },
+  {
+   "text": "Email change confirmed",
+   "x": 1462,
+   "y": 796,
+   "conf": 0.927
+  },
+  {
+   "text": "Sentinel",
+   "x": 20,
+   "y": 1021,
+   "conf": 0.8775
+  },
+  {
+   "text": "Production workspace",
+   "x": 19,
+   "y": 1036,
+   "conf": 0.8831
+  },
+  {
+   "text": "build 2026.10.4",
+   "x": 21,
+   "y": 1053,
+   "conf": 0.8519
+  }
+ ]
+}

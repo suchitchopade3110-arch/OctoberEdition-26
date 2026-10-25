@@ -66,9 +66,17 @@ class NoKey(unittest.TestCase):
     def test_cache_miss_adds_no_observation_and_never_absent(self):
         from ghostaudit.multimodal import MultimodalAuditor
         with tempfile.TemporaryDirectory() as d:
-            aud = MultimodalAuditor(ROOT / "dataset", Path(d))
+            aud = MultimodalAuditor(ROOT / "dataset", Path(d), use_ocr=False)   # the no-OCR guarantee
             self.assertTrue(all(r.get("status", "").startswith("unresolved") for r in aud.image_report))
             self.assertFalse([o for o in aud.idx.obs if str(getattr(o, "extraction", "")).startswith("image:")])
+
+    def test_ocr_fallback_on_cache_miss_never_produces_absence(self):
+        # EXP-D1: with no fact entry, OCR facts may add PRESENT observations, never ABSENT / deleted.
+        from ghostaudit.multimodal import MultimodalAuditor
+        with tempfile.TemporaryDirectory() as d:
+            aud = MultimodalAuditor(ROOT / "dataset", Path(d))
+            img = [o for o in aud.idx.obs if str(getattr(o, "extraction", "")).startswith("image:ocr")]
+            self.assertTrue(all(o.state != "ABSENT" for o in img))
 
     def test_live_extraction_without_keys_makes_no_call(self):
         import importlib.util

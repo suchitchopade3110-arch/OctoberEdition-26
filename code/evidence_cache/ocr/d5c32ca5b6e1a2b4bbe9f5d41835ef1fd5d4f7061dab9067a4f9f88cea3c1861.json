@@ -1,0 +1,451 @@
+{
+ "schema": "ocr-lines-v1",
+ "source_sha256": "d5c32ca5b6e1a2b4bbe9f5d41835ef1fd5d4f7061dab9067a4f9f88cea3c1861",
+ "engine": "rapidocr_onnxruntime==1.2.3",
+ "lines": [
+  {
+   "text": "Search customers,orders,tickets...",
+   "x": 487,
+   "y": 21,
+   "conf": 0.9184
+  },
+  {
+   "text": "CustomerOperations",
+   "x": 244,
+   "y": 22,
+   "conf": 0.8776
+  },
+  {
+   "text": "Northstar Shop",
+   "x": 55,
+   "y": 24,
+   "conf": 0.864
+  },
+  {
+   "text": "Production Help",
+   "x": 1634,
+   "y": 21,
+   "conf": 0.893
+  },
+  {
+   "text": "Northstar Shop/Customer Operations/Customers",
+   "x": 244,
+   "y": 80,
+   "conf": 0.9301
+  },
+  {
+   "text": "Customers",
+   "x": 52,
+   "y": 97,
+   "conf": 0.8971
+  },
+  {
+   "text": "Haruka Sato",
+   "x": 243,
+   "y": 103,
+   "conf": 0.8726
+  },
+  {
+   "text": "silver",
+   "x": 407,
+   "y": 103,
+   "conf": 0.7873
+  },
+  {
+   "text": "Filter",
+   "x": 1592,
+   "y": 108,
+   "conf": 0.7366
+  },
+  {
+   "text": "Actions",
+   "x": 1721,
+   "y": 105,
+   "conf": 0.8574
+  },
+  {
+   "text": "Orders",
+   "x": 51,
+   "y": 142,
+   "conf": 0.804
+  },
+  {
+   "text": "user_11·account_5762",
+   "x": 244,
+   "y": 136,
+   "conf": 0.9031
+  },
+  {
+   "text": "Overview",
+   "x": 246,
+   "y": 175,
+   "conf": 0.881
+  },
+  {
+   "text": "Orders",
+   "x": 329,
+   "y": 173,
+   "conf": 0.7382
+  },
+  {
+   "text": "Addresses",
+   "x": 397,
+   "y": 176,
+   "conf": 0.8651
+  },
+  {
+   "text": "Support history",
+   "x": 484,
+   "y": 177,
+   "conf": 0.8594
+  },
+  {
+   "text": "Support",
+   "x": 51,
+   "y": 188,
+   "conf": 0.8715
+  },
+  {
+   "text": "Email",
+   "x": 256,
+   "y": 231,
+   "conf": 0.8306
+  },
+  {
+   "text": "Phone",
+   "x": 513,
+   "y": 231,
+   "conf": 0.83
+  },
+  {
+   "text": "Catalog",
+   "x": 51,
+   "y": 232,
+   "conf": 0.8154
+  },
+  {
+   "text": "Market",
+   "x": 1026,
+   "y": 232,
+   "conf": 0.8558
+  },
+  {
+   "text": "Signup channel",
+   "x": 771,
+   "y": 233,
+   "conf": 0.9166
+  },
+  {
+   "text": "Preferred language",
+   "x": 1283,
+   "y": 230,
+   "conf": 0.8606
+  },
+  {
+   "text": "Last contact",
+   "x": 1541,
+   "y": 233,
+   "conf": 0.9056
+  },
+  {
+   "text": "mobile_app",
+   "x": 770,
+   "y": 250,
+   "conf": 0.8358
+  },
+  {
+   "text": "+819076102507",
+   "x": 512,
+   "y": 252,
+   "conf": 0.8823
+  },
+  {
+   "text": "JP",
+   "x": 1026,
+   "y": 251,
+   "conf": 0.6651
+  },
+  {
+   "text": "Japanese",
+   "x": 1284,
+   "y": 253,
+   "conf": 0.8795
+  },
+  {
+   "text": "haruka.s1838@zoho.com",
+   "x": 258,
+   "y": 254,
+   "conf": 0.8925
+  },
+  {
+   "text": "24Sep202609:14JST",
+   "x": 1540,
+   "y": 252,
+   "conf": 0.8828
+  },
+  {
+   "text": "Promotions",
+   "x": 50,
+   "y": 276,
+   "conf": 0.9044
+  },
+  {
+   "text": "Analytics",
+   "x": 51,
+   "y": 324,
+   "conf": 0.8963
+  },
+  {
+   "text": "Overview",
+   "x": 259,
+   "y": 330,
+   "conf": 0.8364
+  },
+  {
+   "text": "Updated moments ago - 2 records",
+   "x": 1219,
+   "y": 332,
+   "conf": 0.9337
+  },
+  {
+   "text": "Customer details",
+   "x": 1440,
+   "y": 331,
+   "conf": 0.8983
+  },
+  {
+   "text": "Order ID",
+   "x": 255,
+   "y": 370,
+   "conf": 0.8725
+  },
+  {
+   "text": "Date",
+   "x": 509,
+   "y": 371,
+   "conf": 0.7891
+  },
+  {
+   "text": "Item",
+   "x": 684,
+   "y": 371,
+   "conf": 0.7877
+  },
+  {
+   "text": "Qty",
+   "x": 923,
+   "y": 371,
+   "conf": 0.7419
+  },
+  {
+   "text": "Total",
+   "x": 1003,
+   "y": 371,
+   "conf": 0.7744
+  },
+  {
+   "text": "Status",
+   "x": 1162,
+   "y": 371,
+   "conf": 0.7978
+  },
+  {
+   "text": "Default address",
+   "x": 1440,
+   "y": 379,
+   "conf": 0.8325
+  },
+  {
+   "text": "2-18-4 Kichijoji, Musashino, Tokyo",
+   "x": 1555,
+   "y": 379,
+   "conf": 0.9257
+  },
+  {
+   "text": "12 Sep 2026",
+   "x": 510,
+   "y": 403,
+   "conf": 0.8624
+  },
+  {
+   "text": "JPY 8,900",
+   "x": 1003,
+   "y": 405,
+   "conf": 0.76
+  },
+  {
+   "text": "180-0004",
+   "x": 1556,
+   "y": 396,
+   "conf": 0.884
+  },
+  {
+   "text": "ORD-20265762",
+   "x": 279,
+   "y": 407,
+   "conf": 0.9099
+  },
+  {
+   "text": "Ceramic coffee set",
+   "x": 687,
+   "y": 407,
+   "conf": 0.8746
+  },
+  {
+   "text": "Delivered - 18 Sep",
+   "x": 1163,
+   "y": 407,
+   "conf": 0.8647
+  },
+  {
+   "text": "Loyalty tier",
+   "x": 1438,
+   "y": 425,
+   "conf": 0.9047
+  },
+  {
+   "text": "Silver",
+   "x": 1554,
+   "y": 425,
+   "conf": 0.7923
+  },
+  {
+   "text": "28 Aug 2026",
+   "x": 509,
+   "y": 447,
+   "conf": 0.8637
+  },
+  {
+   "text": "JPY12,400",
+   "x": 1004,
+   "y": 447,
+   "conf": 0.8528
+  },
+  {
+   "text": "ORD-20265518",
+   "x": 279,
+   "y": 448,
+   "conf": 0.9057
+  },
+  {
+   "text": "Travel backpack",
+   "x": 688,
+   "y": 449,
+   "conf": 0.86
+  },
+  {
+   "text": "Returned - 03 Sep",
+   "x": 1162,
+   "y": 447,
+   "conf": 0.8921
+  },
+  {
+   "text": "Support",
+   "x": 1438,
+   "y": 459,
+   "conf": 0.8416
+  },
+  {
+   "text": "cS-8538·support_9538",
+   "x": 1555,
+   "y": 460,
+   "conf": 0.8805
+  },
+  {
+   "text": "Member since",
+   "x": 1438,
+   "y": 488,
+   "conf": 0.8751
+  },
+  {
+   "text": "12 Jan 2024",
+   "x": 1554,
+   "y": 490,
+   "conf": 0.8366
+  },
+  {
+   "text": "Activity",
+   "x": 1439,
+   "y": 539,
+   "conf": 0.7776
+  },
+  {
+   "text": "24 Sep",
+   "x": 1460,
+   "y": 562,
+   "conf": 0.7242
+  },
+  {
+   "text": "Customer replied to CS-8538",
+   "x": 1460,
+   "y": 576,
+   "conf": 0.9172
+  },
+  {
+   "text": "22 Sep",
+   "x": 1461,
+   "y": 607,
+   "conf": 0.8404
+  },
+  {
+   "text": "Support agent responded",
+   "x": 1460,
+   "y": 622,
+   "conf": 0.9171
+  },
+  {
+   "text": "18 Sep",
+   "x": 1461,
+   "y": 651,
+   "conf": 0.7701
+  },
+  {
+   "text": "Order ORD-20265762 delivered",
+   "x": 1461,
+   "y": 667,
+   "conf": 0.9133
+  },
+  {
+   "text": "03Sep",
+   "x": 1461,
+   "y": 697,
+   "conf": 0.8282
+  },
+  {
+   "text": "Order ORD-20265518 returned",
+   "x": 1461,
+   "y": 712,
+   "conf": 0.937
+  },
+  {
+   "text": "28 Aug",
+   "x": 1460,
+   "y": 740,
+   "conf": 0.7979
+  },
+  {
+   "text": "support_9538 created",
+   "x": 1460,
+   "y": 757,
+   "conf": 0.9206
+  },
+  {
+   "text": "Customer Operations",
+   "x": 22,
+   "y": 1122,
+   "conf": 0.8769
+  },
+  {
+   "text": "Production workspace",
+   "x": 20,
+   "y": 1137,
+   "conf": 0.9183
+  },
+  {
+   "text": "build 2026.10.4",
+   "x": 21,
+   "y": 1155,
+   "conf": 0.8698
+  }
+ ]
+}

@@ -1,0 +1,607 @@
+{
+ "schema": "ocr-lines-v1",
+ "source_sha256": "96e9a191380c29b9e0ab997007268c4cd6353cb6721ebd1ed4a32599d8d37e04",
+ "engine": "rapidocr_onnxruntime==1.2.3",
+ "lines": [
+  {
+   "text": "Nimbus Object Storage",
+   "x": 241,
+   "y": 17,
+   "conf": 0.8692
+  },
+  {
+   "text": "Search objects by name or prefix...",
+   "x": 488,
+   "y": 21,
+   "conf": 0.8993
+  },
+  {
+   "text": "Northstar Shop",
+   "x": 55,
+   "y": 24,
+   "conf": 0.861
+  },
+  {
+   "text": "Production Help",
+   "x": 1634,
+   "y": 21,
+   "conf": 0.7968
+  },
+  {
+   "text": "Northstar Shop / Nimbus Object Storage / northstar-customer-data",
+   "x": 244,
+   "y": 80,
+   "conf": 0.9127
+  },
+  {
+   "text": "Buckets",
+   "x": 51,
+   "y": 97,
+   "conf": 0.701
+  },
+  {
+   "text": "northstar-customer-data",
+   "x": 243,
+   "y": 105,
+   "conf": 0.8932
+  },
+  {
+   "text": "8objects",
+   "x": 547,
+   "y": 104,
+   "conf": 0.8848
+  },
+  {
+   "text": "Filter",
+   "x": 1592,
+   "y": 106,
+   "conf": 0.7769
+  },
+  {
+   "text": "Export",
+   "x": 1652,
+   "y": 107,
+   "conf": 0.8006
+  },
+  {
+   "text": "Actions",
+   "x": 1722,
+   "y": 108,
+   "conf": 0.7873
+  },
+  {
+   "text": "eu-west-1/support-attachments/2026/02",
+   "x": 243,
+   "y": 136,
+   "conf": 0.9292
+  },
+  {
+   "text": "Accesspolicies",
+   "x": 52,
+   "y": 146,
+   "conf": 0.8987
+  },
+  {
+   "text": "Objects",
+   "x": 246,
+   "y": 176,
+   "conf": 0.8419
+  },
+  {
+   "text": "Versions",
+   "x": 319,
+   "y": 176,
+   "conf": 0.8022
+  },
+  {
+   "text": "Monitoring",
+   "x": 50,
+   "y": 185,
+   "conf": 0.85
+  },
+  {
+   "text": "Access",
+   "x": 397,
+   "y": 176,
+   "conf": 0.7913
+  },
+  {
+   "text": "Settings",
+   "x": 51,
+   "y": 231,
+   "conf": 0.8691
+  },
+  {
+   "text": "Account",
+   "x": 256,
+   "y": 231,
+   "conf": 0.8326
+  },
+  {
+   "text": "Region",
+   "x": 641,
+   "y": 232,
+   "conf": 0.8455
+  },
+  {
+   "text": "Captured",
+   "x": 1028,
+   "y": 231,
+   "conf": 0.8879
+  },
+  {
+   "text": "Storage class",
+   "x": 1413,
+   "y": 233,
+   "conf": 0.8472
+  },
+  {
+   "text": "NorthstarProduction",
+   "x": 257,
+   "y": 252,
+   "conf": 0.925
+  },
+  {
+   "text": "eu-west-1",
+   "x": 641,
+   "y": 253,
+   "conf": 0.8302
+  },
+  {
+   "text": "13Feb202608:00UTC",
+   "x": 1029,
+   "y": 253,
+   "conf": 0.8986
+  },
+  {
+   "text": "All",
+   "x": 1411,
+   "y": 251,
+   "conf": 0.7326
+  },
+  {
+   "text": "northstar-assets",
+   "x": 51,
+   "y": 280,
+   "conf": 0.9045
+  },
+  {
+   "text": "northstar-customer-",
+   "x": 51,
+   "y": 316,
+   "conf": 0.933
+  },
+  {
+   "text": "Objects",
+   "x": 259,
+   "y": 328,
+   "conf": 0.8145
+  },
+  {
+   "text": "Updated moments ago - 8 records",
+   "x": 1219,
+   "y": 330,
+   "conf": 0.8744
+  },
+  {
+   "text": "data",
+   "x": 51,
+   "y": 333,
+   "conf": 0.798
+  },
+  {
+   "text": "delivery_confirmation_19.pdf",
+   "x": 1439,
+   "y": 329,
+   "conf": 0.9228
+  },
+  {
+   "text": "northstar-logs",
+   "x": 51,
+   "y": 369,
+   "conf": 0.8959
+  },
+  {
+   "text": "Name",
+   "x": 254,
+   "y": 370,
+   "conf": 0.7992
+  },
+  {
+   "text": "Size",
+   "x": 730,
+   "y": 369,
+   "conf": 0.7392
+  },
+  {
+   "text": "Modified (UTC)",
+   "x": 860,
+   "y": 370,
+   "conf": 0.8918
+  },
+  {
+   "text": "Storage class",
+   "x": 1084,
+   "y": 371,
+   "conf": 0.9009
+  },
+  {
+   "text": "Version",
+   "x": 1287,
+   "y": 370,
+   "conf": 0.869
+  },
+  {
+   "text": "Size",
+   "x": 1438,
+   "y": 376,
+   "conf": 0.7971
+  },
+  {
+   "text": "684KB",
+   "x": 1555,
+   "y": 377,
+   "conf": 0.7664
+  },
+  {
+   "text": "684 KB",
+   "x": 731,
+   "y": 405,
+   "conf": 0.7237
+  },
+  {
+   "text": "12 Feb 18:42",
+   "x": 860,
+   "y": 405,
+   "conf": 0.8882
+  },
+  {
+   "text": "Standard",
+   "x": 1084,
+   "y": 405,
+   "conf": 0.8349
+  },
+  {
+   "text": "delivery_confirmation_19.pdf",
+   "x": 279,
+   "y": 407,
+   "conf": 0.9146
+  },
+  {
+   "text": "v3",
+   "x": 1286,
+   "y": 405,
+   "conf": 0.6631
+  },
+  {
+   "text": "Version",
+   "x": 1438,
+   "y": 409,
+   "conf": 0.8732
+  },
+  {
+   "text": "v3",
+   "x": 1553,
+   "y": 409,
+   "conf": 0.652
+  },
+  {
+   "text": "Content type",
+   "x": 1438,
+   "y": 439,
+   "conf": 0.9115
+  },
+  {
+   "text": "712 KB",
+   "x": 730,
+   "y": 444,
+   "conf": 0.7912
+  },
+  {
+   "text": "11 Feb 14:17",
+   "x": 860,
+   "y": 446,
+   "conf": 0.9028
+  },
+  {
+   "text": "Standard",
+   "x": 1084,
+   "y": 446,
+   "conf": 0.788
+  },
+  {
+   "text": "v1",
+   "x": 1286,
+   "y": 446,
+   "conf": 0.6286
+  },
+  {
+   "text": "delivery_confirmation_20.pdf",
+   "x": 279,
+   "y": 448,
+   "conf": 0.9124
+  },
+  {
+   "text": "21",
+   "x": 259,
+   "y": 449,
+   "conf": 0.6214
+  },
+  {
+   "text": "application/pdf",
+   "x": 1553,
+   "y": 442,
+   "conf": 0.8961
+  },
+  {
+   "text": "Encryption",
+   "x": 1438,
+   "y": 475,
+   "conf": 0.8768
+  },
+  {
+   "text": "AES-256",
+   "x": 1554,
+   "y": 475,
+   "conf": 0.8628
+  },
+  {
+   "text": "203KB",
+   "x": 730,
+   "y": 487,
+   "conf": 0.8292
+  },
+  {
+   "text": "Standard",
+   "x": 1084,
+   "y": 488,
+   "conf": 0.8772
+  },
+  {
+   "text": "1 return_label_4821.pdf",
+   "x": 273,
+   "y": 489,
+   "conf": 0.8356
+  },
+  {
+   "text": "10 Feb 09:33",
+   "x": 861,
+   "y": 489,
+   "conf": 0.8515
+  },
+  {
+   "text": "v1",
+   "x": 1286,
+   "y": 487,
+   "conf": 0.6286
+  },
+  {
+   "text": "Checksum",
+   "x": 1439,
+   "y": 507,
+   "conf": 0.828
+  },
+  {
+   "text": "e71b6d...",
+   "x": 1554,
+   "y": 508,
+   "conf": 0.8633
+  },
+  {
+   "text": "198 KB",
+   "x": 731,
+   "y": 528,
+   "conf": 0.8194
+  },
+  {
+   "text": "11 Feb 16:05",
+   "x": 859,
+   "y": 527,
+   "conf": 0.8742
+  },
+  {
+   "text": " return_label_4876.pdf",
+   "x": 257,
+   "y": 529,
+   "conf": 0.899
+  },
+  {
+   "text": "Standard",
+   "x": 1084,
+   "y": 528,
+   "conf": 0.8702
+  },
+  {
+   "text": "v2",
+   "x": 1286,
+   "y": 529,
+   "conf": 0.6216
+  },
+  {
+   "text": "Uploader",
+   "x": 1438,
+   "y": 540,
+   "conf": 0.8156
+  },
+  {
+   "text": "support-service",
+   "x": 1555,
+   "y": 540,
+   "conf": 0.9323
+  },
+  {
+   "text": "318 KB",
+   "x": 730,
+   "y": 569,
+   "conf": 0.8327
+  },
+  {
+   "text": "10 Feb 11:21",
+   "x": 860,
+   "y": 569,
+   "conf": 0.8432
+  },
+  {
+   "text": "invoice_NS-10493.pdf",
+   "x": 257,
+   "y": 570,
+   "conf": 0.9285
+  },
+  {
+   "text": "Standard",
+   "x": 1084,
+   "y": 569,
+   "conf": 0.8702
+  },
+  {
+   "text": "v1",
+   "x": 1286,
+   "y": 570,
+   "conf": 0.5922
+  },
+  {
+   "text": "Modified",
+   "x": 1438,
+   "y": 572,
+   "conf": 0.8422
+  },
+  {
+   "text": "12Feb202618:42UTC",
+   "x": 1555,
+   "y": 573,
+   "conf": 0.9253
+  },
+  {
+   "text": "6parcel_damage_7713.jpg",
+   "x": 256,
+   "y": 610,
+   "conf": 0.9093
+  },
+  {
+   "text": "2.4 MB",
+   "x": 729,
+   "y": 609,
+   "conf": 0.835
+  },
+  {
+   "text": "12 Feb 10:08",
+   "x": 860,
+   "y": 611,
+   "conf": 0.8464
+  },
+  {
+   "text": "Standard",
+   "x": 1084,
+   "y": 610,
+   "conf": 0.8702
+  },
+  {
+   "text": "v1",
+   "x": 1286,
+   "y": 611,
+   "conf": 0.5885
+  },
+  {
+   "text": "Activity",
+   "x": 1440,
+   "y": 621,
+   "conf": 0.8321
+  },
+  {
+   "text": "128 MB",
+   "x": 731,
+   "y": 651,
+   "conf": 0.801
+  },
+  {
+   "text": "10 Feb 23:14",
+   "x": 860,
+   "y": 652,
+   "conf": 0.8423
+  },
+  {
+   "text": "Standard",
+   "x": 1084,
+   "y": 652,
+   "conf": 0.8772
+  },
+  {
+   "text": "v3",
+   "x": 1461,
+   "y": 644,
+   "conf": 0.6254
+  },
+  {
+   "text": "customer_export_2026-02-10.zip",
+   "x": 280,
+   "y": 654,
+   "conf": 0.9085
+  },
+  {
+   "text": "12 Feb 18:42 - metadata update",
+   "x": 1461,
+   "y": 659,
+   "conf": 0.8956
+  },
+  {
+   "text": "131 MB",
+   "x": 731,
+   "y": 692,
+   "conf": 0.7977
+  },
+  {
+   "text": "12 Feb 21:56",
+   "x": 860,
+   "y": 693,
+   "conf": 0.8084
+  },
+  {
+   "text": "Standard",
+   "x": 1084,
+   "y": 693,
+   "conf": 0.8772
+  },
+  {
+   "text": "customer_export_2026-02-12.zip",
+   "x": 278,
+   "y": 694,
+   "conf": 0.8856
+  },
+  {
+   "text": "V2",
+   "x": 1461,
+   "y": 689,
+   "conf": 0.5053
+  },
+  {
+   "text": "12 Feb 18:39 - upload complete",
+   "x": 1461,
+   "y": 704,
+   "conf": 0.855
+  },
+  {
+   "text": "12 Feb 18:38 - object created",
+   "x": 1461,
+   "y": 749,
+   "conf": 0.8392
+  },
+  {
+   "text": "Nimbus Object Storage",
+   "x": 20,
+   "y": 1070,
+   "conf": 0.9257
+  },
+  {
+   "text": "Production workspace",
+   "x": 20,
+   "y": 1085,
+   "conf": 0.9043
+  },
+  {
+   "text": "build 2026.10.4",
+   "x": 20,
+   "y": 1104,
+   "conf": 0.8954
+  }
+ ]
+}

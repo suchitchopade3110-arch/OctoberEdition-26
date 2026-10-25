@@ -1,0 +1,463 @@
+{
+ "schema": "ocr-lines-v1",
+ "source_sha256": "51fa0e6a38f8fa3629ba1b0d0b90b4ed139715956b97bfd09a6f1a6232c15df5",
+ "engine": "rapidocr_onnxruntime==1.2.3",
+ "lines": [
+  {
+   "text": "Audience Operations",
+   "x": 243,
+   "y": 21,
+   "conf": 0.9052
+  },
+  {
+   "text": "Search customers,audiences, campaigns...",
+   "x": 488,
+   "y": 22,
+   "conf": 0.8798
+  },
+  {
+   "text": "Northstar Shop",
+   "x": 55,
+   "y": 24,
+   "conf": 0.8264
+  },
+  {
+   "text": "Production Help",
+   "x": 1334,
+   "y": 21,
+   "conf": 0.8922
+  },
+  {
+   "text": "Northstar Shop/ Audience Operations / Audience Operations",
+   "x": 244,
+   "y": 79,
+   "conf": 0.8908
+  },
+  {
+   "text": "Home",
+   "x": 51,
+   "y": 97,
+   "conf": 0.7989
+  },
+  {
+   "text": "Soo-jin Park",
+   "x": 245,
+   "y": 104,
+   "conf": 0.8702
+  },
+  {
+   "text": "Live",
+   "x": 605,
+   "y": 105,
+   "conf": 0.7994
+  },
+  {
+   "text": "Filter",
+   "x": 1292,
+   "y": 107,
+   "conf": 0.7733
+  },
+  {
+   "text": "Actions",
+   "x": 1422,
+   "y": 107,
+   "conf": 0.863
+  },
+  {
+   "text": "Audience Operations",
+   "x": 53,
+   "y": 144,
+   "conf": 0.8493
+  },
+  {
+   "text": "marketing_001-sj.park@naver.com·+8210-5837-9451",
+   "x": 244,
+   "y": 136,
+   "conf": 0.9108
+  },
+  {
+   "text": "Profile",
+   "x": 246,
+   "y": 175,
+   "conf": 0.8194
+  },
+  {
+   "text": "Attributes",
+   "x": 313,
+   "y": 175,
+   "conf": 0.9024
+  },
+  {
+   "text": "Memberships",
+   "x": 397,
+   "y": 175,
+   "conf": 0.9154
+  },
+  {
+   "text": "Activity",
+   "x": 502,
+   "y": 175,
+   "conf": 0.8545
+  },
+  {
+   "text": "Campaigns",
+   "x": 52,
+   "y": 189,
+   "conf": 0.8049
+  },
+  {
+   "text": "Market",
+   "x": 256,
+   "y": 231,
+   "conf": 0.8562
+  },
+  {
+   "text": "Email opt-in",
+   "x": 753,
+   "y": 231,
+   "conf": 0.8661
+  },
+  {
+   "text": "SMS opt-in",
+   "x": 1000,
+   "y": 231,
+   "conf": 0.8147
+  },
+  {
+   "text": "Language",
+   "x": 505,
+   "y": 232,
+   "conf": 0.8209
+  },
+  {
+   "text": "Journeys",
+   "x": 50,
+   "y": 233,
+   "conf": 0.8343
+  },
+  {
+   "text": "Last refreshed",
+   "x": 1249,
+   "y": 231,
+   "conf": 0.887
+  },
+  {
+   "text": "South Korea",
+   "x": 256,
+   "y": 251,
+   "conf": 0.8352
+  },
+  {
+   "text": "Korean",
+   "x": 505,
+   "y": 251,
+   "conf": 0.8213
+  },
+  {
+   "text": "Yes",
+   "x": 752,
+   "y": 251,
+   "conf": 0.7492
+  },
+  {
+   "text": "No",
+   "x": 1000,
+   "y": 251,
+   "conf": 0.6659
+  },
+  {
+   "text": "15Sep202623:40UTC",
+   "x": 1250,
+   "y": 252,
+   "conf": 0.9326
+  },
+  {
+   "text": "Products",
+   "x": 51,
+   "y": 279,
+   "conf": 0.8434
+  },
+  {
+   "text": "Analytics",
+   "x": 50,
+   "y": 322,
+   "conf": 0.8374
+  },
+  {
+   "text": "Profile",
+   "x": 258,
+   "y": 330,
+   "conf": 0.766
+  },
+  {
+   "text": "Updated moments ago · 4 records",
+   "x": 919,
+   "y": 331,
+   "conf": 0.8769
+  },
+  {
+   "text": "Audiencemembership",
+   "x": 1139,
+   "y": 329,
+   "conf": 0.9235
+  },
+  {
+   "text": "Data",
+   "x": 51,
+   "y": 368,
+   "conf": 0.7166
+  },
+  {
+   "text": "Time",
+   "x": 255,
+   "y": 371,
+   "conf": 0.7981
+  },
+  {
+   "text": "Activity",
+   "x": 410,
+   "y": 371,
+   "conf": 0.8151
+  },
+  {
+   "text": "Detail",
+   "x": 729,
+   "y": 370,
+   "conf": 0.8465
+  },
+  {
+   "text": "Audience",
+   "x": 1139,
+   "y": 377,
+   "conf": 0.8389
+  },
+  {
+   "text": "Returning customers-East Asia",
+   "x": 1256,
+   "y": 379,
+   "conf": 0.8781
+  },
+  {
+   "text": "Product-category update",
+   "x": 409,
+   "y": 403,
+   "conf": 0.9411
+  },
+  {
+   "text": "23:40",
+   "x": 276,
+   "y": 407,
+   "conf": 0.8303
+  },
+  {
+   "text": "Settings",
+   "x": 50,
+   "y": 410,
+   "conf": 0.8817
+  },
+  {
+   "text": "Desk accessories - Drinkware",
+   "x": 730,
+   "y": 406,
+   "conf": 0.889
+  },
+  {
+   "text": "Segments",
+   "x": 1139,
+   "y": 410,
+   "conf": 0.8529
+  },
+  {
+   "text": "Repeat customer·Home & lifestyle",
+   "x": 1255,
+   "y": 411,
+   "conf": 0.8737
+  },
+  {
+   "text": "• Mobile shopper",
+   "x": 1257,
+   "y": 428,
+   "conf": 0.8823
+  },
+  {
+   "text": "23:38",
+   "x": 279,
+   "y": 447,
+   "conf": 0.8299
+  },
+  {
+   "text": "Campaign eligibility check",
+   "x": 411,
+   "y": 447,
+   "conf": 0.9046
+  },
+  {
+   "text": "[2]",
+   "x": 257,
+   "y": 449,
+   "conf": 0.6146
+  },
+  {
+   "text": "Autumn offers - Eligible",
+   "x": 729,
+   "y": 447,
+   "conf": 0.8755
+  },
+  {
+   "text": "Preferred",
+   "x": 1138,
+   "y": 458,
+   "conf": 0.8689
+  },
+  {
+   "text": "Desk accessories · Drinkware",
+   "x": 1255,
+   "y": 460,
+   "conf": 0.9158
+  },
+  {
+   "text": "categories",
+   "x": 1139,
+   "y": 473,
+   "conf": 0.8833
+  },
+  {
+   "text": "Profile refresh",
+   "x": 410,
+   "y": 488,
+   "conf": 0.8381
+  },
+  {
+   "text": "23:35",
+   "x": 280,
+   "y": 489,
+   "conf": 0.8315
+  },
+  {
+   "text": "Live profile fields updated",
+   "x": 729,
+   "y": 488,
+   "conf": 0.8973
+  },
+  {
+   "text": "Last campaign",
+   "x": 1139,
+   "y": 502,
+   "conf": 0.8736
+  },
+  {
+   "text": "Autumn offers",
+   "x": 1256,
+   "y": 502,
+   "conf": 0.8732
+  },
+  {
+   "text": "23:32",
+   "x": 276,
+   "y": 529,
+   "conf": 0.8296
+  },
+  {
+   "text": "Audience evaluation",
+   "x": 411,
+   "y": 529,
+   "conf": 0.912
+  },
+  {
+   "text": "[4]",
+   "x": 258,
+   "y": 531,
+   "conf": 0.6929
+  },
+  {
+   "text": "Returning customers -East Asia",
+   "x": 729,
+   "y": 529,
+   "conf": 0.8727
+  },
+  {
+   "text": "Open rate",
+   "x": 1139,
+   "y": 533,
+   "conf": 0.8909
+  },
+  {
+   "text": "32.4%",
+   "x": 1255,
+   "y": 533,
+   "conf": 0.6745
+  },
+  {
+   "text": "Click rate",
+   "x": 1139,
+   "y": 565,
+   "conf": 0.8479
+  },
+  {
+   "text": "6.8%",
+   "x": 1255,
+   "y": 566,
+   "conf": 0.7923
+  },
+  {
+   "text": "Activity",
+   "x": 1139,
+   "y": 609,
+   "conf": 0.8564
+  },
+  {
+   "text": "Autumn offers",
+   "x": 1164,
+   "y": 637,
+   "conf": 0.9003
+  },
+  {
+   "text": "32.4% open rate",
+   "x": 1162,
+   "y": 651,
+   "conf": 0.8457
+  },
+  {
+   "text": "Home & Lifestyle Picks",
+   "x": 1162,
+   "y": 682,
+   "conf": 0.8782
+  },
+  {
+   "text": "28.7% open rate",
+   "x": 1161,
+   "y": 695,
+   "conf": 0.9127
+  },
+  {
+   "text": "Profile refreshed from live data",
+   "x": 1161,
+   "y": 727,
+   "conf": 0.9152
+  },
+  {
+   "text": "Recorded",
+   "x": 1163,
+   "y": 744,
+   "conf": 0.8585
+  },
+  {
+   "text": "Audience Operations",
+   "x": 22,
+   "y": 842,
+   "conf": 0.9208
+  },
+  {
+   "text": "Production workspace",
+   "x": 20,
+   "y": 857,
+   "conf": 0.8861
+  },
+  {
+   "text": "build 2026.10.4",
+   "x": 21,
+   "y": 874,
+   "conf": 0.8272
+  }
+ ]
+}

@@ -1,0 +1,577 @@
+{
+ "schema": "ocr-lines-v1",
+ "source_sha256": "2c246aa5843bec609b9ddfdf1154cd81e0fd61996f83954735e9856e48c18bf3",
+ "engine": "rapidocr_onnxruntime==1.2.3",
+ "lines": [
+  {
+   "text": "Vault Recovery Manager",
+   "x": 242,
+   "y": 19,
+   "conf": 0.8941
+  },
+  {
+   "text": "Search archives, accounts or restore requests...",
+   "x": 487,
+   "y": 20,
+   "conf": 0.9218
+  },
+  {
+   "text": "Northstar Shop",
+   "x": 55,
+   "y": 24,
+   "conf": 0.8631
+  },
+  {
+   "text": "Production Help",
+   "x": 1634,
+   "y": 21,
+   "conf": 0.9045
+  },
+  {
+   "text": "VR",
+   "x": 1754,
+   "y": 24,
+   "conf": 0.6454
+  },
+  {
+   "text": "Northstar Shop/ Vault Recovery Manager/ Recovery Manager",
+   "x": 244,
+   "y": 80,
+   "conf": 0.9254
+  },
+  {
+   "text": "Overview",
+   "x": 51,
+   "y": 99,
+   "conf": 0.8371
+  },
+  {
+   "text": "Customer-platform archives",
+   "x": 246,
+   "y": 104,
+   "conf": 0.9225
+  },
+  {
+   "text": "Healthy",
+   "x": 581,
+   "y": 104,
+   "conf": 0.8266
+  },
+  {
+   "text": "Filter",
+   "x": 1592,
+   "y": 107,
+   "conf": 0.7827
+  },
+  {
+   "text": "Export",
+   "x": 1651,
+   "y": 106,
+   "conf": 0.7872
+  },
+  {
+   "text": "Actions",
+   "x": 1722,
+   "y": 108,
+   "conf": 0.7452
+  },
+  {
+   "text": "Recovery Manager",
+   "x": 52,
+   "y": 144,
+   "conf": 0.868
+  },
+  {
+   "text": "Northstar Production -weekly snapshots",
+   "x": 244,
+   "y": 135,
+   "conf": 0.9088
+  },
+  {
+   "text": "Archives",
+   "x": 247,
+   "y": 176,
+   "conf": 0.8171
+  },
+  {
+   "text": "Recent restores",
+   "x": 324,
+   "y": 175,
+   "conf": 0.8796
+  },
+  {
+   "text": "Infrastructure health",
+   "x": 443,
+   "y": 176,
+   "conf": 0.8463
+  },
+  {
+   "text": "Customerplatforms",
+   "x": 50,
+   "y": 188,
+   "conf": 0.9406
+  },
+  {
+   "text": "Storage growth",
+   "x": 641,
+   "y": 232,
+   "conf": 0.8954
+  },
+  {
+   "text": "Restore success",
+   "x": 1027,
+   "y": 232,
+   "conf": 0.8624
+  },
+  {
+   "text": "Service health",
+   "x": 258,
+   "y": 233,
+   "conf": 0.8615
+  },
+  {
+   "text": "Restore requests",
+   "x": 51,
+   "y": 234,
+   "conf": 0.8976
+  },
+  {
+   "text": "Stored",
+   "x": 1411,
+   "y": 231,
+   "conf": 0.8557
+  },
+  {
+   "text": "Healthy",
+   "x": 255,
+   "y": 247,
+   "conf": 0.8739
+  },
+  {
+   "text": "+12.4%",
+   "x": 641,
+   "y": 252,
+   "conf": 0.8007
+  },
+  {
+   "text": "99.6%",
+   "x": 1028,
+   "y": 253,
+   "conf": 0.7817
+  },
+  {
+   "text": "1.35PB",
+   "x": 1411,
+   "y": 251,
+   "conf": 0.8074
+  },
+  {
+   "text": "Infrastructure",
+   "x": 51,
+   "y": 279,
+   "conf": 0.923
+  },
+  {
+   "text": "Reports",
+   "x": 51,
+   "y": 323,
+   "conf": 0.8671
+  },
+  {
+   "text": "Archives",
+   "x": 258,
+   "y": 329,
+   "conf": 0.8883
+  },
+  {
+   "text": "Updated moments ago 4 records",
+   "x": 1219,
+   "y": 330,
+   "conf": 0.896
+  },
+  {
+   "text": "backup_9287",
+   "x": 1438,
+   "y": 329,
+   "conf": 0.8207
+  },
+  {
+   "text": "Archive ID",
+   "x": 255,
+   "y": 369,
+   "conf": 0.8612
+  },
+  {
+   "text": "Encryption",
+   "x": 1184,
+   "y": 369,
+   "conf": 0.8753
+  },
+  {
+   "text": "Account",
+   "x": 452,
+   "y": 370,
+   "conf": 0.8477
+  },
+  {
+   "text": "Region",
+   "x": 748,
+   "y": 370,
+   "conf": 0.7978
+  },
+  {
+   "text": "Created",
+   "x": 919,
+   "y": 370,
+   "conf": 0.8733
+  },
+  {
+   "text": "Size",
+   "x": 1069,
+   "y": 370,
+   "conf": 0.7932
+  },
+  {
+   "text": "Tier",
+   "x": 1318,
+   "y": 369,
+   "conf": 0.7818
+  },
+  {
+   "text": "Account",
+   "x": 1438,
+   "y": 377,
+   "conf": 0.8601
+  },
+  {
+   "text": "areed1433@gmail.com",
+   "x": 1555,
+   "y": 378,
+   "conf": 0.9134
+  },
+  {
+   "text": "26 Apr 02:00",
+   "x": 919,
+   "y": 405,
+   "conf": 0.7976
+  },
+  {
+   "text": "102.3 GB",
+   "x": 1071,
+   "y": 405,
+   "conf": 0.8151
+  },
+  {
+   "text": "AES-256",
+   "x": 1184,
+   "y": 405,
+   "conf": 0.8726
+  },
+  {
+   "text": "backup_9291",
+   "x": 257,
+   "y": 406,
+   "conf": 0.8633
+  },
+  {
+   "text": "bluepeakco@outlook.com",
+   "x": 452,
+   "y": 406,
+   "conf": 0.9252
+  },
+  {
+   "text": "ap-southeast-1",
+   "x": 749,
+   "y": 406,
+   "conf": 0.8626
+  },
+  {
+   "text": "Archive",
+   "x": 1319,
+   "y": 405,
+   "conf": 0.8038
+  },
+  {
+   "text": "Path",
+   "x": 1437,
+   "y": 409,
+   "conf": 0.7988
+  },
+  {
+   "text": "s3://northstar-backups/customer-",
+   "x": 1555,
+   "y": 411,
+   "conf": 0.8651
+  },
+  {
+   "text": "platform/weekly/segment-42-",
+   "x": 1555,
+   "y": 426,
+   "conf": 0.9039
+  },
+  {
+   "text": "miller.logistics@company.com",
+   "x": 451,
+   "y": 446,
+   "conf": 0.9045
+  },
+  {
+   "text": "67.1 GB",
+   "x": 1070,
+   "y": 446,
+   "conf": 0.7729
+  },
+  {
+   "text": "AES-256",
+   "x": 1184,
+   "y": 446,
+   "conf": 0.8287
+  },
+  {
+   "text": "2 backup_9288",
+   "x": 257,
+   "y": 447,
+   "conf": 0.8323
+  },
+  {
+   "text": "us-west-2",
+   "x": 749,
+   "y": 447,
+   "conf": 0.8527
+  },
+  {
+   "text": "26 Apr 02:00",
+   "x": 919,
+   "y": 447,
+   "conf": 0.8062
+  },
+  {
+   "text": "Archive",
+   "x": 1319,
+   "y": 447,
+   "conf": 0.8168
+  },
+  {
+   "text": "20260426.tar.zst",
+   "x": 1554,
+   "y": 440,
+   "conf": 0.8801
+  },
+  {
+   "text": "Region",
+   "x": 1438,
+   "y": 473,
+   "conf": 0.8564
+  },
+  {
+   "text": "eu-west-1",
+   "x": 1554,
+   "y": 474,
+   "conf": 0.8949
+  },
+  {
+   "text": "backup_9287",
+   "x": 276,
+   "y": 488,
+   "conf": 0.8246
+  },
+  {
+   "text": "eu-west-1",
+   "x": 749,
+   "y": 488,
+   "conf": 0.8682
+  },
+  {
+   "text": "26 Apr 02:00",
+   "x": 919,
+   "y": 488,
+   "conf": 0.8062
+  },
+  {
+   "text": "84.7 GB",
+   "x": 1070,
+   "y": 488,
+   "conf": 0.7435
+  },
+  {
+   "text": "AES-256",
+   "x": 1183,
+   "y": 488,
+   "conf": 0.8724
+  },
+  {
+   "text": "areed1433@gmail.com",
+   "x": 452,
+   "y": 489,
+   "conf": 0.8914
+  },
+  {
+   "text": "Archive",
+   "x": 1319,
+   "y": 488,
+   "conf": 0.7698
+  },
+  {
+   "text": "Created",
+   "x": 1438,
+   "y": 505,
+   "conf": 0.835
+  },
+  {
+   "text": "26 Apr2026 02:00 UTC",
+   "x": 1555,
+   "y": 507,
+   "conf": 0.8599
+  },
+  {
+   "text": "4backup_9286",
+   "x": 256,
+   "y": 529,
+   "conf": 0.8845
+  },
+  {
+   "text": "us-east-1",
+   "x": 748,
+   "y": 529,
+   "conf": 0.8858
+  },
+  {
+   "text": "26 Apr 02:00",
+   "x": 919,
+   "y": 529,
+   "conf": 0.8062
+  },
+  {
+   "text": "91.4 GB",
+   "x": 1070,
+   "y": 528,
+   "conf": 0.7003
+  },
+  {
+   "text": "AES-256",
+   "x": 1184,
+   "y": 529,
+   "conf": 0.7398
+  },
+  {
+   "text": "summit-retail@company.com",
+   "x": 452,
+   "y": 530,
+   "conf": 0.9118
+  },
+  {
+   "text": "Archive",
+   "x": 1318,
+   "y": 529,
+   "conf": 0.8746
+  },
+  {
+   "text": "Encryption",
+   "x": 1438,
+   "y": 538,
+   "conf": 0.8765
+  },
+  {
+   "text": "AES-256",
+   "x": 1555,
+   "y": 539,
+   "conf": 0.829
+  },
+  {
+   "text": "Checksum",
+   "x": 1438,
+   "y": 571,
+   "conf": 0.8313
+  },
+  {
+   "text": "Verified",
+   "x": 1554,
+   "y": 572,
+   "conf": 0.8205
+  },
+  {
+   "text": "Last drill",
+   "x": 1438,
+   "y": 603,
+   "conf": 0.8684
+  },
+  {
+   "text": "29 Mar 2026",
+   "x": 1554,
+   "y": 604,
+   "conf": 0.8438
+  },
+  {
+   "text": "Retention end",
+   "x": 1438,
+   "y": 636,
+   "conf": 0.8827
+  },
+  {
+   "text": "26 Jul 2026",
+   "x": 1555,
+   "y": 637,
+   "conf": 0.8591
+  },
+  {
+   "text": "Activity",
+   "x": 1439,
+   "y": 684,
+   "conf": 0.795
+  },
+  {
+   "text": "25 Apr",
+   "x": 1462,
+   "y": 708,
+   "conf": 0.8358
+  },
+  {
+   "text": "backup_9286 restored -Completed",
+   "x": 1460,
+   "y": 722,
+   "conf": 0.935
+  },
+  {
+   "text": "24 Apr",
+   "x": 1461,
+   "y": 752,
+   "conf": 0.8491
+  },
+  {
+   "text": "backup_9281 restored-Completed",
+   "x": 1460,
+   "y": 767,
+   "conf": 0.9444
+  },
+  {
+   "text": "22 Apr",
+   "x": 1461,
+   "y": 797,
+   "conf": 0.8488
+  },
+  {
+   "text": "checksum verification · Completed",
+   "x": 1460,
+   "y": 813,
+   "conf": 0.9321
+  },
+  {
+   "text": "Vault Recovery Manager",
+   "x": 21,
+   "y": 1069,
+   "conf": 0.9529
+  },
+  {
+   "text": "Production workspace",
+   "x": 19,
+   "y": 1085,
+   "conf": 0.8861
+  },
+  {
+   "text": "build 2026.10.4",
+   "x": 20,
+   "y": 1104,
+   "conf": 0.896
+  }
+ ]
+}

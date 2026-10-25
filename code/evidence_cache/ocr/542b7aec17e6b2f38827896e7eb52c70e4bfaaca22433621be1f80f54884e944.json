@@ -1,0 +1,451 @@
+{
+ "schema": "ocr-lines-v1",
+ "source_sha256": "542b7aec17e6b2f38827896e7eb52c70e4bfaaca22433621be1f80f54884e944",
+ "engine": "rapidocr_onnxruntime==1.2.3",
+ "lines": [
+  {
+   "text": "Helpline Console",
+   "x": 243,
+   "y": 21,
+   "conf": 0.8971
+  },
+  {
+   "text": "Searchtickets,customers,orders...",
+   "x": 487,
+   "y": 21,
+   "conf": 0.9061
+  },
+  {
+   "text": "Northstar Shop",
+   "x": 55,
+   "y": 24,
+   "conf": 0.8675
+  },
+  {
+   "text": "Production Help",
+   "x": 1634,
+   "y": 21,
+   "conf": 0.828
+  },
+  {
+   "text": "HC",
+   "x": 1753,
+   "y": 24,
+   "conf": 0.649
+  },
+  {
+   "text": "Northstar Shop / Helpline Console / Inbox",
+   "x": 244,
+   "y": 80,
+   "conf": 0.9055
+  },
+  {
+   "text": "Inbox",
+   "x": 51,
+   "y": 99,
+   "conf": 0.8137
+  },
+  {
+   "text": "CS-5034.Whereismydelivery?",
+   "x": 245,
+   "y": 103,
+   "conf": 0.8996
+  },
+  {
+   "text": "SLA 01:42",
+   "x": 633,
+   "y": 103,
+   "conf": 0.8006
+  },
+  {
+   "text": "Filter",
+   "x": 1592,
+   "y": 108,
+   "conf": 0.7328
+  },
+  {
+   "text": "Actions",
+   "x": 1722,
+   "y": 108,
+   "conf": 0.7452
+  },
+  {
+   "text": "My tickets",
+   "x": 51,
+   "y": 144,
+   "conf": 0.8852
+  },
+  {
+   "text": "support_1034- Kofi Agyeman -Normal priority",
+   "x": 245,
+   "y": 136,
+   "conf": 0.9147
+  },
+  {
+   "text": "Conversation",
+   "x": 247,
+   "y": 176,
+   "conf": 0.8434
+  },
+  {
+   "text": "Internal notes",
+   "x": 353,
+   "y": 176,
+   "conf": 0.9128
+  },
+  {
+   "text": "Activity",
+   "x": 458,
+   "y": 176,
+   "conf": 0.8877
+  },
+  {
+   "text": "Assigned to me",
+   "x": 51,
+   "y": 189,
+   "conf": 0.8336
+  },
+  {
+   "text": "Customer",
+   "x": 257,
+   "y": 229,
+   "conf": 0.875
+  },
+  {
+   "text": "Email",
+   "x": 642,
+   "y": 231,
+   "conf": 0.7508
+  },
+  {
+   "text": "Mentions",
+   "x": 51,
+   "y": 232,
+   "conf": 0.7893
+  },
+  {
+   "text": "Assigned",
+   "x": 1027,
+   "y": 231,
+   "conf": 0.8836
+  },
+  {
+   "text": "Kofi Agyeman",
+   "x": 256,
+   "y": 250,
+   "conf": 0.8391
+  },
+  {
+   "text": "kagyeman8947@fastmail.com",
+   "x": 643,
+   "y": 253,
+   "conf": 0.8846
+  },
+  {
+   "text": "Maya Chen",
+   "x": 1027,
+   "y": 252,
+   "conf": 0.8683
+  },
+  {
+   "text": "Delivery.Tracking·Orderupdate",
+   "x": 1413,
+   "y": 253,
+   "conf": 0.8741
+  },
+  {
+   "text": "Customer search",
+   "x": 51,
+   "y": 278,
+   "conf": 0.9004
+  },
+  {
+   "text": "Knowledge base",
+   "x": 51,
+   "y": 324,
+   "conf": 0.8841
+  },
+  {
+   "text": "Conversation",
+   "x": 260,
+   "y": 331,
+   "conf": 0.9094
+  },
+  {
+   "text": "Updated moments ago : 4 records",
+   "x": 1217,
+   "y": 330,
+   "conf": 0.8789
+  },
+  {
+   "text": "OrderORD-20265034",
+   "x": 1440,
+   "y": 331,
+   "conf": 0.9102
+  },
+  {
+   "text": "Reports",
+   "x": 51,
+   "y": 369,
+   "conf": 0.8681
+  },
+  {
+   "text": "Time",
+   "x": 255,
+   "y": 371,
+   "conf": 0.7983
+  },
+  {
+   "text": "Sender",
+   "x": 408,
+   "y": 371,
+   "conf": 0.7913
+  },
+  {
+   "text": "Message",
+   "x": 592,
+   "y": 370,
+   "conf": 0.8402
+  },
+  {
+   "text": "Product",
+   "x": 1438,
+   "y": 377,
+   "conf": 0.8721
+  },
+  {
+   "text": "Running shoes",
+   "x": 1556,
+   "y": 380,
+   "conf": 0.9091
+  },
+  {
+   "text": "09:12",
+   "x": 278,
+   "y": 407,
+   "conf": 0.742
+  },
+  {
+   "text": "Kofi Agyeman",
+   "x": 407,
+   "y": 403,
+   "conf": 0.8674
+  },
+  {
+   "text": "Could you let me know where my order is and when it is expected to arrive?",
+   "x": 594,
+   "y": 407,
+   "conf": 0.9391
+  },
+  {
+   "text": "Status",
+   "x": 1438,
+   "y": 411,
+   "conf": 0.856
+  },
+  {
+   "text": "In transit",
+   "x": 1554,
+   "y": 412,
+   "conf": 0.8992
+  },
+  {
+   "text": "Carrier",
+   "x": 1438,
+   "y": 442,
+   "conf": 0.8097
+  },
+  {
+   "text": "We received your message and are checking the order details.",
+   "x": 593,
+   "y": 446,
+   "conf": 0.9314
+  },
+  {
+   "text": "09:13",
+   "x": 279,
+   "y": 447,
+   "conf": 0.7792
+  },
+  {
+   "text": "Northstar Bot",
+   "x": 408,
+   "y": 447,
+   "conf": 0.8871
+  },
+  {
+   "text": "2] ",
+   "x": 259,
+   "y": 449,
+   "conf": 0.585
+  },
+  {
+   "text": "SwiftShip",
+   "x": 1554,
+   "y": 443,
+   "conf": 0.7745
+  },
+  {
+   "text": "Tracking",
+   "x": 1437,
+   "y": 471,
+   "conf": 0.881
+  },
+  {
+   "text": "SWF-884103",
+   "x": 1555,
+   "y": 476,
+   "conf": 0.8865
+  },
+  {
+   "text": "Maya Chen",
+   "x": 407,
+   "y": 487,
+   "conf": 0.8577
+  },
+  {
+   "text": "09:28",
+   "x": 278,
+   "y": 488,
+   "conf": 0.8148
+  },
+  {
+   "text": "3]",
+   "x": 259,
+   "y": 490,
+   "conf": 0.5358
+  },
+  {
+   "text": "The parcel reached the regional hub and is on track for delivery on 26 May.",
+   "x": 593,
+   "y": 487,
+   "conf": 0.9356
+  },
+  {
+   "text": "Expected",
+   "x": 1439,
+   "y": 507,
+   "conf": 0.8731
+  },
+  {
+   "text": "26 May 2026",
+   "x": 1553,
+   "y": 506,
+   "conf": 0.8463
+  },
+  {
+   "text": "Kofi Agyeman",
+   "x": 406,
+   "y": 527,
+   "conf": 0.9015
+  },
+  {
+   "text": "09:35",
+   "x": 278,
+   "y": 530,
+   "conf": 0.8077
+  },
+  {
+   "text": "Thanks for the update.",
+   "x": 594,
+   "y": 529,
+   "conf": 0.9012
+  },
+  {
+   "text": "Assigned agent",
+   "x": 1439,
+   "y": 542,
+   "conf": 0.7789
+  },
+  {
+   "text": "Maya Chen",
+   "x": 1553,
+   "y": 540,
+   "conf": 0.8938
+  },
+  {
+   "text": "Activity",
+   "x": 1439,
+   "y": 587,
+   "conf": 0.7833
+  },
+  {
+   "text": "22 May",
+   "x": 1461,
+   "y": 610,
+   "conf": 0.6803
+  },
+  {
+   "text": "Order confirmed",
+   "x": 1460,
+   "y": 627,
+   "conf": 0.9147
+  },
+  {
+   "text": "23 May",
+   "x": 1461,
+   "y": 655,
+   "conf": 0.7229
+  },
+  {
+   "text": "Dispatched",
+   "x": 1461,
+   "y": 671,
+   "conf": 0.8999
+  },
+  {
+   "text": "24 May 07:46",
+   "x": 1462,
+   "y": 702,
+   "conf": 0.8299
+  },
+  {
+   "text": "Reached regional hub",
+   "x": 1460,
+   "y": 715,
+   "conf": 0.9139
+  },
+  {
+   "text": "24 May 08:15",
+   "x": 1461,
+   "y": 745,
+   "conf": 0.888
+  },
+  {
+   "text": "In transit",
+   "x": 1461,
+   "y": 761,
+   "conf": 0.8601
+  },
+  {
+   "text": "26 May",
+   "x": 1461,
+   "y": 790,
+   "conf": 0.7255
+  },
+  {
+   "text": "Delivery expected",
+   "x": 1462,
+   "y": 807,
+   "conf": 0.8949
+  },
+  {
+   "text": "Helpline Console",
+   "x": 21,
+   "y": 1121,
+   "conf": 0.9065
+  },
+  {
+   "text": "Production workspace",
+   "x": 19,
+   "y": 1137,
+   "conf": 0.9183
+  },
+  {
+   "text": "build 2026.10.4",
+   "x": 20,
+   "y": 1155,
+   "conf": 0.87
+  }
+ ]
+}

@@ -64,10 +64,10 @@ DEFAULT_CACHE = CODE_DIR / "evidence_cache"
 
 
 def run(data_dir: Path, requests_path: Path, pool_paths: list[Path], cases: set[str] | None,
-        cache_dir: Path | None = DEFAULT_CACHE) -> tuple[list[list], dict]:
+        cache_dir: Path | None = DEFAULT_CACHE, use_ocr: bool = True) -> tuple[list[list], dict]:
     """cache_dir=None ignores image facts (PDF + structured evidence only)."""
     t0 = time.perf_counter()
-    auditor = MultimodalAuditor(data_dir, cache_dir)
+    auditor = MultimodalAuditor(data_dir, cache_dir, use_ocr=use_ocr)
     t_index = time.perf_counter() - t0
     pool = [q for p in pool_paths for q in read_csv(p)]
     pool = [q for q in pool if authorizes_deletion(q["request_text"])]
@@ -102,6 +102,8 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--evidence-cache", type=Path, default=DEFAULT_CACHE,
                     help="content-addressed image-fact cache (default: code/evidence_cache)")
     ap.add_argument("--no-evidence-cache", action="store_true", help="ignore image facts (PDF + structured evidence only)")
+    ap.add_argument("--no-ocr", action="store_true",
+                    help="skip the local OCR second reader (no cross-check of image facts, no OCR facts)")
     ap.add_argument("--best-effort", action="store_true",
                     help="publish output.csv even when strict validation reports errors (team-lead decision C2 / D36); "
                          "every error is printed, recorded in run_notes.json, and the exit status stays 1")
@@ -118,7 +120,7 @@ def main(argv: list[str] | None = None) -> int:
     t0 = time.perf_counter()
     cache_dir = None if args.no_evidence_cache else args.evidence_cache
     live = live_extract(data, cache_dir) if (args.live_extraction and cache_dir) else None
-    rows, meta = run(data, requests_path, pool_paths, cases, cache_dir)
+    rows, meta = run(data, requests_path, pool_paths, cases, cache_dir, use_ocr=not args.no_ocr)
     if live:
         ok = [a for a in live["attempted"] if a["usage"]]
         meta.update(model_calls=sum(len(a["attempts"]) for a in live["attempted"]),

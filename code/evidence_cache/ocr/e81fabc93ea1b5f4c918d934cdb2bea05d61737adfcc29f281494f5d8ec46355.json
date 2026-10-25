@@ -1,0 +1,535 @@
+{
+ "schema": "ocr-lines-v1",
+ "source_sha256": "e81fabc93ea1b5f4c918d934cdb2bea05d61737adfcc29f281494f5d8ec46355",
+ "engine": "rapidocr_onnxruntime==1.2.3",
+ "lines": [
+  {
+   "text": "BridgeOps",
+   "x": 242,
+   "y": 20,
+   "conf": 0.8711
+  },
+  {
+   "text": "Search connectors...",
+   "x": 487,
+   "y": 20,
+   "conf": 0.899
+  },
+  {
+   "text": "Northstar Shop",
+   "x": 55,
+   "y": 24,
+   "conf": 0.8682
+  },
+  {
+   "text": "Production Help",
+   "x": 1634,
+   "y": 21,
+   "conf": 0.8906
+  },
+  {
+   "text": "Northstar Shop/BridgeOps / Connections",
+   "x": 244,
+   "y": 80,
+   "conf": 0.8718
+  },
+  {
+   "text": "Connections",
+   "x": 52,
+   "y": 99,
+   "conf": 0.8529
+  },
+  {
+   "text": "Connections",
+   "x": 245,
+   "y": 104,
+   "conf": 0.8786
+  },
+  {
+   "text": "12 connectors",
+   "x": 571,
+   "y": 106,
+   "conf": 0.8561
+  },
+  {
+   "text": "Filter",
+   "x": 1592,
+   "y": 107,
+   "conf": 0.7631
+  },
+  {
+   "text": "Export",
+   "x": 1651,
+   "y": 106,
+   "conf": 0.7909
+  },
+  {
+   "text": "Actions",
+   "x": 1722,
+   "y": 108,
+   "conf": 0.7873
+  },
+  {
+   "text": "Topology",
+   "x": 50,
+   "y": 140,
+   "conf": 0.8865
+  },
+  {
+   "text": "PRODUCTION -eu-west -07Aug 2026 08:00 UTC",
+   "x": 244,
+   "y": 135,
+   "conf": 0.8834
+  },
+  {
+   "text": "Topology",
+   "x": 246,
+   "y": 174,
+   "conf": 0.8835
+  },
+  {
+   "text": "Throughput",
+   "x": 328,
+   "y": 176,
+   "conf": 0.9084
+  },
+  {
+   "text": "Monitoring",
+   "x": 51,
+   "y": 185,
+   "conf": 0.8853
+  },
+  {
+   "text": "Recent deliveries",
+   "x": 424,
+   "y": 176,
+   "conf": 0.8429
+  },
+  {
+   "text": "Events",
+   "x": 51,
+   "y": 231,
+   "conf": 0.8202
+  },
+  {
+   "text": "Healthy",
+   "x": 256,
+   "y": 232,
+   "conf": 0.7508
+  },
+  {
+   "text": "Events / hour",
+   "x": 565,
+   "y": 232,
+   "conf": 0.9034
+  },
+  {
+   "text": "Delivery p95",
+   "x": 873,
+   "y": 232,
+   "conf": 0.8527
+  },
+  {
+   "text": "Backlog",
+   "x": 1180,
+   "y": 232,
+   "conf": 0.8462
+  },
+  {
+   "text": "Destination health",
+   "x": 1490,
+   "y": 233,
+   "conf": 0.8741
+  },
+  {
+   "text": "12",
+   "x": 256,
+   "y": 251,
+   "conf": 0.5404
+  },
+  {
+   "text": "4,113",
+   "x": 565,
+   "y": 251,
+   "conf": 0.7018
+  },
+  {
+   "text": "1.8 s",
+   "x": 872,
+   "y": 251,
+   "conf": 0.8069
+  },
+  {
+   "text": "18",
+   "x": 1180,
+   "y": 251,
+   "conf": 0.5198
+  },
+  {
+   "text": "Healthy",
+   "x": 1488,
+   "y": 247,
+   "conf": 0.8742
+  },
+  {
+   "text": "Destinations",
+   "x": 51,
+   "y": 279,
+   "conf": 0.895
+  },
+  {
+   "text": "Settings",
+   "x": 51,
+   "y": 321,
+   "conf": 0.8388
+  },
+  {
+   "text": "Topology",
+   "x": 258,
+   "y": 327,
+   "conf": 0.8869
+  },
+  {
+   "text": "Updated moments ago - 4 records",
+   "x": 1217,
+   "y": 329,
+   "conf": 0.8811
+  },
+  {
+   "text": "data_flow_1121",
+   "x": 1439,
+   "y": 330,
+   "conf": 0.8764
+  },
+  {
+   "text": "Connector",
+   "x": 254,
+   "y": 368,
+   "conf": 0.8891
+  },
+  {
+   "text": "Selector",
+   "x": 778,
+   "y": 370,
+   "conf": 0.8335
+  },
+  {
+   "text": "Mode",
+   "x": 1009,
+   "y": 370,
+   "conf": 0.6368
+  },
+  {
+   "text": "Destination",
+   "x": 484,
+   "y": 371,
+   "conf": 0.8703
+  },
+  {
+   "text": "Events/hour",
+   "x": 1138,
+   "y": 368,
+   "conf": 0.9067
+  },
+  {
+   "text": "Last contact",
+   "x": 1277,
+   "y": 371,
+   "conf": 0.888
+  },
+  {
+   "text": "Status",
+   "x": 1438,
+   "y": 377,
+   "conf": 0.8564
+  },
+  {
+   "text": "Healthy",
+   "x": 1554,
+   "y": 376,
+   "conf": 0.8157
+  },
+  {
+   "text": "1,284",
+   "x": 1139,
+   "y": 405,
+   "conf": 0.7464
+  },
+  {
+   "text": "data_flow_1121",
+   "x": 278,
+   "y": 406,
+   "conf": 0.8956
+  },
+  {
+   "text": "customer_analytics_warehouse",
+   "x": 483,
+   "y": 406,
+   "conf": 0.9438
+  },
+  {
+   "text": "jain.aditi@gmail.com",
+   "x": 778,
+   "y": 406,
+   "conf": 0.8994
+  },
+  {
+   "text": "Continuous",
+   "x": 1011,
+   "y": 406,
+   "conf": 0.8436
+  },
+  {
+   "text": "07:59:42",
+   "x": 1278,
+   "y": 405,
+   "conf": 0.8186
+  },
+  {
+   "text": "Owner",
+   "x": 1438,
+   "y": 409,
+   "conf": 0.8279
+  },
+  {
+   "text": "Data Platform",
+   "x": 1555,
+   "y": 411,
+   "conf": 0.8694
+  },
+  {
+   "text": "Destination",
+   "x": 1437,
+   "y": 442,
+   "conf": 0.8879
+  },
+  {
+   "text": "842",
+   "x": 1138,
+   "y": 446,
+   "conf": 0.71
+  },
+  {
+   "text": "lucia-torres@gmail.com",
+   "x": 777,
+   "y": 447,
+   "conf": 0.9177
+  },
+  {
+   "text": "Continuous",
+   "x": 1011,
+   "y": 447,
+   "conf": 0.8412
+  },
+  {
+   "text": "07:59:36",
+   "x": 1278,
+   "y": 447,
+   "conf": 0.8472
+  },
+  {
+   "text": "1data_flow_9846",
+   "x": 274,
+   "y": 448,
+   "conf": 0.861
+  },
+  {
+   "text": "customer_analytics_warehouse",
+   "x": 484,
+   "y": 448,
+   "conf": 0.907
+  },
+  {
+   "text": "[2]",
+   "x": 258,
+   "y": 449,
+   "conf": 0.6976
+  },
+  {
+   "text": "customer_analytics_warehouse",
+   "x": 1555,
+   "y": 444,
+   "conf": 0.9367
+  },
+  {
+   "text": "Selector",
+   "x": 1438,
+   "y": 475,
+   "conf": 0.8879
+  },
+  {
+   "text": "jain.aditi@gmail.com",
+   "x": 1554,
+   "y": 477,
+   "conf": 0.9159
+  },
+  {
+   "text": "Continuous",
+   "x": 1011,
+   "y": 488,
+   "conf": 0.8345
+  },
+  {
+   "text": "650",
+   "x": 1139,
+   "y": 487,
+   "conf": 0.7291
+  },
+  {
+   "text": "Order notifications",
+   "x": 279,
+   "y": 489,
+   "conf": 0.8325
+  },
+  {
+   "text": "notification_service",
+   "x": 483,
+   "y": 489,
+   "conf": 0.8583
+  },
+  {
+   "text": "order events",
+   "x": 779,
+   "y": 490,
+   "conf": 0.8392
+  },
+  {
+   "text": "07:59:28",
+   "x": 1278,
+   "y": 488,
+   "conf": 0.856
+  },
+  {
+   "text": "Sync mode",
+   "x": 1438,
+   "y": 507,
+   "conf": 0.8615
+  },
+  {
+   "text": "Continuous sync",
+   "x": 1556,
+   "y": 510,
+   "conf": 0.9086
+  },
+  {
+   "text": "420",
+   "x": 1139,
+   "y": 528,
+   "conf": 0.6694
+  },
+  {
+   "text": "Delivery tracking",
+   "x": 257,
+   "y": 529,
+   "conf": 0.9222
+  },
+  {
+   "text": "logistics_warehouse",
+   "x": 484,
+   "y": 529,
+   "conf": 0.9404
+  },
+  {
+   "text": "Continuous",
+   "x": 1011,
+   "y": 529,
+   "conf": 0.8565
+  },
+  {
+   "text": "shipment events",
+   "x": 779,
+   "y": 531,
+   "conf": 0.8461
+  },
+  {
+   "text": "07:59:13",
+   "x": 1277,
+   "y": 528,
+   "conf": 0.886
+  },
+  {
+   "text": "Last response",
+   "x": 1439,
+   "y": 542,
+   "conf": 0.8917
+  },
+  {
+   "text": "200OK.1.8s",
+   "x": 1555,
+   "y": 541,
+   "conf": 0.7677
+  },
+  {
+   "text": "Activity",
+   "x": 1439,
+   "y": 588,
+   "conf": 0.7817
+  },
+  {
+   "text": "07:59:42",
+   "x": 1461,
+   "y": 610,
+   "conf": 0.8494
+  },
+  {
+   "text": "124 events delivered",
+   "x": 1461,
+   "y": 626,
+   "conf": 0.9144
+  },
+  {
+   "text": "07:58:10",
+   "x": 1462,
+   "y": 657,
+   "conf": 0.8294
+  },
+  {
+   "text": "checkpoint committed",
+   "x": 1461,
+   "y": 671,
+   "conf": 0.9366
+  },
+  {
+   "text": "07:56:44",
+   "x": 1461,
+   "y": 700,
+   "conf": 0.8382
+  },
+  {
+   "text": "18 events retried",
+   "x": 1462,
+   "y": 717,
+   "conf": 0.8714
+  },
+  {
+   "text": "07:55:02",
+   "x": 1461,
+   "y": 745,
+   "conf": 0.8783
+  },
+  {
+   "text": "destination acknowledged batch",
+   "x": 1461,
+   "y": 761,
+   "conf": 0.8984
+  },
+  {
+   "text": "BridgeOps",
+   "x": 21,
+   "y": 1070,
+   "conf": 0.7545
+  },
+  {
+   "text": "Production workspace",
+   "x": 21,
+   "y": 1088,
+   "conf": 0.9476
+  },
+  {
+   "text": "build 2026.10.4",
+   "x": 20,
+   "y": 1104,
+   "conf": 0.8645
+  }
+ ]
+}

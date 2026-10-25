@@ -1,0 +1,553 @@
+{
+ "schema": "ocr-lines-v1",
+ "source_sha256": "4e4cb259bc2010b622b0c53fe5872258f994fefc23452a83bb27473758693484",
+ "engine": "rapidocr_onnxruntime==1.2.3",
+ "lines": [
+  {
+   "text": "Pulse Analytics",
+   "x": 242,
+   "y": 21,
+   "conf": 0.8869
+  },
+  {
+   "text": "Search users, products, orders or events...",
+   "x": 488,
+   "y": 22,
+   "conf": 0.8948
+  },
+  {
+   "text": "Northstar Shop",
+   "x": 56,
+   "y": 23,
+   "conf": 0.9055
+  },
+  {
+   "text": "Production Help",
+   "x": 1634,
+   "y": 21,
+   "conf": 0.8919
+  },
+  {
+   "text": "PA",
+   "x": 1753,
+   "y": 24,
+   "conf": 0.6611
+  },
+  {
+   "text": "Northstar Shop / Pulse Analytics / Users",
+   "x": 244,
+   "y": 80,
+   "conf": 0.8944
+  },
+  {
+   "text": "Overview",
+   "x": 51,
+   "y": 99,
+   "conf": 0.8412
+  },
+  {
+   "text": "OmarDarwish",
+   "x": 245,
+   "y": 104,
+   "conf": 0.8627
+  },
+  {
+   "text": "Last 90 days",
+   "x": 587,
+   "y": 104,
+   "conf": 0.8861
+  },
+  {
+   "text": "Filter",
+   "x": 1592,
+   "y": 107,
+   "conf": 0.76
+  },
+  {
+   "text": "Export",
+   "x": 1651,
+   "y": 106,
+   "conf": 0.7925
+  },
+  {
+   "text": "Actions",
+   "x": 1722,
+   "y": 108,
+   "conf": 0.7463
+  },
+  {
+   "text": "Real-time",
+   "x": 51,
+   "y": 144,
+   "conf": 0.8558
+  },
+  {
+   "text": "user_20-analytics_7438-darwish.omar@icloud.com",
+   "x": 244,
+   "y": 136,
+   "conf": 0.9442
+  },
+  {
+   "text": "Orders (2)",
+   "x": 461,
+   "y": 175,
+   "conf": 0.817
+  },
+  {
+   "text": "Sessions (12)",
+   "x": 359,
+   "y": 176,
+   "conf": 0.8851
+  },
+  {
+   "text": "Event timeline",
+   "x": 248,
+   "y": 178,
+   "conf": 0.9086
+  },
+  {
+   "text": "Products viewed (19)",
+   "x": 547,
+   "y": 175,
+   "conf": 0.8985
+  },
+  {
+   "text": "Users",
+   "x": 51,
+   "y": 189,
+   "conf": 0.8323
+  },
+  {
+   "text": "Mobile / Desktop",
+   "x": 1283,
+   "y": 229,
+   "conf": 0.8626
+  },
+  {
+   "text": "Sessions",
+   "x": 256,
+   "y": 232,
+   "conf": 0.8705
+  },
+  {
+   "text": "Completed orders",
+   "x": 769,
+   "y": 232,
+   "conf": 0.8913
+  },
+  {
+   "text": "Revenue",
+   "x": 1027,
+   "y": 232,
+   "conf": 0.8222
+  },
+  {
+   "text": "Products viewed",
+   "x": 514,
+   "y": 233,
+   "conf": 0.9321
+  },
+  {
+   "text": "Products",
+   "x": 51,
+   "y": 234,
+   "conf": 0.878
+  },
+  {
+   "text": "Acquisition",
+   "x": 1539,
+   "y": 230,
+   "conf": 0.8733
+  },
+  {
+   "text": "12",
+   "x": 256,
+   "y": 251,
+   "conf": 0.54
+  },
+  {
+   "text": "19",
+   "x": 512,
+   "y": 251,
+   "conf": 0.6559
+  },
+  {
+   "text": "USD167.42",
+   "x": 1027,
+   "y": 252,
+   "conf": 0.8638
+  },
+  {
+   "text": "67%/33%",
+   "x": 1285,
+   "y": 252,
+   "conf": 0.7374
+  },
+  {
+   "text": "Organic search",
+   "x": 1540,
+   "y": 251,
+   "conf": 0.9303
+  },
+  {
+   "text": "Funnels",
+   "x": 51,
+   "y": 279,
+   "conf": 0.8654
+  },
+  {
+   "text": "Journeys",
+   "x": 51,
+   "y": 322,
+   "conf": 0.8655
+  },
+  {
+   "text": "Eventtimeline",
+   "x": 259,
+   "y": 329,
+   "conf": 0.9237
+  },
+  {
+   "text": "Updated moments ago - 5 records",
+   "x": 1218,
+   "y": 329,
+   "conf": 0.8799
+  },
+  {
+   "text": "Profile attributes",
+   "x": 1439,
+   "y": 330,
+   "conf": 0.8662
+  },
+  {
+   "text": "Audiences",
+   "x": 51,
+   "y": 368,
+   "conf": 0.8967
+  },
+  {
+   "text": "Time",
+   "x": 255,
+   "y": 370,
+   "conf": 0.7984
+  },
+  {
+   "text": "Event",
+   "x": 449,
+   "y": 370,
+   "conf": 0.7791
+  },
+  {
+   "text": "Product / detail",
+   "x": 738,
+   "y": 370,
+   "conf": 0.8275
+  },
+  {
+   "text": "Value",
+   "x": 1049,
+   "y": 370,
+   "conf": 0.8275
+  },
+  {
+   "text": "Device",
+   "x": 1252,
+   "y": 370,
+   "conf": 0.828
+  },
+  {
+   "text": "Market",
+   "x": 1438,
+   "y": 376,
+   "conf": 0.8015
+  },
+  {
+   "text": "AE",
+   "x": 1554,
+   "y": 378,
+   "conf": 0.6625
+  },
+  {
+   "text": " 14:22",
+   "x": 256,
+   "y": 405,
+   "conf": 0.7592
+  },
+  {
+   "text": "USD 84.21",
+   "x": 1050,
+   "y": 405,
+   "conf": 0.8094
+  },
+  {
+   "text": "Order completed",
+   "x": 450,
+   "y": 406,
+   "conf": 0.9173
+  },
+  {
+   "text": "Ceramic coffee set",
+   "x": 739,
+   "y": 406,
+   "conf": 0.8709
+  },
+  {
+   "text": "Mobile",
+   "x": 1251,
+   "y": 405,
+   "conf": 0.8528
+  },
+  {
+   "text": "Audience",
+   "x": 1438,
+   "y": 410,
+   "conf": 0.8441
+  },
+  {
+   "text": "Reports",
+   "x": 51,
+   "y": 414,
+   "conf": 0.8662
+  },
+  {
+   "text": "Returning shopper",
+   "x": 1555,
+   "y": 411,
+   "conf": 0.9423
+  },
+  {
+   "text": "Interest",
+   "x": 1438,
+   "y": 442,
+   "conf": 0.8396
+  },
+  {
+   "text": "USD 84.21",
+   "x": 1049,
+   "y": 445,
+   "conf": 0.8497
+  },
+  {
+   "text": "2 items",
+   "x": 737,
+   "y": 446,
+   "conf": 0.7464
+  },
+  {
+   "text": "Mobile",
+   "x": 1251,
+   "y": 446,
+   "conf": 0.8516
+  },
+  {
+   "text": "14:20",
+   "x": 275,
+   "y": 447,
+   "conf": 0.8254
+  },
+  {
+   "text": "Checkout started",
+   "x": 451,
+   "y": 448,
+   "conf": 0.8292
+  },
+  {
+   "text": "Coffee & dining",
+   "x": 1553,
+   "y": 439,
+   "conf": 0.8634
+  },
+  {
+   "text": "[2]",
+   "x": 258,
+   "y": 449,
+   "conf": 0.6346
+  },
+  {
+   "text": "Last activity",
+   "x": 1438,
+   "y": 475,
+   "conf": 0.9197
+  },
+  {
+   "text": "13 Jul 202614:22UTC",
+   "x": 1555,
+   "y": 476,
+   "conf": 0.8512
+  },
+  {
+   "text": "14:17",
+   "x": 278,
+   "y": 488,
+   "conf": 0.7987
+  },
+  {
+   "text": "Product viewed",
+   "x": 449,
+   "y": 488,
+   "conf": 0.8752
+  },
+  {
+   "text": "Ceramic coffee set",
+   "x": 738,
+   "y": 488,
+   "conf": 0.91
+  },
+  {
+   "text": "Mobile",
+   "x": 1251,
+   "y": 488,
+   "conf": 0.7272
+  },
+  {
+   "text": "First seen",
+   "x": 1437,
+   "y": 506,
+   "conf": 0.8671
+  },
+  {
+   "text": "21 Apr 2026 09:14 UTC",
+   "x": 1554,
+   "y": 508,
+   "conf": 0.8678
+  },
+  {
+   "text": " 14:16",
+   "x": 256,
+   "y": 529,
+   "conf": 0.7943
+  },
+  {
+   "text": "Added to cart",
+   "x": 450,
+   "y": 529,
+   "conf": 0.922
+  },
+  {
+   "text": "Ceramic coffee set",
+   "x": 739,
+   "y": 529,
+   "conf": 0.8818
+  },
+  {
+   "text": "USD 42.00",
+   "x": 1050,
+   "y": 529,
+   "conf": 0.7865
+  },
+  {
+   "text": "Mobile",
+   "x": 1251,
+   "y": 529,
+   "conf": 0.8501
+  },
+  {
+   "text": "Activity",
+   "x": 1439,
+   "y": 556,
+   "conf": 0.7817
+  },
+  {
+   "text": "Stoneware mug",
+   "x": 738,
+   "y": 569,
+   "conf": 0.8806
+  },
+  {
+   "text": "14:12",
+   "x": 275,
+   "y": 570,
+   "conf": 0.7606
+  },
+  {
+   "text": "Product viewed",
+   "x": 449,
+   "y": 570,
+   "conf": 0.8654
+  },
+  {
+   "text": "USD18.00",
+   "x": 1050,
+   "y": 570,
+   "conf": 0.8397
+  },
+  {
+   "text": "5]",
+   "x": 259,
+   "y": 572,
+   "conf": 0.6513
+  },
+  {
+   "text": "Desktop",
+   "x": 1251,
+   "y": 568,
+   "conf": 0.8179
+  },
+  {
+   "text": "13 Jul",
+   "x": 1462,
+   "y": 579,
+   "conf": 0.8428
+  },
+  {
+   "text": "6 events in active session",
+   "x": 1460,
+   "y": 593,
+   "conf": 0.9047
+  },
+  {
+   "text": "inr 80",
+   "x": 1461,
+   "y": 623,
+   "conf": 0.6641
+  },
+  {
+   "text": "Order completed - USD 83.21",
+   "x": 1461,
+   "y": 639,
+   "conf": 0.9221
+  },
+  {
+   "text": "30 Jun",
+   "x": 1462,
+   "y": 670,
+   "conf": 0.7992
+  },
+  {
+   "text": "Product search - coffee set",
+   "x": 1461,
+   "y": 684,
+   "conf": 0.9503
+  },
+  {
+   "text": "22 Jun",
+   "x": 1461,
+   "y": 713,
+   "conf": 0.8146
+  },
+  {
+   "text": "Campaign opened",
+   "x": 1461,
+   "y": 729,
+   "conf": 0.9125
+  },
+  {
+   "text": "Pulse Analytics",
+   "x": 21,
+   "y": 1071,
+   "conf": 0.896
+  },
+  {
+   "text": "Production workspace",
+   "x": 21,
+   "y": 1088,
+   "conf": 0.9482
+  },
+  {
+   "text": "build 2026.10.4",
+   "x": 20,
+   "y": 1104,
+   "conf": 0.8668
+  }
+ ]
+}
