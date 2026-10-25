@@ -4,36 +4,24 @@ Reads only participant files under the dataset directory. Never reads sample_out
 """
 from __future__ import annotations
 
-import calendar
 import json
 import re
 import sqlite3
-import time
 from collections import Counter, defaultdict
 from pathlib import Path
 
 from contract_spec import step_sort_key
 
 from . import evidence as ev
+from .accounts import AccountResolver
 from .decisions import UNKNOWN, CaseTrace, ResourceDecision
+from .identity import LINEAGE, IdentityLinker
 from .intent import classify
 from .policy import DEFAULT_BY_PREFIX, load_rules, plan_resource
 from .temporal import choose, obs_time
 
 
-def _secs(ts: str) -> int:
-    return calendar.timegm(time.strptime(ts, "%Y-%m-%dT%H:%M:%SZ"))
-
-
-ACCOUNT_ID = re.compile(r"account_\d+")
-LINEAGE = re.compile(r"repopulated downstream resource (\w+_\d+)", re.I)
-# The worker result that a workflow status usually reports. Used only to rank workflow candidates (C04: a result is a
-# claim). Allowing SUCCESS for PARTIALLY_COMPLETE (seen in two hand-built samples) lowered agreement with
-# identifier-confirmed accounts from 106/162 to 83/162 in the EXP-C1 label-free check, so the exact pairing is kept.
-RESULT_FOR_STATUS = {"COMPLETE": "SUCCESS", "PARTIALLY_COMPLETE": "PARTIAL", "NOT_STARTED": "FAILED"}
-
-
-class Auditor:
+class Auditor(IdentityLinker, AccountResolver):
     def __init__(self, data_dir: Path):
         self.data_dir = data_dir
         self.rules = load_rules(data_dir)
@@ -129,117 +117,6 @@ class Auditor:
             if q and not o.observed_at and not o.record_time:
                 o.record_time = q.pop(0)
                 self.manifest_times_attached += 1
-
-    # -- identity (I01-I05)
-    def subject(self, email: str) -> str | None:
-        return self.by_email.get(ev.norm(email))
-
-    def linked_resources(self, uid: str, audit_at: str) -> set[str]:
-        return set(self.linked_with_reasons(uid, audit_at))
-
-    def linked_with_reasons(self, uid: str, audit_at: str) -> dict[str, str]:
-        """Resource -> first reason it is linked to the subject: a subject identifier in an observation available at
-        audit_at, or a catalog activity naming the subject. Never timing."""
-        keys = self.keys[uid]
-        res: dict[str, str] = {}
-        for o in self.idx.obs:
-            if o.captured_at <= audit_at and o.keys & keys:
-                res.setdefault(o.resource_id, f"identifier in {o.file_id}")
-        for a in self.links:
-            if a["event_time"] > audit_at:
-                continue
-            words = set(re.findall(r"[\w.+@-]+", ev.norm(a["details"])))
-            if words & keys:
-                res.setdefault(a["resource_id"], f"catalog link {a['activity_id']}")
-        # Lineage: a copy repopulated from (or into) a resource of the subject holds the subject's data. Only events at
-        # or before audit_at; followed until nothing new is added. Discovery only: state still comes from evidence.
-        grew = True
-        while grew:
-            grew = False
-            for t, src, dst, aid in self.lineage:
-                if t > audit_at:
-                    continue
-                for a_, b_ in ((src, dst), (dst, src)):
-                    if a_ in res and b_ not in res:
-                        res[b_] = f"lineage {aid}: {src} repopulated {dst}"
-                        grew = True
-        return res
-
-    # -- account resolution (R31): identifier links first, then the deletion workflow's own account event
-    def account_links(self, uid: str, audit_at: str) -> set[str]:
-        """Accounts tied to the subject by an identifier in evidence available at audit_at: the account's own record
-        (or a lookup keyed by the subject) carries a subject identifier, or a record carrying a subject identifier names
-        the account id (e.g. a search document's account reference)."""
-        keys = self.keys[uid]
-        out = set()
-        for o in self.idx.obs:
-            if o.captured_at > audit_at or not (o.keys & keys):
-                continue
-            if o.resource_id.startswith("account_"):
-                out.add(o.resource_id)
-            out |= {k for k in o.keys if ACCOUNT_ID.fullmatch(k)}
-        return out | {r for r in self.linked_resources(uid, audit_at) if r.startswith("account_")}
-
-    def workflow_candidates(self, q: dict) -> list[dict]:
-        """Deletion-worker account events inside the request's workflow period [requested_at, end of the reporting day]
-        and not after audit_at. Timing alone never decides ownership when an identifier link exists; it is used only for
-        accounts no evidence names (C04: a worker result is a claim, used here only to rank candidates)."""
-        hi = min(q["reported_at"][:11] + "23:59:59Z", q["audit_at"])
-        return [a for a in self.account_events if q["requested_at"] <= a["event_time"] <= hi]
-
-    def resolve_accounts(self, requests: list[dict]) -> dict[str, list[str]]:
-        """case_id -> primary account(s). The basis of every decision is kept in self.account_basis:
-        CONFIRMED (identifier link), CORROBORATED (identifier link that the workflow's own event also names),
-        WORKFLOW_UNIQUE (no identifier link; the only workflow event left after other cases' links are removed),
-        WORKFLOW_RESULT_MATCH (several remain, exactly one with the reported result),
-        WORKFLOW_AMBIGUOUS (no single event fits; deterministic pick, flagged), NONE (no candidate)."""
-        self.account_events = [a for a in self.activity if a["event_type"] == "DELETE_RECORD"
-                               and a["target_system"] == "account_service" and a["source_system"] == "deletion_worker"]
-        self.account_basis: dict[str, str] = {}
-        assigned: dict[str, list[str]] = {}
-        owner: dict[str, str] = {}
-        cands: dict[str, tuple[dict, list[dict]]] = {}
-        for q in requests:
-            uid = self.subject(q["email"])
-            if not uid:
-                continue
-            linked = sorted(self.account_links(uid, q["audit_at"]))
-            flow = self.workflow_candidates(q)
-            if linked:
-                want = RESULT_FOR_STATUS.get(q["reported_status"])
-                named = [r for r in linked if any(a["resource_id"] == r and a["reported_result"] == want for a in flow)]
-                if len(linked) > 1 and len(named) == 1:
-                    linked = named  # several identifier links: the workflow's own event decides (sample case_17)
-                assigned[q["case_id"]] = linked
-                self.account_basis[q["case_id"]] = ("CORROBORATED" if named else "CONFIRMED") + f" {linked}"
-                for r in linked:
-                    owner[r] = q["case_id"]
-            else:
-                cands[q["case_id"]] = (q, flow)
-        changed = True
-        while changed:
-            changed = False
-            for cid, (q, c) in list(cands.items()):
-                live = [a for a in c if a["resource_id"] not in owner]
-                if len(live) == 1:
-                    r = live[0]["resource_id"]
-                    assigned[cid] = [r]; owner[r] = cid
-                    self.account_basis[cid] = f"WORKFLOW_UNIQUE {r} ({live[0]['activity_id']})"
-                    del cands[cid]; changed = True
-        for cid, (q, c) in sorted(cands.items(), key=lambda kv: len(kv[1][1])):
-            live = [a for a in c if a["resource_id"] not in owner]
-            if not live:
-                assigned[cid] = []
-                self.account_basis[cid] = "NONE: no identifier link and no free workflow event"
-                continue
-            want = RESULT_FOR_STATUS.get(q["reported_status"])
-            live.sort(key=lambda a: (a["reported_result"] != want, abs(_secs(a["event_time"]) - _secs(q["reported_at"]))))
-            r = live[0]["resource_id"]
-            assigned[cid] = [r]; owner[r] = cid
-            same = [a["resource_id"] for a in live if a["reported_result"] == want]
-            label = "WORKFLOW_RESULT_MATCH" if len(same) == 1 else "WORKFLOW_AMBIGUOUS"
-            self.account_basis[cid] = f"{label} {r} among {sorted(a['resource_id'] for a in live)}"
-        return assigned
 
     # -- evidence choice (T04, C02, C06, C10; D10)
     def latest(self, rid: str, audit_at: str):
