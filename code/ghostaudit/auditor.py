@@ -4,6 +4,7 @@ Reads only participant files under the dataset directory. Never reads sample_out
 """
 from __future__ import annotations
 
+import calendar
 import json
 import re
 import sqlite3
@@ -19,8 +20,15 @@ from .policy import DEFAULT_BY_PREFIX, load_rules, plan_resource
 from .temporal import choose, obs_time
 
 
-def _secs(ts: str) -> float:
-    return time.mktime(time.strptime(ts, "%Y-%m-%dT%H:%M:%SZ"))
+def _secs(ts: str) -> int:
+    return calendar.timegm(time.strptime(ts, "%Y-%m-%dT%H:%M:%SZ"))
+
+
+ACCOUNT_ID = re.compile(r"account_\d+")
+# The worker result that a workflow status usually reports. Used only to rank workflow candidates (C04: a result is a
+# claim). Allowing SUCCESS for PARTIALLY_COMPLETE (seen in two hand-built samples) lowered agreement with
+# identifier-confirmed accounts from 106/162 to 83/162 in the EXP-C1 label-free check, so the exact pairing is kept.
+RESULT_FOR_STATUS = {"COMPLETE": "SUCCESS", "PARTIALLY_COMPLETE": "PARTIAL", "NOT_STARTED": "FAILED"}
 
 
 class Auditor:
@@ -130,42 +138,77 @@ class Auditor:
                 res.add(a["resource_id"])
         return res
 
-    # -- account resolution (R31): evidence first, then workflow-event matching
-    def resolve_accounts(self, requests: list[dict]) -> dict[str, str | None]:
-        acct_events = [a for a in self.activity if a["event_type"] == "DELETE_RECORD" and a["target_system"] == "account_service"
-                       and a["source_system"] == "deletion_worker"]
-        want = {"COMPLETE": "SUCCESS", "PARTIALLY_COMPLETE": "PARTIAL", "NOT_STARTED": "FAILED"}
-        assigned: dict[str, str | None] = {}
+    # -- account resolution (R31): identifier links first, then the deletion workflow's own account event
+    def account_links(self, uid: str, audit_at: str) -> set[str]:
+        """Accounts tied to the subject by an identifier in evidence available at audit_at: the account's own record
+        (or a lookup keyed by the subject) carries a subject identifier, or a record carrying a subject identifier names
+        the account id (e.g. a search document's account reference)."""
+        keys = self.keys[uid]
+        out = set()
+        for o in self.idx.obs:
+            if o.captured_at > audit_at or not (o.keys & keys):
+                continue
+            if o.resource_id.startswith("account_"):
+                out.add(o.resource_id)
+            out |= {k for k in o.keys if ACCOUNT_ID.fullmatch(k)}
+        return out | {r for r in self.linked_resources(uid, audit_at) if r.startswith("account_")}
+
+    def workflow_candidates(self, q: dict) -> list[dict]:
+        """Deletion-worker account events inside the request's workflow period [requested_at, end of the reporting day]
+        and not after audit_at. Timing alone never decides ownership when an identifier link exists; it is used only for
+        accounts no evidence names (C04: a worker result is a claim, used here only to rank candidates)."""
+        hi = min(q["reported_at"][:11] + "23:59:59Z", q["audit_at"])
+        return [a for a in self.account_events if q["requested_at"] <= a["event_time"] <= hi]
+
+    def resolve_accounts(self, requests: list[dict]) -> dict[str, list[str]]:
+        """case_id -> primary account(s). The basis of every decision is kept in self.account_basis:
+        CONFIRMED (identifier link), CORROBORATED (identifier link that the workflow's own event also names),
+        WORKFLOW_UNIQUE (no identifier link; the only workflow event left after other cases' links are removed),
+        WORKFLOW_AMBIGUOUS (several remain; deterministic pick, flagged), NONE (no candidate)."""
+        self.account_events = [a for a in self.activity if a["event_type"] == "DELETE_RECORD"
+                               and a["target_system"] == "account_service" and a["source_system"] == "deletion_worker"]
+        self.account_basis: dict[str, str] = {}
+        assigned: dict[str, list[str]] = {}
         owner: dict[str, str] = {}
+        cands: dict[str, tuple[dict, list[dict]]] = {}
         for q in requests:
             uid = self.subject(q["email"])
             if not uid:
                 continue
-            accs = sorted(r for r in self.linked_resources(uid, q["audit_at"]) if r.startswith("account_"))
-            if accs:
-                assigned[q["case_id"]] = accs[0]
-                owner[accs[0]] = q["case_id"]
-        pending = [q for q in requests if q["case_id"] not in assigned]
-        cands = {}
-        for q in pending:
-            lo, hi = q["requested_at"], q["reported_at"][:11] + "23:59:59Z"
-            c = [a for a in acct_events if lo <= a["event_time"] <= hi and a["event_time"] <= q["audit_at"]]
-            cands[q["case_id"]] = (q, c)
+            linked = sorted(self.account_links(uid, q["audit_at"]))
+            flow = self.workflow_candidates(q)
+            if linked:
+                want = RESULT_FOR_STATUS.get(q["reported_status"])
+                named = [r for r in linked if any(a["resource_id"] == r and a["reported_result"] == want for a in flow)]
+                if len(linked) > 1 and len(named) == 1:
+                    linked = named  # several identifier links: the workflow's own event decides (sample case_17)
+                assigned[q["case_id"]] = linked
+                self.account_basis[q["case_id"]] = ("CORROBORATED" if named else "CONFIRMED") + f" {linked}"
+                for r in linked:
+                    owner[r] = q["case_id"]
+            else:
+                cands[q["case_id"]] = (q, flow)
         changed = True
         while changed:
             changed = False
             for cid, (q, c) in list(cands.items()):
                 live = [a for a in c if a["resource_id"] not in owner]
                 if len(live) == 1:
-                    assigned[cid] = live[0]["resource_id"]; owner[live[0]["resource_id"]] = cid
+                    r = live[0]["resource_id"]
+                    assigned[cid] = [r]; owner[r] = cid
+                    self.account_basis[cid] = f"WORKFLOW_UNIQUE {r} ({live[0]['activity_id']})"
                     del cands[cid]; changed = True
         for cid, (q, c) in sorted(cands.items(), key=lambda kv: len(kv[1][1])):
             live = [a for a in c if a["resource_id"] not in owner]
             if not live:
-                assigned[cid] = None
+                assigned[cid] = []
+                self.account_basis[cid] = "NONE: no identifier link and no free workflow event"
                 continue
-            live.sort(key=lambda a: (a["reported_result"] != want.get(q["reported_status"]), abs(_secs(a["event_time"]) - _secs(q["reported_at"]))))
-            assigned[cid] = live[0]["resource_id"]; owner[live[0]["resource_id"]] = cid
+            want = RESULT_FOR_STATUS.get(q["reported_status"])
+            live.sort(key=lambda a: (a["reported_result"] != want, abs(_secs(a["event_time"]) - _secs(q["reported_at"]))))
+            r = live[0]["resource_id"]
+            assigned[cid] = [r]; owner[r] = cid
+            self.account_basis[cid] = f"WORKFLOW_AMBIGUOUS {r} among {sorted(a['resource_id'] for a in live)}"
         return assigned
 
     # -- evidence choice (T04, C02, C06, C10; D10)
@@ -194,7 +237,7 @@ class Auditor:
         return "", "none"
 
     # -- one case
-    def audit(self, q: dict, account: str | None, notes: list[str]) -> tuple[str, list[dict]]:
+    def audit(self, q: dict, accounts: list[str] | None, notes: list[str]) -> tuple[str, list[dict]]:
         if not authorizes_deletion(q["request_text"]):
             return "NOT_APPLICABLE", []
         uid = self.subject(q["email"])
@@ -202,9 +245,12 @@ class Auditor:
         if not uid:
             notes.append("no identity match")
             return "INCOMPLETE", []
-        rids = self.linked_resources(uid, audit_at)
-        if account:
-            rids.add(account)
+        # The primary account comes only from resolve_accounts (identifier links, else the workflow event); other
+        # account ids found by key overlap are not added (a second linked account is a different workflow's).
+        rids = {r for r in self.linked_resources(uid, audit_at) if not r.startswith("account_")}
+        rids |= set(accounts or [])
+        if hasattr(self, "account_basis") and q["case_id"] in self.account_basis:
+            notes.append(f"account: {self.account_basis[q['case_id']]}")
         F, R, V = [], [], []
         evidence_for: dict[tuple, str] = {}
         for rid in sorted(rids):
