@@ -14,7 +14,8 @@ No figures are estimated unless marked.
 | Input / output tokens | 0 / 0 |
 | Total and average tokens per request | 0 / 0 |
 | Cost (total, per request) | $0.00 / $0.00 |
-| Runtime / peak memory (measured 2026-10-25, Linux cloud container) | ≈4.4 s / ≈19 MB |
+| Local models run | RapidOCR (ONNX, on this machine; no provider, no tokens, no cost): 11 screenshots; with the shipped OCR line cache all 11 are cache hits, a live re-read takes ≈1–2 s per image |
+| Runtime / peak memory (measured 2026-10-25, Linux cloud container) | ≈4.5 s / ≈20 MB (OCR cache hits) |
 
 The final run reads screenshot facts from `code/evidence_cache/` instead of calling a model. That cache was made
 during development (section B). So the **$0 above is the run cost, not the total cost of building the evidence**.

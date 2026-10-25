@@ -37,9 +37,10 @@ The agent is **deterministic first**. No model is called while auditing a reques
 |---|---|---|
 | Intent | Five ordered rules — negated deletion, account kept, marketing-only opt-out, deletion word (several languages), otherwise no deletion — each decision returns its rule and text span; non-deletion requests become `NOT_APPLICABLE` with `[]` | `ghostaudit/intent.py` |
 | Identity | Current snapshot plus `user_audit_log.csv`, giving all historical emails, phones, hashes and user IDs; the primary account comes from identifier links first (own record, keyed lookup, or a subject record naming it), and only otherwise from the deletion workflow's account event, with the basis of each decision in the run notes | `ghostaudit/auditor.py` |
-| Evidence | JSON/TXT/SQL (with replicas), four log formats, PDF text (pypdf), and screenshot facts from the evidence cache | `ghostaudit/evidence.py`, `documents.py`, `images.py`, `multimodal.py` |
+| Evidence | JSON/TXT/SQL (with replicas), four log formats, PDF text (pypdf), screenshot facts from the evidence cache cross-checked by a local OCR model, OCR facts for screenshots without cached facts, and lineage links for copies repopulated by a connector or restore | `ghostaudit/evidence.py`, `documents.py`, `images.py`, `ocr.py`, `multimodal.py` |
 | Time | Only evidence captured at or before `audit_at`; the latest valid observation wins; post-dated rows are ignored | `ghostaudit/temporal.py` |
 | Policy | DELETE / REDACT / ANONYMIZE / RETAIN / tombstone per category; findings, then remediation, then verification | `ghostaudit/policy.py`, `auditor.py` |
+| Decisions | One typed `ResourceDecision` per resource (attribution, rule, state incl. UNKNOWN, cited evidence); `case_traces.jsonl` per run; the run fails if a step is not backed by a decision | `ghostaudit/decisions.py`, `auditor.py`, `main.py` |
 | Gate | Strict validator; `output.csv` is published only if it reports 0 errors, unless `--best-effort` is given (then every error is printed and recorded, and the exit status is 1) | `main.py`, `evaluation/validate_output.py` |
 
 **Gemini's role is limited to evidence extraction.** Screenshots were transcribed once, during development, into structured facts with a fixed JSON schema. The facts are stored in `code/evidence_cache/`, keyed by each image's SHA-256, and the deterministic rules decide everything else. Gemini never sees a case or request and never decides a status. A transcribed fact is used only if it passes these checks:
@@ -70,11 +71,12 @@ The run takes about 3 seconds, makes no network calls and needs no keys. The ste
 2. It runs the strict validator.
 3. Only if the validator reports 0 errors does it publish `./output.csv`. Otherwise it exits with status 1 and leaves any existing `output.csv` untouched.
 
-**The submitted `output.csv` was produced with `python code/main.py --best-effort`.** The validator reports 3 errors
+**This candidate's `output.csv` is produced with `python code/main.py --best-effort`.** The validator reports 3 errors
 (R12, case_55 and case_63: COMPLETE verifications that no evidence can back, see Known limitations). The team lead
 decided to publish them as a disclosed best effort rather than invent citations or violations; `--best-effort` makes
 that explicit, prints the errors and exits with status 1. The run reproduces the submitted file byte for byte
-(sha256 `059df99510a0f49244fa8e3460f8b31e873dd5b5102ed32003ab089dd9ff3246`).
+(D47 candidate sha256 `e03e7a16442b4547b9a99fc57f9c43d83bd8fa7cbe4ea04339e725c0782e271b`; the previously accepted
+release `059df995…` is kept as rollback on tag `release-accepted`).
 
 Useful options:
 
@@ -85,6 +87,7 @@ Useful options:
 | `--requests PATH` | Another requests file, e.g. `dataset/sample_deletion_requests.csv` |
 | `--dataset PATH` / `--output PATH` / `--work-dir PATH` | Other locations |
 | `--no-evidence-cache` | Ignore screenshot facts (PDF and structured evidence only) |
+| `--no-ocr` | Skip the local OCR second reader (no OCR cross-check, no OCR facts; only case_34 and case_53 differ) |
 | `--evidence-cache PATH` | Use another evidence cache |
 | `--live-extraction` | Opt-in: call Gemini for screenshots that have no cache entry (see below) |
 
@@ -146,7 +149,7 @@ Results are in [`code/evaluation/evaluation_report.md`](code/evaluation/evaluati
 - **3 validator errors (R12) remain** in the 518-case output (case_55: account_2595 and backup_9287; case_63: marketing_001). No evidence establishes those resources' state; the file is published best effort with the errors disclosed.
 - **Account attribution.** Of 508 authorised cases, 152 primary accounts are identifier-backed, 203 are matched to the workflow's own account event, 145 are ambiguous picks within a reporting batch (flagged in the run notes) and 8 have none.
 - **Unlinkable records.** Anonymized analytics profiles carry no identifier, and some retained audit records appear only in evidence captured after audit_at; they are not attributed by timing alone.
-- **Screenshots.** 6 of 11 have usable cached facts. The other 5 stay UNKNOWN (never treated as deleted).
+- **Screenshots.** 8 of 11 give usable facts (6 Gemini facts confirmed by OCR, 2 OCR-only). 3 give none (no printed resource id, or no printed identifier); their resources stay UNKNOWN, never treated as deleted.
 - **Intent.** 5 pinned probes still fail (e.g. "don't keep any of my data", field-level removals such as "remove my old phone number").
 
 ## Repository layout

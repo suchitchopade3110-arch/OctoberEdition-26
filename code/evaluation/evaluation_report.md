@@ -1,8 +1,9 @@
 # Evaluation report — Ghost Data Still Exists
 
-Release evaluated: branch `claude/intelligent-sagan-ytlgrk`, the F1 production code (`6fe50ba`) plus the cloud-session
-changes EXP-C1 (account attribution), EXP-C2 (collection-file system), EXP-C3 (intent rules) and the explicit
-`--best-effort` publication mode. The F1 output is kept as the rollback (`runs/baseline_f1/`, sha256 `1503deba…`).
+Candidate evaluated: branch `d47-experiments` — the accepted release (`4f61906`, output sha256 `059df995…`, kept as
+rollback) plus D47 experiments EXP-D1 (local OCR second reader), EXP-D2 (explicit restore decisions), EXP-D3 (typed
+decisions and case traces) and EXP-D4 (lineage links). Candidate output sha256
+`e03e7a16442b4547b9a99fc57f9c43d83bd8fa7cbe4ea04339e725c0782e271b`.
 Every number below was measured on 2026-10-25 from the committed code (Linux, Python 3.13) unless marked otherwise.
 
 Legend: **[measured]** reproduced by a command in this report · **[unverified]** depends on information we do not
@@ -23,13 +24,19 @@ The agent is **deterministic first**. No model is called while auditing a reques
    one the deletion workflow's own worker event names. Only accounts no evidence names fall back to the workflow's
    account event (request period, reported result preferred). Every decision is labelled in the run notes.
 4. **Evidence.** Structured files (JSON, TXT tables, SQL snapshots with replicas), four log formats, PDFs (pypdf text)
-   and screenshots are turned into observations. Screenshots are read through structured facts that Gemini transcribed
-   during development and that are stored in the content-addressed cache `code/evidence_cache/`.
+   and screenshots are turned into observations. Screenshots are read by two independent models: structured facts that
+   Gemini transcribed during development (content-addressed cache `code/evidence_cache/`), and a local OCR model
+   (RapidOCR/ONNX, `ghostaudit/ocr.py`) that runs at audit time. A Gemini fact is used only if the OCR text shows the
+   same resource id and identifiers; images without Gemini facts get OCR facts through the same grounding guards.
+   Copies repopulated by a subject's connector or restore job (activity lineage) are linked as the subject's data.
 5. **Time.** Only evidence captured at or before audit_at is used. The latest valid observation sets a resource's
    state. Post-dated rows are ignored and ties are recorded.
 6. **Policy.** `deletion_rules.csv` maps each category to DELETE / REDACT / ANONYMIZE / RETAIN / tombstone. The engine
    builds findings, an ordered remediation plan and verifications.
-7. **Validation gate.** `main.py` writes a candidate, runs the strict validator and publishes `output.csv` only if there
+7. **Traces.** Every resource gets a typed `ResourceDecision` (attribution, category, rule, state incl. explicit
+   UNKNOWN, cited evidence); `case_traces.jsonl` holds one trace per case, and the run fails if any emitted step is
+   not backed by a decision.
+8. **Validation gate.** `main.py` writes a candidate, runs the strict validator and publishes `output.csv` only if there
    are 0 errors. `--best-effort` (team-lead decision C2) publishes anyway, prints every error, records
    `published_despite_validation_errors` in `run_notes.json` and exits 1.
 
@@ -63,10 +70,12 @@ then `python code/evaluation/eval.py --pred runs/dev.csv --requests dataset/samp
 
 The reserved split is unchanged by this release (same predictions as F1).
 
-**518-case output [measured]:** 518 rows in request order, 348 INCOMPLETE / 160 COMPLETE / 10 NOT_APPLICABLE,
-2,947 steps, sha256 `059df99510a0f49244fa8e3460f8b31e873dd5b5102ed32003ab089dd9ff3246`. It differs from the F1
-artifact in **one row** (case_72's account, freed when sample case_06 got its evidence-named account). Strict
-validator: **3 errors (R12) and 8 warnings (R31)** — section 10.
+**518-case output [measured]:** 518 rows in request order, 349 INCOMPLETE / 159 COMPLETE / 10 NOT_APPLICABLE,
+2,955 steps, sha256 `e03e7a16442b4547b9a99fc57f9c43d83bd8fa7cbe4ea04339e725c0782e271b`. It differs from the accepted
+release in **three rows** (D47, all test cases, no public label): case_34 gains REPORT_REMAINING_RECORD account_5762
+[evidence_04, OCR]; case_53 COMPLETE -> INCOMPLETE with REPORT_EXPOSED_PII support_1034 [evidence_28, OCR]; case_421
+gains REPORT_REMAINING_RECORD search_3251 [evidence_39, lineage]. Public-sample metrics are identical to the release on
+every split. Strict validator: **3 errors (R12) and 8 warnings (R31)** — section 10.
 
 ## 4. Custom evaluation scenarios [measured]
 
@@ -161,6 +170,11 @@ accounts with the same result, and nothing but order separates them.
 | **EXP-C2** | collection file takes its manifest origin as system | 0.955 / 0.938 / 0.545 | **accepted** (0 test rows change) |
 | **EXP-C3** | rule-based intent with explanations | **1.0 / 0.950 / 0.591** | **accepted** (0 test rows change; dev case_05 fixed) |
 | EXP-C4 | later snapshot omission = absence (S4) | 0.955 / 0.934 / 0.545 | **rejected** (contradicts official samples) |
+| **EXP-D1** | local OCR second reader (cross-check + facts for unread screenshots) | dev unchanged | **accepted** (2 test rows; all 6 Gemini entries agree with OCR) |
+| **EXP-D2** | explicit restore decisions; flag-less backup/flow = UNKNOWN | dev unchanged | **accepted** (0 rows; case_264 now proven by its deny log) |
+| **EXP-D3** | typed decisions, case traces, trace consistency gate | output byte-identical | **accepted** |
+| **EXP-D4** | lineage links (connector/restore repopulated a copy) | dev unchanged | **accepted** (1 test row: case_421) |
+| EXP-D5 (measured, not built) | phone digit normalisation | 0 new links | not pursued |
 
 ## 9. Rejected approaches
 
@@ -186,9 +200,10 @@ accounts with the same result, and nothing but order separates them.
    appear in no participant file (18, 20) or only in a bundle captured after audit_at (23, 29); one ambiguous account
    pair (25/26).
 4. **Account attribution**: 145 of 508 primary accounts are ambiguous picks (section 7).
-5. **5 of 11 screenshots unread** (no cache entry, no model call allowed): evidence_04, 28, 37, 42, 46. Likely affected
-   test cases: case_34 (evidence_04 shows account_5762 live), case_46 (tombstone_17), case_53 (support_1034),
-   case_61 (attachment object_19). Their resources stay UNKNOWN and are never written as deleted.
+5. **3 of 11 screenshots give no usable fact**: evidence_37 (rows print only a user reference; state not asserted from
+   absence; its record is covered by PDF evidence_55), evidence_42 (tombstone screen prints no resource id),
+   evidence_46 (object listing prints a file name but no person; case_61's attachment object_19 stays UNKNOWN).
+   evidence_04 and evidence_28 are now read by OCR (case_34, case_53).
 6. **Backups and flows with no flag field** (D30 F3) are still verified as blocked/disabled.
 
 ## 11. Separation of claims
