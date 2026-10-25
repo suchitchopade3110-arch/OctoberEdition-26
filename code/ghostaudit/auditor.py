@@ -26,6 +26,7 @@ def _secs(ts: str) -> int:
 
 
 ACCOUNT_ID = re.compile(r"account_\d+")
+LINEAGE = re.compile(r"repopulated downstream resource (\w+_\d+)", re.I)
 # The worker result that a workflow status usually reports. Used only to rank workflow candidates (C04: a result is a
 # claim). Allowing SUCCESS for PARTIALLY_COMPLETE (seen in two hand-built samples) lowered agreement with
 # identifier-confirmed accounts from 106/162 to 83/162 in the EXP-C1 label-free check, so the exact pairing is kept.
@@ -67,6 +68,11 @@ class Auditor:
         for o in self.idx.obs:
             self.obs_by_res[o.resource_id].append(o)
         self.links = [a for a in self.activity if a["event_type"] == "LINK_RESOURCE_IDENTITY"]
+        # Lineage (EXP-D4): sync / restore events that name the downstream resource they repopulated, e.g.
+        # "Active connector repopulated downstream resource search_2818." -> (time, source, downstream, activity id).
+        self.lineage = [(a["event_time"], a["resource_id"], m.group(1), a["activity_id"]) for a in self.activity
+                        if a["event_type"] in ("SYNC_RECORD", "RESTORE_BACKUP")
+                        for m in [LINEAGE.search(a["details"])] if m and m.group(1) != a["resource_id"]]
         self.state_log: dict[str, dict] = {}
         self._attach_manifest_times()
         self._attach_sql_scopes()
@@ -145,6 +151,18 @@ class Auditor:
             words = set(re.findall(r"[\w.+@-]+", ev.norm(a["details"])))
             if words & keys:
                 res.setdefault(a["resource_id"], f"catalog link {a['activity_id']}")
+        # Lineage: a copy repopulated from (or into) a resource of the subject holds the subject's data. Only events at
+        # or before audit_at; followed until nothing new is added. Discovery only: state still comes from evidence.
+        grew = True
+        while grew:
+            grew = False
+            for t, src, dst, aid in self.lineage:
+                if t > audit_at:
+                    continue
+                for a_, b_ in ((src, dst), (dst, src)):
+                    if a_ in res and b_ not in res:
+                        res[b_] = f"lineage {aid}: {src} repopulated {dst}"
+                        grew = True
         return res
 
     # -- account resolution (R31): identifier links first, then the deletion workflow's own account event
