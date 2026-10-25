@@ -5493,3 +5493,22 @@ branch=d47-experiments
 repo_root=/home/user/OctoberEdition-26
 worktree=main
 parent_agent=none
+
+## [2026-10-25T12:54:17Z] Explained primary-account selection when candidates tie
+
+User Prompt (verbatim, secrets redacted):
+[Screenshot of an interview question] "Take your time. If it helps, just tell me in plain words how the system picks a primary account when several look equally likely."
+
+Agent Response Summary:
+Read code/ghostaudit/accounts.py and explained the rule in plain words: identifier evidence first (several linked accounts narrowed to the one the workflow's own event names with the matching result); otherwise deletion-worker account events in the request window, minus accounts already owned by other cases, resolved iteratively when one is left; remaining cases (fewest candidates first) rank events by matching reported result, then closeness to reported_at, and the pick is labelled WORKFLOW_AMBIGUOUS in the run notes when nothing separates them (145 of 508). Worker results only rank candidates and never prove state. No code or prediction changed.
+
+Actions:
+* Read code/ghostaudit/accounts.py; appended this entry; committed and pushed log.txt
+
+Context:
+tool=Claude Code (claude.ai/code cloud session)
+model=claude-opus-5-5
+branch=d47-experiments
+repo_root=/home/user/OctoberEdition-26
+worktree=main
+parent_agent=none
