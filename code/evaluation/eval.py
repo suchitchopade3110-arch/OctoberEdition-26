@@ -5,7 +5,7 @@ scenario fixtures). They are not, and must never be reported as, the hidden
 judge's score. Where the official scoring is unstated, the strictest reading
 is used and named below.
 
-Metrics (docs/contract.md, D4):
+Metrics:
   status_accuracy     share of cases with the exact deletion_status
   step P / R / F1     multiset match on the full step content
                       (phase, system_id, resource_id, operation, state, evidence_id);
@@ -211,7 +211,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--dataset", type=Path, default=DATASET_DIR)
     ap.add_argument("--split", choices=sorted(SPLITS), default="dev")
     ap.add_argument("--cases", help="comma-separated case ids (overrides --split; for custom fixtures)")
-    ap.add_argument("--allow-reserved", action="store_true", help="required to score the reserved set (D4)")
+    ap.add_argument("--allow-reserved", action="store_true", help="required to score the reserved split (it is never used for tuning)")
     ap.add_argument("--usage", type=Path, help="optional run-usage JSON (runtime, calls, tokens, cost)")
     ap.add_argument("--json-out", type=Path)
     ap.add_argument("--md-out", type=Path)

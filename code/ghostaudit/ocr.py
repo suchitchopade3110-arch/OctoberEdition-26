@@ -1,4 +1,4 @@
-"""Local OCR reader for screenshot evidence (EXP-D1): a second, independent model next to the Gemini facts.
+"""Local OCR reader for screenshot evidence: a second, independent model next to the Gemini facts.
 
 Runtime role (no network, no key, deterministic):
   1. read_lines(): every screenshot is read by a local OCR model (RapidOCR, ONNX runtime). The text lines and their

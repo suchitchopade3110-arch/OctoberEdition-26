@@ -1,4 +1,4 @@
-"""deletion_rules.csv -> ordered steps (contract §6; accepted EXP-001 behaviour)."""
+"""deletion_rules.csv -> findings, remediation and verification steps for one resource."""
 from __future__ import annotations
 
 from pathlib import Path

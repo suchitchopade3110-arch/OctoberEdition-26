@@ -1,4 +1,4 @@
-"""Auditor with multimodal evidence (EXP-007 PDFs + EXP-007G image facts; D14, D16, D17, D18).
+"""Auditor with multimodal evidence: PDF text, cached vision-model facts and a local OCR second reader.
 
 The identity, temporal and policy engines are the unchanged Auditor's. This class only adds observations:
   * PDFs: text extracted offline with pypdf (documents.py);

@@ -1,11 +1,11 @@
-"""State of a resource at audit_at (accepted EXP-004 rules, D10).
+"""State of a resource at audit_at.
 
 Three times are kept apart: observation time (log line or record time, else file capture),
 availability time (file captured_at) and the case cutoff (audit_at).
 State = latest reliable observation time among evidence available at audit_at; line order is never
-chronology. D10-A: equal-time conflicts are marked ambiguous with full provenance; preference only for
-comparable scope/authority; replica copies never merged (C08: a remaining copy means the record exists).
-D10-B: rows dated after their own file's capture are quarantined (kept, flagged, never selected).
+chronology. Equal-time conflicts are marked ambiguous with full provenance; a preference applies only between
+comparable sources; replica copies are never merged (a remaining copy means the record exists).
+Rows dated after their own file's capture are quarantined (kept, flagged, never selected).
 """
 from __future__ import annotations
 
@@ -61,7 +61,7 @@ def choose(obs: list, audit_at: str) -> tuple[object | None, dict]:
     scopes = {scope_of(o) for o in top}
     if len(files) == 1 and len(scopes) > 1:
         present = [o for o in top if o.state != "ABSENT"]
-        info["tie"] = "same snapshot, different copies: a remaining copy means the record exists (C08)"
+        info["tie"] = "same snapshot, different copies: a remaining copy means the record exists"
         chosen = min(present or top, key=lambda o: (NON_COMPLIANCE.get(o.state, 9), o.file_id))
         info["preference_applied"] = True
     elif len(scopes) == 1 and len({o.system for o in top}) == 1:

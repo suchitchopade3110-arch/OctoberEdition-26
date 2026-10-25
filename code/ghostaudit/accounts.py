@@ -47,7 +47,7 @@ class AccountResolver:
     def workflow_candidates(self, q: dict) -> list[dict]:
         """Deletion-worker account events inside the request's workflow period [requested_at, end of the reporting day]
         and not after audit_at. Timing alone never decides ownership when an identifier link exists; it is used only for
-        accounts no evidence names (C04: a worker result is a claim, used here only to rank candidates)."""
+        accounts no evidence names (a worker result is a claim: it only ranks candidates, never proves a state)."""
         hi = min(q["reported_at"][:11] + "23:59:59Z", q["audit_at"])
         return [a for a in self.account_events if q["requested_at"] <= a["event_time"] <= hi]
 

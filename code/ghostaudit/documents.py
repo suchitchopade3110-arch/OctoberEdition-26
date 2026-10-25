@@ -1,4 +1,4 @@
-"""PDF evidence extraction (offline, pypdf). Ported unchanged from EXP-007 (D14).
+"""PDF evidence extraction (offline, pypdf): text facts and resource links from business documents.
 
 A resource is referenced by a document only if its id is printed, or a printed label is mapped to it by a
 LINK_RESOURCE_IDENTITY catalog row. A document naming more than one subject is never used for linking.

@@ -1,13 +1,13 @@
-"""Request intent (contract Q01-Q04): does request_text authorise deletion?
+"""Request intent: does request_text authorise deletion?
 
-Deterministic and explainable (EXP-C3, replacing the EXP-001 phrase list). Rules are checked in order and the first
+Deterministic and explainable. Rules are checked in order and the first
 one that applies decides; the decision and its reason are returned so the run notes can show why:
 
   1. NEGATED_DELETION  a negator ("not", "n't", "never", "without") governs a deletion word
                        ("I am not asking for deletion", "don't delete anything", "without removing my records")
   2. ACCOUNT_KEPT      the requester keeps the account or profile ("keep the account", "leave my profile in place",
                        "I still need/use the account", "continue using the service") -> partial scope, NOT_APPLICABLE
-                       (team-lead decision D11-P: an explicit keep request does not authorise full deletion)
+                       (an explicit keep request does not authorise deleting the account)
   3. MARKETING_ONLY    removal is limited to marketing / mailing / promotional lists (an opt-out)
   4. DELETION          a deletion word in any supported language ("delete", "erase", "close", "remove", "exclusão",
                        "eliminación", "suppression", "Löschung", "削除", "삭제", ...)

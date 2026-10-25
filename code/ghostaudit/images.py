@@ -1,4 +1,4 @@
-"""Grounding of structured image facts (EXP-007G, accepted D16/D17). Pure functions; no model calls.
+"""Grounding of structured image facts produced by a vision model. Pure functions; no model calls.
 
 Image facts come from the evidence cache (see evidence_cache.py). Rules (generic, no case ids):
   * a record's resource id must match the id pattern, be known to the dataset and be printed in the record's own

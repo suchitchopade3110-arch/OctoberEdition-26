@@ -1,11 +1,31 @@
 """Output contract constants shared by the validator and the evaluator.
 
-Every constant points at its rule in docs/contract.md. Nothing here is a
-prediction: it only describes what a valid answer looks like.
+The rule ids used in comments and validator messages are listed in RULES below (from problem_statement.md and
+AGENTS.md §6). Nothing here is a prediction: it only describes what a valid answer looks like.
 """
 from __future__ import annotations
 
 from pathlib import Path
+
+RULES = {
+    "R02": "header is exactly case_id,deletion_status,steps_json; 3 columns; no BOM",
+    "R03": "one row per requested case_id, no unknown or duplicate ids",
+    "R04": "rows sorted by case_id (numeric suffix order)",
+    "R05": "deletion_status is COMPLETE, INCOMPLETE or NOT_APPLICABLE",
+    "R06": "steps_json parses as a JSON array",
+    "R07": "each step has exactly the seven fields, with the right types",
+    "R08": "step_no is 1, 2, 3, ... in array order",
+    "R09": "phases appear as FINDING, then REMEDIATION, then VERIFICATION",
+    "R10": "(phase, operation, state) is one of the allowed combinations",
+    "R11": "NOT_APPLICABLE has steps_json []",
+    "R12": "a COMPLETE case has only VERIFICATION steps, each citing evidence",
+    "R13": "an INCOMPLETE case has cited findings; its remediation / verification steps cite nothing",
+    "R15": "inside a phase: operation order of the contract table, then system_id, then resource_id",
+    "R30": "every finding has its remediation and every remediation its verification (warning)",
+    "R31": "the case has an account_service VERIFY_RECORD_ABSENT step (warning)",
+    "C01": "a cited id is a real file_id, activity_id or audit_id",
+    "C03": "a cited id was available at or before the case's audit_at",
+}
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 DATASET_DIR = REPO_ROOT / "dataset"

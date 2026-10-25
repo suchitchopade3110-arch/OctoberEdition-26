@@ -1,4 +1,4 @@
-"""Per-case deletion audit (accepted baseline: EXP-001 identity/policy + EXP-003 parsing + EXP-004 state).
+"""Per-case deletion audit: evidence index, state at audit_at, and one typed decision per linked resource.
 
 Reads only participant files under the dataset directory. Never reads sample_output.csv.
 """
@@ -56,7 +56,7 @@ class Auditor(IdentityLinker, AccountResolver):
         for o in self.idx.obs:
             self.obs_by_res[o.resource_id].append(o)
         self.links = [a for a in self.activity if a["event_type"] == "LINK_RESOURCE_IDENTITY"]
-        # Lineage (EXP-D4): sync / restore events that name the downstream resource they repopulated, e.g.
+        # Lineage: sync / restore events that name the downstream resource they repopulated, e.g.
         # "Active connector repopulated downstream resource search_2818." -> (time, source, downstream, activity id).
         self.lineage = [(a["event_time"], a["resource_id"], m.group(1), a["activity_id"]) for a in self.activity
                         if a["event_type"] in ("SYNC_RECORD", "RESTORE_BACKUP")
@@ -65,9 +65,9 @@ class Auditor(IdentityLinker, AccountResolver):
         self._attach_manifest_times()
         self._attach_sql_scopes()
 
-    # -- provenance passes (EXP-004)
+    # -- provenance passes: which table / record time each observation comes from
     def _attach_sql_scopes(self) -> None:
-        """Record which SQL table (primary / replica copy) each SQL observation came from (D10-A 6)."""
+        """Record which SQL table (primary / replica copy) each SQL observation came from; copies are never merged."""
         self.sql_scope_files = {"matched": 0, "skipped": 0}
         by_file: dict[str, list] = {}
         for o in self.idx.obs:
@@ -118,7 +118,7 @@ class Auditor(IdentityLinker, AccountResolver):
                 o.record_time = q.pop(0)
                 self.manifest_times_attached += 1
 
-    # -- evidence choice (T04, C02, C06, C10; D10)
+    # -- evidence choice: latest valid observation; absence needs an explicit readback or a covering snapshot
     def latest(self, rid: str, audit_at: str):
         chosen, info = choose(self.obs_by_res.get(rid, []), audit_at)
         if info.get("tie") or info.get("reappeared") or info.get("post_dated_ignored"):
@@ -177,7 +177,7 @@ class Auditor(IdentityLinker, AccountResolver):
                 s["evidence_id"] = cite.get((s["system_id"], s["resource_id"]), "")
             unproven = [s["resource_id"] for s in V if not s["evidence_id"]]
             if unproven or not V:
-                notes.append(f"UNPROVEN COMPLETE: no evidence proves {unproven or 'any verification'} (audit F01/C07)")
+                notes.append(f"UNPROVEN COMPLETE: no evidence proves {unproven or 'any verification'} - no evidence for its state")
             trace.status_reason = ("no violation found; every verification cites evidence" if V and not unproven
                                    else f"no violation found, but unproven: {unproven or 'no verification'}")
         else:
@@ -212,7 +212,7 @@ class Auditor(IdentityLinker, AccountResolver):
         action = "FLOW" if cat == "DATA_FLOW" else self.rules.get(cat)
         if o is None:
             # UNKNOWN: no usable observation at audit_at. Planned as a future check (a verification step without a
-            # finding); in a COMPLETE case it can cite nothing, so it surfaces as an unproven step (R12), never as proof.
+            # finding); in a COMPLETE case it can cite nothing, so it surfaces as an unproven step (validator error), never as proof.
             notes.append(f"UNKNOWN state: {rid} has no usable observation at audit_at")
             d = ResourceDecision(rid, system, cat, action, attribution, UNKNOWN,
                                  "no usable observation at audit_at", planned_state="ABSENT")

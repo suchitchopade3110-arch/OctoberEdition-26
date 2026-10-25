@@ -1,4 +1,4 @@
-"""Deterministic output.csv serialisation (contract R01-R14)."""
+"""Deterministic output.csv serialisation: fixed header, compact JSON, LF line endings."""
 from __future__ import annotations
 
 import csv

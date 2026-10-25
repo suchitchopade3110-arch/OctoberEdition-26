@@ -1,7 +1,7 @@
-"""Strict validator for output.csv (docs/contract.md §1, §4, §9).
+"""Strict validator for output.csv (rule ids: contract_spec.RULES).
 
-Errors   = breaks an EXPLICIT rule (tag E). Any error makes the file invalid.
-Warnings = breaks a VALIDATED/UNRESOLVED reading (tag V/U). Reported, never fatal.
+Errors   = break an explicit rule of the problem statement / AGENTS.md. Any error makes the file invalid.
+Warnings = break a reading confirmed by the public samples but not stated as a rule. Reported, never fatal.
 
 Usage:
     python code/evaluation/validate_output.py

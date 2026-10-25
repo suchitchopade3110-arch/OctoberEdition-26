@@ -1,4 +1,4 @@
-"""Evaluation splits over the 32 official samples (team-lead decision D4).
+"""Evaluation splits over the 32 official samples: 22 for development, 10 reserved.
 
 These ids only choose WHICH labelled samples a metric is computed on.
 Production code must never import this module or read sample_output.csv.

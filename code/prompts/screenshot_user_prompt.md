@@ -1,0 +1,1 @@
+Extract the visible facts from this screenshot into the JSON schema.

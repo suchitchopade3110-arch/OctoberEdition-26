@@ -108,7 +108,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--no-ocr", action="store_true",
                     help="skip the local OCR second reader (no cross-check of image facts, no OCR facts)")
     ap.add_argument("--best-effort", action="store_true",
-                    help="publish output.csv even when strict validation reports errors (team-lead decision C2 / D36); "
+                    help="publish output.csv even when strict validation reports errors (used for the submitted file, see README); "
                          "every error is printed, recorded in run_notes.json, and the exit status stays 1")
     ap.add_argument("--live-extraction", action="store_true",
                     help="opt-in: call Gemini for images missing from the cache (needs keys; bounded budget)")

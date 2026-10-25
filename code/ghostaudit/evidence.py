@@ -44,7 +44,7 @@ def scalars(obj, out: set[str]) -> set[str]:
     return out
 
 
-# Fields that carry direct identifiers (contract P05/P07/P15 "identifiable" test).
+# Fields that carry direct identifiers: a record holding any of them still identifies a person.
 DIRECT_ID_FIELDS = {"email", "phone", "email_hash", "name", "full_name", "display_name", "requester_name",
                     "requester_email", "requester_phone", "owner_email", "owner_phone", "customer_email",
                     "matched_value", "correlation_key", "uploaded_by"}
@@ -143,7 +143,7 @@ def infer_state(rec: dict, category: str | None) -> tuple[str, bool]:
         return ("PRESENT_ID" if norm(r["direct_identifiers"]) != "0" else "PRESENT_CLEAN"), False
     rid = str(r.get("resource_id", ""))
     if category == "BACKUP_ARCHIVE" or rid.startswith("backup_"):
-        return "RESTORE_UNKNOWN", False   # present, but nothing says whether it can be restored (D30 F3)
+        return "RESTORE_UNKNOWN", False   # present, but nothing says whether it can be restored
     if category == "DATA_FLOW" or rid.startswith("data_flow_"):
         return "FLOW_UNKNOWN", False      # present, but nothing says whether it runs
     ids = [k for k in DIRECT_ID_FIELDS if k in r and norm(r[k]) not in NULLS]
@@ -158,7 +158,7 @@ def infer_state(rec: dict, category: str | None) -> tuple[str, bool]:
     return "PRESENT_CLEAN", False
 
 
-# Category from the evidence's own labels (D3: content first).
+# Data category from the evidence's own labels (collection / table names), never from the system alone.
 COLLECTION_CATEGORY = {
     "customer_profiles": "USER_PROFILE", "profile_lookups": "USER_PROFILE",
     "customer_search_documents": "SEARCH_INDEX_ENTRY", "index_queries": "SEARCH_INDEX_ENTRY",
@@ -176,7 +176,7 @@ EVENT_CATEGORY = {"attachment_pii_scan": "SUPPORT_ATTACHMENT", "contact_lookup_c
 
 def refine_category(cat: str | None, rec: dict) -> str | None:
     r = {k.lower(): v for k, v in rec.items()}
-    if "email_opt_in" in r:                       # P18: a marketing contact record
+    if "email_opt_in" in r:                       # a marketing contact record, wherever it is stored
         return "MARKETING_PROFILE"
     is_support = str(r.get("resource_id", "")).startswith("support_")
     if is_support and cat in (None, "SUPPORT_MESSAGE") and ("file" in r or "file_name" in r):
@@ -225,12 +225,12 @@ def parse_structured(idx: Index, ev: dict, data_dir: Path, known_systems: set[st
     """TXT handover tables, JSON snapshots/exports/manifests and SQL snapshots. PNG/PDF are not read.
 
     known_systems (pass 2 only): system ids that structured evidence uses. A collection file whose records name no
-    system takes its manifest origin as the system when the origin is one of them (EXP-C2)."""
+    system takes its manifest origin as the system when the origin is one of them."""
     fid, cap = ev["file_id"], ev["captured_at"]
     path = data_dir / ev["file_path"]
     suffix = path.suffix.lower()
     if suffix in (".png", ".pdf"):
-        return  # multimodal evidence is not extracted (trap T07)
+        return  # images and PDFs are read by documents.py / images.py / ocr.py (MultimodalAuditor)
     if suffix == ".txt":
         for line in path.read_text(encoding="utf-8").splitlines():
             if line.startswith("- ") and line.count("|") >= 5:

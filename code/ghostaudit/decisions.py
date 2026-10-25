@@ -1,4 +1,4 @@
-"""Typed per-case reasoning records (EXP-D3): what the auditor decided for each resource, and why.
+"""Typed per-case reasoning records: what the auditor decided for each resource, and why.
 
 Every output step is planned from exactly one ResourceDecision; main.py writes one CaseTrace per case to
 case_traces.jsonl and checks that each emitted step is backed by a recorded decision (trace consistency gate).
